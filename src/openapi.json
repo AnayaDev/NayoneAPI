@@ -17,7 +17,58 @@
    { "name": "News" },
   { "name": "Stalk" }
   ],
-  "paths": {        
+  "paths": {   
+    "/download/mediafire": {
+  "get": {
+    "summary": "MediaFire Downloader",
+    "description": "Mengambil informasi file dan direct download link dari MediaFire",
+    "tags": ["Downloader"],
+    "parameters": [
+      {
+        "name": "url",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "description": "URL file MediaFire"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "creator": { "type": "string", "example": "Nayone API" },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "filename": { "type": "string" },
+                    "filetype": { "type": "string" },
+                    "filesize": { "type": "string" },
+                    "uploaded": { "type": "string" },
+                    "download": { "type": "string", "format": "uri" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Parameter tidak lengkap"
+      },
+      "500": {
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+    },
     "/news/cnn": {
   "get": {
     "summary": "CNN Indonesia News",
