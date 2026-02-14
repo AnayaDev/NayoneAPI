@@ -1,0 +1,641 @@
+{
+  "openapi": "1.0.0",
+  "info": {
+    "title": "Nayone",
+    "author": "NAYONE",
+    "version": "v1.0.0",
+    "description": "Simple and easy to use API."
+  },
+  "servers": [
+    { "url": "/" }
+  ],
+  "tags": [
+    { "name": "AI" },
+    { "name": "Anime" },
+    { "name": "Downloader" },
+    { "name": "Image" },
+   { "name": "News" }
+  ],
+  "paths": {
+      "/ai/copilot": {
+  "get": {
+    "summary": "Copilot Chat",
+    "description": "Kirim pertanyaan ke Copilot Microsoft dan dapatkan jawaban beserta referensi/citations",
+    "tags": ["AI"],
+    "parameters": [
+      {
+        "name": "message",
+        "in": "query",
+        "required": true,
+        "description": "Pesan atau pertanyaan yang ingin dikirim ke Copilot",
+        "schema": { "type": "string" }
+      },
+      {
+        "name": "model",
+        "in": "query",
+        "required": false,
+        "description": "Model Copilot yang digunakan (default: 'default', opsional: 'think-deeper', 'gpt-5')",
+        "schema": { "type": "string", "enum": ["default", "think-deeper", "gpt-5"], "default": "default" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mendapatkan jawaban dari Copilot",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": { "type": "string", "example": "Berikut adalah berita terbaru dari Indonesia..." },
+                "citations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": { "type": "string", "example": "Detik News" },
+                      "icon": { "type": "string", "example": "https://example.com/icon.png" },
+                      "url": { "type": "string", "format": "uri", "example": "https://www.detik.com/..." }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Request invalid, message kosong",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Message wajib diisi" }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Gagal memproses request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Gagal memproses request" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"/ai/venice": {
+  "get": {
+    "summary": "Venice AI Chat",
+    "description": "Mengirim pertanyaan ke model Venice AI dan mendapatkan jawaban final.",
+    "tags": ["AI"],
+    "parameters": [
+      {
+        "name": "message",
+        "in": "query",
+        "required": true,
+        "description": "Teks atau pertanyaan yang ingin dikirim ke Venice AI",
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mendapatkan jawaban dari Venice AI",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "result": {
+                  "type": "string",
+                  "example": "Halo! Saya Venice AI, siap membantu Anda menjawab pertanyaan atau membuat konten kreatif."
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Request invalid, message kosong",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Pesan wajib diisi" }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Gagal memproses request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Gagal memproses request" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"/anime/waifu": {
+  "get": {
+    "summary": "Waifu",
+    "description": "Mengambil gambar waifu secara acak dari API waifu.pics.",
+    "tags": ["Anime"],
+    "parameters": [],
+    "responses": {
+      "200": {
+        "description": "Berhasil mengambil gambar waifu",
+        "content": {
+          "image/png": {
+            "schema": {
+              "type": "string",
+              "format": "binary",
+              "example": "Binary image data"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Gagal memproses request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Gagal mengambil waifu." }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+    "/download/capcut": {
+  "get": {
+    "summary": "CapCut Downloader",
+    "description": "Ambil data dan video template dari CapCut berdasarkan URL template",
+    "tags": ["Downloader"],
+    "parameters": [
+      {
+        "name": "url",
+        "in": "query",
+        "description": "URL template CapCut yang ingin diambil datanya",
+        "required": true,
+        "schema": { "type": "string", "format": "uri" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "title": { "type": "string", "example": "Template Name" },
+                    "description": { "type": "string", "example": "Template Description" },
+                    "thumbnail": { "type": "string", "format": "uri" },
+                    "video": { "type": "string", "format": "uri" },
+                    "author": { "type": "string", "example": "Author Name" },
+                    "avatar": { "type": "string", "format": "uri" },
+                    "duration": { "type": "number", "example": 15 },
+                    "likes": { "type": "integer", "example": 1200 },
+                    "uses": { "type": "integer", "example": 300 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": { "description": "URL tidak disertakan" },
+      "500": { "description": "Gagal memproses request" }
+    }
+  }
+},
+"/download/pinterest": {
+  "get": {
+    "summary": "Pinterest ",
+    "description": "Mengambil data dan link media (video/image) dari URL Pinterest / pin.it.",
+    "tags": ["Downloader"],
+    "parameters": [
+      {
+        "name": "url",
+        "in": "query",
+        "description": "URL Pinterest / pin.it yang ingin di-download",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "https://pin.it/lOPdveAO7"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mengambil data Pinterest",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "creator": { "type": "string", "example": "NAYONE" },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "example": "video" },
+                    "title": { "type": "string", "example": "Art" },
+                    "author": { "type": "string", "example": "ShiroAMV7" },
+                    "username": { "type": "string", "example": "shiroamv7" },
+                    "media": { "type": "string", "example": "https://v1.pinimg.com/videos/iht/expMp4/..." },
+                    "pinterest_url": { "type": "string", "example": "https://pin.it/lOPdveAO7" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "URL tidak valid",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "creator": { "type": "string", "example": "NAYONE" },
+                "error": { "type": "string", "example": "URL harus dari Pinterest / pin.it" }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Gagal memproses request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "creator": { "type": "string", "example": "NAYONE" },
+                "error": { "type": "string", "example": "Gagal memproses request" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+    "/download/tiktok": {
+  "get": {
+    "summary": "TikTok",
+    "description": "Download video TikTok",
+    "tags": ["Downloader"],
+    "parameters": [
+      {
+        "name": "url",
+        "in": "query",
+        "description": "URL video TikTok yang ingin diunduh",
+        "required": true,
+        "schema": { "type": "string", "format": "uri" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "url": { "type": "string", "example": "https://tikwm.com/video.mp4" },
+                    "title": { "type": "string", "example": "Judul Video TikTok" },
+                    "author": { "type": "string", "example": "Username TikTok" },
+                    "thumb": { "type": "string", "format": "uri", "example": "https://tikwm.com/thumb.jpg" },
+                    "video_sd": { "type": "string", "format": "uri", "example": "https://tikwm.com/video_sd.mp4" },
+                    "video_hd": { "type": "string", "format": "uri", "example": "https://tikwm.com/video_hd.mp4" },
+                    "music": { "type": "string", "format": "uri", "example": "https://tikwm.com/music.mp3" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": { "description": "URL tidak disertakan" },
+      "500": { "description": "Gagal memproses request" }
+    }
+  }
+},
+"/image/bluearchive": {
+      "get": {
+        "summary": "Blue Archive",
+        "description": "Blue Archive Random Images",
+        "tags": ["Image"],
+        "responses": {
+          "200": {
+            "description": "Respon berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "images": {
+                      "type": "array",
+                      "items": { "type": "string", "format": "uri" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Gagal memproses request" }
+        }
+      }
+    },
+        "/image/loli": {
+      "get": {
+        "summary": "loli",
+        "description": "Loli Random Images",
+        "tags": ["Image"],
+        "responses": {
+          "200": {
+            "description": "Respon berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "images": {
+                      "type": "array",
+                      "items": { "type": "string", "format": "uri" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Gagal memproses request" }
+        }
+      }
+    },
+    "/image/mpls": {
+  "get": {
+    "summary": "Mpls Generator",
+    "description": "Membuat Twibbon dari foto user dan frame MPLS",
+    "tags": ["Image"],
+    "parameters": [
+      {
+        "name": "url",
+        "in": "query",
+        "required": true,
+        "description": "URL foto user",
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil, mengembalikan image PNG",
+        "content": {
+          "image/png": {
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Missing ?url= parameter"
+      },
+      "500": {
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+},
+"/image/papayang": {
+      "get": {
+        "summary": "papayang",
+        "description": "papayang Random Images",
+        "tags": ["Image"],
+        "responses": {
+          "200": {
+            "description": "Respon berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "images": {
+                      "type": "array",
+                      "items": { "type": "string", "format": "uri" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Gagal memproses request" }
+        }
+      }
+    },
+"/image/wallpaper": {
+  "get": {
+    "summary": "Wallpaper",
+    "description": "Random images from WallpaperFlare based on search query",
+    "tags": ["Image"],
+    "parameters": [
+      {
+        "name": "q",
+        "in": "query",
+        "description": "Search query (e.g., Naruto, Anime, Landscape)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "Naruto"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of images to return (default 5, max 10)",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 5
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "images": {
+                  "type": "array",
+                  "items": { "type": "string", "format": "uri" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Gagal memproses request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "message": { "type": "string", "example": "Error message here" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"/news/detik": {
+  "get": {
+    "summary": "Detik News",
+    "description": "Scraping berita terpopuler dari Detik.com",
+    "tags": ["News"],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "berita": {
+                    "type": "string",
+                    "example": "Judul berita terpopuler Detik"
+                  },
+                  "berita_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://news.detik.com/berita/..."
+                  },
+                  "berita_thumb": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "example": "https://akcdn.detik.net.id/...jpg"
+                  },
+                  "berita_diupload": {
+                    "type": "string",
+                    "example": "Senin, 25 Nov 2024 10:30 WIB"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": { "description": "Gagal memproses request" }
+    }
+  }
+},
+"/news/kontan": {
+  "get": {
+    "summary": "Kontan News",
+    "description": "Scraping berita terbaru dari Kontan.co.id",
+    "tags": ["News"],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "berita": {
+                    "type": "string",
+                    "example": "Rupiah menguat terhadap dolar AS pada perdagangan pagi ini"
+                  },
+                  "berita_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://www.kontan.co.id/news/rupiah-menguat"
+                  },
+                  "berita_thumb": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "example": "https://img.kontan.co.id/thumb.jpg"
+                  },
+                  "berita_jenis": {
+                    "type": "string",
+                    "example": "Makro Ekonomi"
+                  },
+                  "berita_diupload": {
+                    "type": "string",
+                    "example": "2 jam lalu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": { 
+        "description": "Gagal memproses request" 
+      }
+    }
+  }
+}
+
+  }
+                    }
