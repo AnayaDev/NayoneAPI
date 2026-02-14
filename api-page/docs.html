@@ -225,7 +225,11 @@ footer{text-align:center;padding:2rem 0 1rem;color:var(--fg3);font-size:0.68rem;
 </main>
 
 <script>
-window.addEventListener('load',()=>{ setTimeout(()=>document.getElementById('loader').classList.add('hidden'),400); });
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('loader').classList.add('hidden');
+    loadApis();
+    loadNotifications();
+});
 document.getElementById('year').textContent = new Date().getFullYear();
 
 const spotlight = document.getElementById('mouse-spotlight');
@@ -582,7 +586,7 @@ document.getElementById('searchInput').addEventListener('input', function(){
     noRes.style.display=(visible===0&&q)?'block':'none';
 });
 
-document.addEventListener('DOMContentLoaded',()=>{ loadApis(); loadNotifications(); });
+
 </script>
 </body>
 </html>
