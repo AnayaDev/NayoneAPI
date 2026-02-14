@@ -18,6 +18,103 @@
   { "name": "Stalk" }
   ],
   "paths": {
+    {
+  "/ai/aifreeforeverchat": {
+    "get": {
+      "summary": "AI Free Forever Chat",
+      "description": "Tanya jawab dengan AI gratis, support input teks saja",
+      "tags": ["AI"],
+      "parameters": [
+        {
+          "name": "question",
+          "in": "query",
+          "required": true,
+          "description": "Pertanyaan yang ingin ditanyakan ke AI",
+          "schema": {
+            "type": "string",
+            "example": "siapa nama anda?"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Respon berhasil",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status":  { "type": "boolean", "example": true },
+                  "creator": { "type": "string",  "example": "Nayone API" },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "answer": { "type": "string", "example": "Halo! Saya adalah AI asisten..." }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": { "description": "Parameter question wajib diisi" },
+        "500": { "description": "Gagal memproses request" }
+      }
+    },
+    "post": {
+      "summary": "AI Free Forever Chat (dengan Gambar)",
+      "description": "Tanya jawab dengan AI, bisa disertai upload gambar",
+      "tags": ["AI"],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "required": ["question"],
+              "properties": {
+                "question": {
+                  "type": "string",
+                  "description": "Pertanyaan ke AI",
+                  "example": "gambar apa itu?"
+                },
+                "image": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "Upload gambar (opsional, jpg/png)"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Respon berhasil",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status":  { "type": "boolean", "example": true },
+                  "creator": { "type": "string",  "example": "Nayone API" },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "answer": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": { "description": "Parameter question wajib diisi" },
+        "500": { "description": "Gagal memproses request" }
+      }
+    }
+  }
+},
     "/news/cnn": {
   "get": {
     "summary": "CNN Indonesia News",
