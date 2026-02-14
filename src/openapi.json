@@ -22,7 +22,7 @@
   "get": {
     "summary": "Enka Network Profile",
     "description": "Mengambil data profil pemain Genshin Impact berdasarkan UID dari Enka Network",
-    "tags": ["Game"],
+    "tags": ["Stalk"],
     "parameters": [
       {
         "name": "uid",
