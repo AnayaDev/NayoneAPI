@@ -294,7 +294,7 @@
       }
     }
   }
-      }    
+      },    
 "/download/pinterest": {
   "get": {
     "summary": "Pinterest ",
