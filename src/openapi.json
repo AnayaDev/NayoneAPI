@@ -18,6 +18,70 @@
   { "name": "Stalk" }
   ],
   "paths": {
+    "/news/cnn": {
+  "get": {
+    "summary": "CNN Indonesia News",
+    "description": "Mengambil 3 berita terbaru dari CNN Indonesia lengkap dengan detail singkat",
+    "tags": ["News"],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "creator": { "type": "string", "example": "Nayone API" },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "news": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "news": {
+                            "type": "object",
+                            "properties": {
+                              "title": { "type": "string" },
+                              "url": { "type": "string", "format": "uri" },
+                              "image": { "type": "string", "format": "uri" },
+                              "category": { "type": "string" }
+                            }
+                          },
+                          "detail": {
+                            "type": "object",
+                            "properties": {
+                              "title": { "type": "string" },
+                              "date": { "type": "string" },
+                              "author": { "type": "string" },
+                              "content": {
+                                "type": "array",
+                                "items": { "type": "string" }
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+                            },
     "/download/allinone": {
   "get": {
     "summary": "All In One Downloader",
