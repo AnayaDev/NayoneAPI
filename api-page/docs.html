@@ -42,11 +42,7 @@ html,body{background-color:var(--bg);color:var(--fg);font-family:'Inter',sans-se
 
 #mouse-spotlight{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(600px circle at 50% 50%,rgba(59,130,246,0.06),transparent 80%);transition:background 0.1s linear;}
 
-#loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:9999;flex-direction:column;gap:1rem;transition:opacity 0.5s,visibility 0.5s;}
-#loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
-.spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--primary);border-radius:50%;animation:spin 0.9s linear infinite;}
-#loader p{color:var(--fg3);font-size:0.72rem;font-family:'Ubuntu Mono',monospace;}
-@keyframes spin{to{transform:rotate(360deg);}}
+
 
 header{position:sticky;top:0;z-index:50;background:rgba(11,13,20,0.87);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);box-shadow:var(--shadow);}
 
@@ -159,7 +155,7 @@ footer{text-align:center;padding:2rem 0 1rem;color:var(--fg3);font-size:0.68rem;
 <body>
 
 <div id="mouse-spotlight"></div>
-<div id="loader"><div class="spinner"></div><p>loading api data...</p></div>
+
 
 <aside id="sidebar">
     <div id="sidebar-header">
@@ -226,7 +222,6 @@ footer{text-align:center;padding:2rem 0 1rem;color:var(--fg3);font-size:0.68rem;
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('loader').classList.add('hidden');
     loadApis();
     loadNotifications();
 });
