@@ -18,6 +18,47 @@
   { "name": "Stalk" }
   ],
   "paths": {
+    "/download/allinone": {
+  "get": {
+    "summary": "All In One Downloader",
+    "description": "Mengunduh media dari berbagai platform menggunakan AllInOneDownloader",
+    "tags": ["Downloader"],
+    "parameters": [
+      {
+        "name": "url",
+        "in": "query",
+        "description": "URL media yang ingin diunduh",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "creator": { "type": "string", "example": "Nayone API" },
+                "result": {
+                  "type": "object",
+                  "description": "Response mentah dari AllInOneDownloader"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": { "description": "URL tidak disertakan" },
+      "500": { "description": "Gagal memproses request" }
+    }
+  }
+    },
     "/stalk/enka": {
   "get": {
     "summary": "Enka Network Profile",
