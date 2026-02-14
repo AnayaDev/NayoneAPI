@@ -9,31 +9,45 @@ class DoronimeAnime {
   constructor() {
     this.baseUrl = 'https://doronime.id';
     this.headers = {
-      'user-agent': 'Mozilla/5.0',
-      'referer': this.baseUrl
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Accept": "text/html,application/xhtml+xml",
+      "Referer": this.baseUrl
     };
   }
 
   async scrape(keyword) {
-    if (!keyword) throw new Error('Keyword is required');
+    if (!keyword) throw new Error("Keyword is required");
 
-    const searchResponse = await axios.get(`${this.baseUrl}/search`, {
-      headers: this.headers,
-      params: { s: keyword }
+    // ✅ FIX search URL
+    const searchUrl = `${this.baseUrl}/?s=${encodeURIComponent(keyword)}`;
+
+    const searchResponse = await axios.get(searchUrl, {
+      headers: this.headers
     });
+
+    if (!searchResponse.data) {
+      throw new Error("Failed to fetch search page");
+    }
 
     const $ = cheerio.load(searchResponse.data);
     const animeList = [];
 
     $('.Card--column').each((i, el) => {
       if (i < 3) {
-        animeList.push({
-          title: $(el).attr('title'),
-          url: $(el).attr('href'),
-          image: $(el).find('img').attr('src'),
-          type: $(el).find('.Card__badge--bottom').text().trim(),
-          status: $(el).find('.Badge--success').text().trim()
-        });
+        const title = $(el).attr('title');
+        const url = $(el).attr('href');
+        const image = $(el).find('img').attr('src');
+
+        if (title && url) {
+          animeList.push({
+            title,
+            url,
+            image: image || null,
+            type: $(el).find('.Card__badge--bottom').text().trim() || null,
+            status: $(el).find('.Badge--success').text().trim() || null
+          });
+        }
       }
     });
 
@@ -49,25 +63,32 @@ class DoronimeAnime {
 
           $$('.Content__table-body').each((i, el) => {
             if (i < 5) {
-              episodes.push({
-                episode: $$(el).find('.col:first-child a').text().trim(),
-                title: $$(el).find('.col-9.col-md-7 a').text().trim(),
-                url: $$(el).find('.col:first-child a').attr('href')
-              });
+              const epLink = $$(el).find('.col:first-child a');
+              if (epLink.length) {
+                episodes.push({
+                  episode: epLink.text().trim(),
+                  title: $$(el).find('.col-9.col-md-7 a').text().trim(),
+                  url: epLink.attr('href')
+                });
+              }
             }
           });
 
           return {
             anime: item,
             detail: {
-              title: $$('.Content__title').text().trim(),
-              description: $$('meta[property="og:description"]').attr('content') || '',
-              image: $$('meta[property="og:image"]').attr('content') || '',
-              synopsis: $$('.Content__tabs-content--small p').text().trim(),
+              title: $$('.Content__title').text().trim() || item.title,
+              description:
+                $$('meta[property="og:description"]').attr('content') || "",
+              image:
+                $$('meta[property="og:image"]').attr('content') || item.image,
+              synopsis:
+                $$('.Content__tabs-content--small p').text().trim() || "",
               episodes
             }
           };
-        } catch {
+
+        } catch (err) {
           return null;
         }
       })
@@ -100,10 +121,12 @@ app.get('/anime/doronime', async (req, res) => {
     });
 
   } catch (error) {
+    console.error("SCRAPER ERROR:", error.message);
+
     res.status(500).json({
       status: false,
       creator: "Nayone API",
-      message: error.message
+      message: "Internal Server Error"
     });
   }
 });
