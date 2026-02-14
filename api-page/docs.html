@@ -3,672 +3,586 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Browse through our collection of code snippets, scripts, and tools. Find what you need or discover something new.">
+    <meta name="description" content="Browse through our collection of code snippets, scripts, and tools.">
     <meta name="theme-color" content="#0f111a">
     <title>Nayone API.</title>
     <link rel="icon" href="/src/icon.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/json.min.js"></script>
+<style>
+:root {
+    --bg:        #0b0d14;
+    --bg2:       #0f111a;
+    --bg3:       #141720;
+    --fg:        #dde1ed;
+    --fg2:       #8b92a8;
+    --fg3:       #4a5068;
+    --primary:   #3b82f6;
+    --primary-d: #2563eb;
+    --secondary: #60a5fa;
+    --accent:    #22d3ee;
+    --green:     #22c55e;
+    --red:       #ef4444;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --radius:    0.6rem;
+    --shadow:    0 4px 20px rgba(0,0,0,0.5);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.7);
+}
+*,*::before,*::after{box-sizing:border-box;}
+::-webkit-scrollbar{display:none !important;}
+html,body{background-color:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;margin:0;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-    <style>
-        :root {
-            --bg: #0f111a;
-            --fg: #e0e0e0;
-            --card-bg: rgba(15, 17, 26, 0.9);
-            --card-fg: #ffffff;
-            --primary: #3b82f6;
-            --secondary: #60a5fa;
-            --accent: #22d3ee;
-            --border: rgba(255, 255, 255, 0.1);
-            --radius: 0.8rem;
-            --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.7);
-        }
+#mouse-spotlight{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(600px circle at 50% 50%,rgba(59,130,246,0.06),transparent 80%);transition:background 0.1s linear;}
 
-        * { box-sizing: border-box; }
+#loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:9999;flex-direction:column;gap:1rem;transition:opacity 0.5s,visibility 0.5s;}
+#loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--primary);border-radius:50%;animation:spin 0.9s linear infinite;}
+#loader p{color:var(--fg3);font-size:0.72rem;font-family:'Ubuntu Mono',monospace;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-        ::-webkit-scrollbar { display: none !important; }
+header{position:sticky;top:0;z-index:50;background:rgba(11,13,20,0.87);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);box-shadow:var(--shadow);}
 
-        body {
-            background-color: var(--bg);
-            color: var(--fg);
-            font-family: 'Ubuntu Mono', monospace;
-            margin: 0;
-            -webkit-font-smoothing: antialiased;
-            position: relative;
-            min-height: 100vh;
-        }
+#sidebar{position:fixed;top:0;right:0;height:100%;width:260px;background:rgba(9,11,18,0.98);border-left:1px solid var(--border);backdrop-filter:blur(24px);transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);z-index:100;overflow-y:auto;}
+#sidebar.open{transform:translateX(0);}
+#sidebar-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+#sidebar nav{padding:1.25rem;}
+.sidebar-label{font-size:0.6rem;letter-spacing:0.12em;color:var(--fg3);text-transform:uppercase;margin:1.2rem 0 0.5rem;padding:0 0.25rem;font-family:'Ubuntu Mono',monospace;}
+.sidebar-link{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.65rem;color:var(--fg2);text-decoration:none;font-size:0.82rem;border:1px solid transparent;border-radius:0.4rem;transition:all 0.18s;margin-bottom:0.2rem;}
+.sidebar-link:hover{color:var(--fg);border-color:var(--border2);background:rgba(59,130,246,0.08);}
+.sidebar-link .material-icons{font-size:1rem;color:var(--fg3);}
+.sidebar-link:hover .material-icons{color:var(--primary);}
 
-        /* Mouse spotlight */
-        #mouse-spotlight {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none; z-index: 0;
-            background: radial-gradient(500px circle at 0 0, rgba(59,130,246,0.08), transparent 80%);
-            transition: background 0.1s ease-out;
-        }
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);opacity:0;visibility:hidden;transition:all 0.3s;z-index:90;backdrop-filter:blur(3px);}
+#overlay.visible{opacity:1;visibility:visible;}
 
-        /* Loader */
-        #loader {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--bg); z-index: 9999;
-            transition: opacity 0.5s, visibility 0.5s;
-        }
-        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .spinner {
-            width: 32px; height: 32px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:2.1rem;height:2.1rem;border:1px solid var(--border2);background:transparent;color:var(--fg2);cursor:pointer;border-radius:0.35rem;transition:all 0.18s;font-size:1rem;padding:0;flex-shrink:0;}
+.icon-btn:hover{color:var(--fg);border-color:rgba(255,255,255,0.22);background:rgba(255,255,255,0.05);}
 
-        /* Glass header */
-        header {
-            background: rgba(15, 17, 26, 0.85);
-            backdrop-filter: blur(16px) saturate(180%);
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            padding: 1rem 1.5rem;
-            position: sticky; top: 0; z-index: 50;
-            display: flex; align-items: center; justify-content: center;
-            position: sticky;
-        }
+.version-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;font-size:0.6rem;font-weight:700;padding:0.18rem 0.5rem;border-radius:9999px;letter-spacing:0.06em;font-family:'Ubuntu Mono',monospace;}
 
-        /* Sidebar */
-        #sidebar {
-            position: fixed; top: 0; left: 0;
-            height: 100%; width: 260px;
-            background: rgba(10, 12, 20, 0.97);
-            border-right: 1px solid var(--border);
-            backdrop-filter: blur(20px);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            z-index: 100;
-            padding: 0;
-        }
-        #sidebar.open { transform: translateX(0); }
+.glow-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(59,130,246,0.25),transparent);margin:1.75rem 0;}
 
-        #sidebar-header {
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-        }
+.search-wrap{position:relative;}
+.search-wrap .material-icons{position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);color:var(--fg3);pointer-events:none;font-size:1.05rem;}
+#searchInput{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--fg);padding:0.8rem 1rem 0.8rem 2.6rem;font-family:'Ubuntu Mono',monospace;font-size:0.82rem;outline:none;border-radius:var(--radius);transition:border-color 0.2s,box-shadow 0.2s;}
+#searchInput::placeholder{color:var(--fg3);}
+#searchInput:focus{border-color:rgba(59,130,246,0.45);box-shadow:0 0 0 3px rgba(59,130,246,0.08);}
 
-        #sidebar nav { padding: 1.5rem; }
+.notif-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:0.75rem 1rem;font-size:0.78rem;transition:all 0.2s;}
+.notif-item:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-1px);}
+.notif-item.unread{border-left:2px solid var(--green);}
+#unread-count{background:var(--green);color:#fff;font-size:0.6rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:9999px;}
 
-        .sidebar-section-label {
-            font-size: 0.65rem;
-            letter-spacing: 0.12em;
-            color: #4b5563;
-            margin: 1.2rem 0 0.6rem;
-            text-transform: uppercase;
-        }
+.category-group{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color 0.2s;}
+.category-group:hover{border-color:var(--border2);}
+.category-header-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;background:transparent;color:var(--fg);cursor:pointer;border:none;text-align:left;transition:background 0.18s;}
+.category-header-btn:hover{background:rgba(59,130,246,0.06);}
+.cat-icon-wrap{display:flex;align-items:center;justify-content:center;width:2rem;height:2rem;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);border-radius:0.4rem;margin-right:0.75rem;flex-shrink:0;}
+.cat-icon-wrap .material-icons{font-size:1rem;color:var(--primary);}
+.cat-name{font-size:0.875rem;font-weight:600;color:var(--fg);}
+.cat-count{font-size:0.65rem;color:var(--fg3);background:rgba(255,255,255,0.05);border:1px solid var(--border);padding:0.1rem 0.45rem;border-radius:9999px;margin-left:0.5rem;font-family:'Ubuntu Mono',monospace;}
+.cat-chevron{color:var(--fg3);font-size:1.1rem;transition:transform 0.25s;flex-shrink:0;}
+.cat-chevron.open{transform:rotate(180deg);}
 
-        .sidebar-link {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding: 0.55rem 0.75rem;
-            color: #9ca3af;
-            text-decoration: none;
-            font-size: 0.85rem;
-            border: 1px solid transparent;
-            border-radius: 0.4rem;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-        }
-        .sidebar-link:hover {
-            color: #e0e0e0;
-            border-color: var(--border);
-            background: rgba(59,130,246,0.06);
-        }
-        .sidebar-link i.material-icons { font-size: 1.1rem; }
+.api-item{border-top:1px solid var(--border);}
+.api-item-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1rem;background:transparent;color:var(--fg);cursor:pointer;border:none;text-align:left;transition:background 0.18s;gap:0.5rem;}
+.api-item-btn:hover{background:rgba(59,130,246,0.05);}
 
-        #overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.6);
-            opacity: 0; visibility: hidden;
-            transition: all 0.3s;
-            z-index: 90;
-            backdrop-filter: blur(2px);
-        }
-        #overlay.visible { opacity: 1; visibility: visible; }
+.method-badge{display:inline-flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;font-family:'Ubuntu Mono',monospace;letter-spacing:0.06em;padding:0.18rem 0.55rem;border-radius:0.25rem;flex-shrink:0;min-width:52px;text-align:center;}
+.method-GET   {background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.35); color:#4ade80;}
+.method-POST  {background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);color:#60a5fa;}
+.method-PUT   {background:rgba(234,179,8,0.15); border:1px solid rgba(234,179,8,0.35); color:#facc15;}
+.method-PATCH {background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.35);color:#fb923c;}
+.method-DELETE{background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); color:#f87171;}
+.status-ready     {background:rgba(34,197,94,0.1); color:#4ade80;border:1px solid rgba(34,197,94,0.25); font-size:0.58rem;padding:0.1rem 0.4rem;border-radius:9999px;font-family:'Ubuntu Mono',monospace;}
+.status-deprecated{background:rgba(234,179,8,0.1);color:#facc15;border:1px solid rgba(234,179,8,0.25);font-size:0.58rem;padding:0.1rem 0.4rem;border-radius:9999px;font-family:'Ubuntu Mono',monospace;}
 
-        /* Icon buttons */
-        .icon-btn {
-            display: flex; align-items: center; justify-content: center;
-            width: 2.2rem; height: 2.2rem;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: #9ca3af;
-            cursor: pointer;
-            border-radius: 0.35rem;
-            transition: all 0.2s;
-            font-size: 1.1rem;
-        }
-        .icon-btn:hover {
-            color: #e0e0e0;
-            border-color: rgba(255,255,255,0.25);
-            background: rgba(255,255,255,0.04);
-        }
+.endpoint-detail{background:rgba(7,9,15,0.6);border-top:1px solid var(--border);padding:1.25rem 1rem;}
 
-        /* Badge version */
-        .version-badge {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 0.2rem 0.55rem;
-            border-radius: 9999px;
-            letter-spacing: 0.05em;
-        }
+.form-label{display:block;font-size:0.72rem;font-weight:500;color:var(--fg2);margin-bottom:0.35rem;font-family:'Ubuntu Mono',monospace;}
+.req{color:var(--red);}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--bg2);color:var(--fg);border:1px solid var(--border2);border-radius:0.4rem;padding:0.55rem 0.75rem;font-size:0.8rem;font-family:'Ubuntu Mono',monospace;outline:none;transition:border-color 0.2s,box-shadow 0.2s;-webkit-appearance:none;}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--fg3);}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(59,130,246,0.5);box-shadow:0 0 0 3px rgba(59,130,246,0.08);}
+.form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%234a5068'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.6rem center;background-size:1rem;padding-right:2rem;}
+.form-textarea{resize:vertical;min-height:90px;}
+.form-input[type="file"]{padding:0.4rem 0.75rem;cursor:pointer;}
+.form-hint{font-size:0.68rem;color:var(--fg3);margin-top:0.3rem;}
 
-        /* Notifications */
-        .notif-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 0.8rem 1rem;
-            backdrop-filter: blur(12px);
-            box-shadow: var(--shadow);
-            transition: all 0.3s;
-        }
-        .notif-card:hover {
-            border-color: rgba(59,130,246,0.3);
-            transform: translateY(-1px);
-        }
+.btn-execute{display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;font-size:0.72rem;font-weight:700;font-family:'Ubuntu Mono',monospace;letter-spacing:0.06em;padding:0.55rem 1.1rem;border-radius:0.4rem;border:none;cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+.btn-execute:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(59,130,246,0.35);}
+.btn-clear{display:inline-flex;align-items:center;gap:0.4rem;background:transparent;color:var(--fg2);font-size:0.72rem;font-weight:600;font-family:'Ubuntu Mono',monospace;letter-spacing:0.06em;padding:0.55rem 1.1rem;border-radius:0.4rem;border:1px solid var(--border2);cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+.btn-clear:hover{color:var(--fg);border-color:rgba(255,255,255,0.22);background:rgba(255,255,255,0.04);}
 
-        /* Search input */
-        .search-wrap {
-            position: relative;
-        }
-        .search-wrap .material-icons {
-            position: absolute; left: 1rem; top: 50%;
-            transform: translateY(-50%);
-            color: #4b5563; pointer-events: none;
-            font-size: 1.1rem;
-        }
-        #searchInput {
-            width: 100%;
-            background: rgba(15,17,26,0.7);
-            border: 1px solid var(--border);
-            color: #e0e0e0;
-            padding: 0.85rem 1rem 0.85rem 2.8rem;
-            font-family: 'Ubuntu Mono', monospace;
-            font-size: 0.85rem;
-            outline: none;
-            border-radius: 0.5rem;
-            transition: border-color 0.2s;
-        }
-        #searchInput::placeholder { color: #4b5563; }
-        #searchInput:focus { border-color: rgba(59,130,246,0.5); }
+.section-label{display:flex;align-items:center;gap:0.4rem;font-size:0.65rem;font-weight:700;font-family:'Ubuntu Mono',monospace;letter-spacing:0.1em;color:var(--fg3);text-transform:uppercase;margin-bottom:0.6rem;}
+.section-label .material-icons{font-size:0.95rem;color:var(--primary);}
 
-        /* API List cards */
-        .api-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1rem 1.2rem;
-            backdrop-filter: blur(12px);
-            box-shadow: var(--shadow);
-            transition: all 0.3s;
-        }
-        .api-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(59,130,246,0.3);
-            box-shadow: var(--shadow-lg);
-        }
+.response-panel{background:var(--bg);border:1px solid var(--border);border-radius:0.4rem;overflow:hidden;}
+.response-panel pre,.response-panel code{background:transparent !important;padding:0 !important;font-family:'Ubuntu Mono',monospace;font-size:0.75rem;line-height:1.5;}
+.panel-inner{padding:0.75rem 1rem;max-height:22rem;overflow:auto;}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:0.45rem 0.75rem;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);}
+.panel-header-label{font-size:0.62rem;color:var(--fg3);font-family:'Ubuntu Mono',monospace;letter-spacing:0.08em;}
+.copy-btn{display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;cursor:pointer;color:var(--fg3);padding:0.2rem 0.3rem;border-radius:0.25rem;transition:all 0.15s;}
+.copy-btn:hover{color:var(--fg);background:rgba(255,255,255,0.06);}
+.copy-btn .material-icons{font-size:0.9rem;}
 
-        /* Section heading */
-        .section-heading {
-            display: flex; align-items: center; gap: 0.5rem;
-            font-size: 1rem; font-weight: 600; color: #e0e0e0;
-            margin-bottom: 0.75rem;
-        }
-        .section-heading .material-icons { color: #4b5563; font-size: 1.2rem; }
+.status-table{width:100%;border-collapse:collapse;font-size:0.75rem;font-family:'Ubuntu Mono',monospace;}
+.status-table th{padding:0.5rem 0.75rem;text-align:left;color:var(--fg3);font-size:0.65rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+.status-table td{padding:0.5rem 0.75rem;border-bottom:1px solid var(--border);color:var(--fg2);vertical-align:middle;}
+.status-table tr:last-child td{border-bottom:none;}
+.status-table tr:hover td{background:rgba(59,130,246,0.04);}
+.status-table .code-col{font-weight:700;font-size:0.78rem;}
+.code-2xx{color:#4ade80;}.code-4xx{color:#f87171;}.code-429{color:#fb923c;}.code-5xx{color:#f87171;}
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+.deprecated-notice{background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.2);border-radius:0.4rem;padding:0.65rem 0.9rem;color:#facc15;font-size:0.75rem;display:flex;align-items:center;gap:0.5rem;}
+.deprecated-notice .material-icons{font-size:1rem;}
 
-        .animate-on-scroll {
-            opacity: 0; transform: translateY(12px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            transition-delay: var(--delay, 0s);
-        }
-        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .will-fade-in { opacity: 0; }
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeOut {
-            from { opacity: 1; transform: scale(1); }
-            to { opacity: 0; transform: scale(0.98); }
-        }
-        .fade-out { animation: fadeOut 0.2s ease-out forwards; }
-
-        /* Copy btn */
-        .copy-btn {
-            color: #6b7280;
-            padding: 0.25rem 0.4rem;
-            border-radius: 0.3rem;
-            cursor: pointer;
-            transition: all 0.15s;
-            background: transparent;
-            border: none;
-        }
-        .copy-btn:hover { color: #e0e0e0; background: rgba(255,255,255,0.06); }
-
-        /* Notification badge */
-        #unread-count {
-            position: absolute; top: -4px; right: -4px;
-            transform: translate(50%, -50%);
-            border-radius: 9999px;
-            padding: 0 6px; font-size: 10px;
-            background: #16a34a; color: white;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            margin-top: 4rem;
-            color: #374151;
-            font-size: 0.7rem;
-        }
-
-        /* Divider glow line */
-        .glow-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
-            margin: 2rem 0;
-        }
-
-        main { position: relative; z-index: 1; }
-
-        @media (max-width: 640px) {
-            header { padding: 0.8rem 1rem; }
-            .main-wrap { padding: 1.5rem 1rem; }
-        }
-    </style>
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
+.will-fade-in{opacity:0;}.fade-in{animation:fadeIn 0.35s ease-out forwards;}.fade-out{animation:fadeOut 0.2s ease-out forwards;}
+main{position:relative;z-index:1;}
+.no-results{text-align:center;padding:4rem 0;display:none;}
+.no-results .material-icons{font-size:2.5rem;color:var(--fg3);display:block;margin-bottom:0.75rem;}
+.no-results p{color:var(--fg3);font-size:0.8rem;font-family:'Ubuntu Mono',monospace;}
+footer{text-align:center;padding:2rem 0 1rem;color:var(--fg3);font-size:0.68rem;font-family:'Ubuntu Mono',monospace;}
+@media(max-width:640px){.main-wrap{padding:1.25rem 1rem;}}
+</style>
 </head>
-
 <body>
 
 <div id="mouse-spotlight"></div>
-<div id="loader"><div class="spinner"></div></div>
+<div id="loader"><div class="spinner"></div><p>loading api data...</p></div>
 
-<!-- Sidebar -->
 <aside id="sidebar">
     <div id="sidebar-header">
-        <span style="color:#e0e0e0; font-size:0.9rem; font-weight:600;">Nayone API</span>
-        <button id="sidebarClose" class="icon-btn">
-            <i class="material-icons" style="font-size:1.1rem;">close</i>
-        </button>
+        <span style="color:var(--fg);font-size:0.85rem;font-weight:600;font-family:'Ubuntu Mono',monospace;">nayone api</span>
+        <button id="sidebarClose" class="icon-btn"><i class="material-icons" style="font-size:1.1rem;">close</i></button>
     </div>
     <nav>
-        <a href="/" class="sidebar-link">
-            <i class="material-icons">dashboard</i> Dashboard
-        </a>
-        <p class="sidebar-section-label">Links</p>
-        <a href="https://wa.me/6281385060693" target="_blank" class="sidebar-link">
-            <i class="material-icons">arrow_outward</i> Contact
-        </a>
-        <a href="https://whatsapp.com/channel/0029VamVFi85fM5dVCtcDJ3g" target="_blank" class="sidebar-link">
-            <i class="material-icons">arrow_outward</i> Channel
-        </a>
-        <p class="sidebar-section-label">Socials</p>
-        <a href="https://github.com/Reyz2902" target="_blank" class="sidebar-link">
-            <i class="fab fa-github" style="width:1.1rem; text-align:center;"></i> GitHub
-        </a>
-        <a href="https://t.me/ReyzID12" target="_blank" class="sidebar-link">
-            <i class="fab fa-telegram" style="width:1.1rem; text-align:center;"></i> Telegram
-        </a>
+        <a href="/" class="sidebar-link"><i class="material-icons">dashboard</i> Dashboard</a>
+        <p class="sidebar-label">Links</p>
+        <a href="https://wa.me/6281385060693" target="_blank" class="sidebar-link"><i class="material-icons">arrow_outward</i> Contact</a>
+        <a href="https://whatsapp.com/channel/0029VamVFi85fM5dVCtcDJ3g" target="_blank" class="sidebar-link"><i class="material-icons">arrow_outward</i> Channel</a>
+        <p class="sidebar-label">Socials</p>
+        <a href="https://github.com/Reyz2902" target="_blank" class="sidebar-link"><i class="fab fa-github" style="width:1rem;text-align:center;font-size:0.85rem;color:var(--fg3);"></i> GitHub</a>
+        <a href="https://t.me/ReyzID12" target="_blank" class="sidebar-link"><i class="fab fa-telegram" style="width:1rem;text-align:center;font-size:0.85rem;color:var(--fg3);"></i> Telegram</a>
     </nav>
 </aside>
 
 <div id="overlay"></div>
 
-<!-- Header -->
 <header>
-    <div style="max-width:680px; width:100%; display:flex; align-items:center; justify-content:center; position:relative;">
-        <button id="sidebarToggle" class="icon-btn" style="position:absolute; left:0;">
-            <i class="material-icons" style="font-size:1.2rem;">menu</i>
-        </button>
-        <div style="display:flex; flex-direction:column; align-items:center; gap:0.2rem;">
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-                <h2 style="color:#e0e0e0; font-size:1.05rem; font-weight:600; margin:0;">Nayone API</h2>
-                <span class="version-badge">v1.0</span>
+    <div style="max-width:720px;width:100%;margin:0 auto;padding:0.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+            <div>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <span style="color:var(--fg);font-size:1rem;font-weight:700;font-family:'Ubuntu Mono',monospace;line-height:1;">Nayone API</span>
+                    <span class="version-badge">v1.0</span>
+                </div>
+                <p style="color:var(--fg3);font-size:0.65rem;margin:0.2rem 0 0;font-family:'Ubuntu Mono',monospace;letter-spacing:0.06em;">API Documentation</p>
             </div>
-            <p style="color:#4b5563; font-size:0.7rem; margin:0; letter-spacing:0.05em;">API Documentation</p>
         </div>
+        <button id="sidebarToggle" class="icon-btn"><i class="material-icons" style="font-size:1.2rem;">menu</i></button>
     </div>
 </header>
 
-<main class="main-wrap" style="max-width:680px; margin:0 auto; padding:2rem 1.5rem;">
+<main class="main-wrap" style="max-width:720px;margin:0 auto;padding:2rem 1.5rem;">
 
-    <!-- Notifications Panel -->
-    <div class="animate-on-scroll" style="margin-bottom:2rem; position:relative;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
-            <div class="section-heading" style="margin-bottom:0;">
-                <span class="material-icons">notifications</span>
+    <div style="margin-bottom:1.75rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem;">
+            <div style="display:flex;align-items:center;gap:0.45rem;font-size:0.82rem;font-weight:600;color:var(--fg);">
+                <span class="material-icons" style="font-size:1.05rem;color:var(--fg3);">notifications</span>
                 Informasi
             </div>
-            <span id="unread-count" style="position:relative; transform:none; top:auto; right:auto; border-radius:9999px; padding:0.15rem 0.5rem; font-size:0.65rem; background:#16a34a; color:white; display:none; font-family:'Inter',sans-serif;"></span>
+            <span id="unread-count" style="display:none;"></span>
         </div>
-        <div id="notifications-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+        <div id="notifications-list" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
     </div>
 
     <div class="glow-divider"></div>
 
-    <!-- Search -->
-    <div class="search-wrap animate-on-scroll" style="margin-bottom:1.25rem; --delay:0.1s;">
+    <div class="search-wrap" style="margin-bottom:1.25rem;">
         <span class="material-icons">search</span>
         <input type="text" id="searchInput" placeholder="Search API endpoints..." autocomplete="off">
     </div>
 
-    <!-- API List -->
-    <div id="content">
-        <div id="noResults" style="display:none; text-align:center; padding:4rem 0;">
-            <i class="material-icons" style="font-size:2.5rem; color:#374151; margin-bottom:0.75rem; display:block;">search_off</i>
-            <p style="color:#4b5563; font-size:0.8rem;">No result found.</p>
-        </div>
-        <div id="apiList" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
+    <div id="noResults" class="no-results">
+        <span class="material-icons">search_off</span>
+        <p>No result found.</p>
     </div>
+    <div id="apiList" style="display:flex;flex-direction:column;gap:0.75rem;"></div>
 
     <div class="glow-divider"></div>
-
-    <footer>
-        <p>© <span id="year"></span> Nayone API — All Rights Reserved.</p>
-    </footer>
+    <footer>© <span id="year"></span> Nayone API — All Rights Reserved.</footer>
 </main>
 
 <script>
-    // Loader
-    window.addEventListener('load', () => {
-        const loader = document.getElementById('loader');
-        setTimeout(() => loader.classList.add('hidden'), 300);
-    });
+window.addEventListener('load',()=>{ setTimeout(()=>document.getElementById('loader').classList.add('hidden'),400); });
+document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
+const spotlight = document.getElementById('mouse-spotlight');
+document.addEventListener('mousemove', e => {
+    spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px,rgba(59,130,246,0.07),transparent 80%)`;
+});
 
-    // Mouse spotlight
-    const spotlight = document.getElementById('mouse-spotlight');
-    document.addEventListener('mousemove', e => {
-        spotlight.style.background = `radial-gradient(500px circle at ${e.clientX}px ${e.clientY}px, rgba(59,130,246,0.1), transparent 80%)`;
-    });
+const sidebar  = document.getElementById('sidebar');
+const overlay  = document.getElementById('overlay');
+function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('visible'); document.body.style.overflow='hidden'; }
+function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('visible'); document.body.style.overflow=''; }
+document.getElementById('sidebarToggle').addEventListener('click', openSidebar);
+document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeSidebar(); });
 
-    // Sidebar
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebarClose = document.getElementById('sidebarClose');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    function openSidebar() {
-        sidebar.classList.add('open');
-        overlay.classList.add('visible');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('visible');
-        document.body.style.overflow = '';
-    }
+async function copyToClipboard(text, btn) {
+    if(!btn) return;
+    const icon = btn.querySelector('.material-icons');
+    try {
+        await navigator.clipboard.writeText(text);
+        if(icon){ const o=icon.textContent; icon.textContent='check'; icon.style.color='#4ade80'; setTimeout(()=>{ icon.textContent=o; icon.style.color=''; },1500); }
+    } catch(e){ console.error('Copy failed',e); }
+}
 
-    sidebarToggle.addEventListener('click', openSidebar);
-    sidebarClose.addEventListener('click', closeSidebar);
-    overlay.addEventListener('click', closeSidebar);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+function hlJSON(el){ if(window.hljs && el) hljs.highlightElement(el); }
 
-    // Scroll animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+function toggleCategory(idx){
+    const body=document.getElementById(`category-${idx}`);
+    const chev=document.getElementById(`cat-icon-${idx}`);
+    const hidden=body.classList.toggle('hidden');
+    if(chev) chev.classList.toggle('open',!hidden);
+}
+
+function toggleEndpoint(cIdx,eIdx){
+    const body=document.getElementById(`endpoint-${cIdx}-${eIdx}`);
+    const chev=document.getElementById(`ep-icon-${cIdx}-${eIdx}`);
+    const hidden=body.classList.toggle('hidden');
+    if(chev) chev.style.transform=hidden?'':'rotate(180deg)';
+}
+
+async function executeRequest(event, cIdx, eIdx, method, path){
+    event.preventDefault();
+    const form        = document.getElementById(`form-${cIdx}-${eIdx}`);
+    const respDiv     = document.getElementById(`response-${cIdx}-${eIdx}`);
+    const respBody    = document.getElementById(`resp-body-${cIdx}-${eIdx}`);
+    const clearBtn    = document.getElementById(`clear-${cIdx}-${eIdx}`);
+    const urlDisp     = document.getElementById(`url-disp-${cIdx}-${eIdx}`);
+    const curlDisp    = document.getElementById(`curl-disp-${cIdx}-${eIdx}`);
+
+    const formData = new FormData(form);
+    const fetchOpts = { method: method.toUpperCase() };
+    let fullPath = path;
+    let curlCmd  = `curl -X ${method.toUpperCase()} "${window.location.origin}${path}"`;
+
+    if(['POST','PUT','PATCH'].includes(method.toUpperCase())){
+        const rawJson = formData.get('__raw_json__');
+        if(rawJson && rawJson.trim()){
+            fetchOpts.headers = {'Content-Type':'application/json'};
+            fetchOpts.body    = rawJson.trim();
+            curlCmd = `curl -X ${method.toUpperCase()} "${window.location.origin}${path}" -H "Content-Type: application/json" -d '${rawJson.trim()}'`;
+        } else {
+            formData.delete('__raw_json__');
+            fetchOpts.body = formData;
+            for(const [k,v] of formData.entries()){
+                curlCmd += v instanceof File && v.name ? ` -F "${k}=@${v.name}"` : ` -F "${k}=${v}"`;
             }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-    // Search
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', filterList);
-
-    function filterList() {
-        const q = searchInput.value.toLowerCase();
-        const cards = document.querySelectorAll('#apiList .api-card');
-        let visible = 0;
-        cards.forEach(card => {
-            const match = card.textContent.toLowerCase().includes(q);
-            card.style.display = match ? '' : 'none';
-            if (match) visible++;
-        });
-        document.getElementById('noResults').style.display = visible === 0 && searchInput.value ? 'block' : 'none';
+        }
+    } else {
+        const params = new URLSearchParams();
+        for(const [k,v] of formData.entries()){ if(typeof v==='string' && v) params.append(k,v); }
+        const qs = params.toString();
+        if(qs) fullPath += (path.includes('?')?'&':'?')+qs;
+        curlCmd = `curl -X ${method.toUpperCase()} "${window.location.origin}${fullPath}"`;
     }
 
-    // ─── Method badge colors ───────────────────────────────────────────────────
-    const METHOD_COLORS = {
-        get:    { bg: 'rgba(34,197,94,0.12)',  border: 'rgba(34,197,94,0.4)',  text: '#4ade80' },
-        post:   { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.4)', text: '#60a5fa' },
-        put:    { bg: 'rgba(234,179,8,0.12)',  border: 'rgba(234,179,8,0.4)',  text: '#facc15' },
-        patch:  { bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.4)', text: '#fb923c' },
-        delete: { bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.4)',  text: '#f87171' },
-    };
+    respDiv.classList.remove('hidden');
+    if(urlDisp)  urlDisp.textContent  = window.location.origin + fullPath;
+    if(curlDisp) curlDisp.textContent = curlCmd;
+    respBody.innerHTML = '<span style="color:var(--fg3);">Loading...</span>';
 
-    function methodBadge(method) {
-        const m = method.toLowerCase();
-        const c = METHOD_COLORS[m] || { bg: 'rgba(148,163,184,0.12)', border: 'rgba(148,163,184,0.4)', text: '#94a3b8' };
-        return `<span style="
-            background:${c.bg}; border:1px solid ${c.border}; color:${c.text};
-            font-size:0.65rem; font-weight:700; padding:0.15rem 0.5rem;
-            border-radius:0.25rem; letter-spacing:0.08em; font-family:'Ubuntu Mono',monospace;
-        ">${method.toUpperCase()}</span>`;
+    try {
+        const res = await fetch(fullPath, fetchOpts);
+        const ct  = res.headers.get('content-type') || '';
+        if(!res.ok){ const t=await res.text().catch(()=>''); throw new Error(`${res.status} ${res.statusText}\n${t}`); }
+
+        if(ct.includes('application/json')){
+            const data = await res.json();
+            respBody.innerHTML = `<pre><code class="language-json">${escHtml(JSON.stringify(data,null,2))}</code></pre>`;
+            setTimeout(()=>hlJSON(respBody.querySelector('code')),0);
+        } else if(ct.startsWith('image/')){
+            const blob = await res.blob();
+            respBody.innerHTML = `<img src="${URL.createObjectURL(blob)}" style="max-width:100%;border-radius:0.4rem;">`;
+        } else {
+            const text = await res.text();
+            respBody.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-all;">${escHtml(text)}</pre>`;
+        }
+    } catch(err){
+        respBody.innerHTML = `<pre style="color:#f87171;white-space:pre-wrap;">${escHtml(String(err))}</pre>`;
     }
+    clearBtn.style.display='inline-flex';
+}
 
-    function tagBadge(tag) {
-        return `<span style="
-            background:rgba(34,211,238,0.08); border:1px solid rgba(34,211,238,0.2);
-            color:#67e8f9; font-size:0.62rem; padding:0.1rem 0.45rem;
-            border-radius:9999px; font-family:'Inter',sans-serif;
-        ">${tag}</span>`;
+function clearResponse(cIdx,eIdx){
+    const div = document.getElementById(`response-${cIdx}-${eIdx}`);
+    const btn = document.getElementById(`clear-${cIdx}-${eIdx}`);
+    div.classList.add('fade-out');
+    btn.style.display='none';
+    setTimeout(()=>{ div.classList.add('hidden'); div.classList.remove('fade-out'); document.getElementById(`resp-body-${cIdx}-${eIdx}`).innerHTML=''; },220);
+}
+
+function buildFields(parameters, requestBody){
+    let html='';
+    (parameters||[]).forEach(param=>{
+        const schema=param.schema||{};
+        const req=!!param.required;
+        const label=`${param.name}${req?' <span class="req">*</span>':''}`;
+        const ph=String(schema.example??schema.default??'');
+        const hint=param.description?`<div class="form-hint">${param.description}</div>`:'';
+        if(Array.isArray(schema.enum)&&schema.enum.length){
+            html+=`<div><label class="form-label">${label}</label><select name="${param.name}" class="form-select"${req?' required':''}>${schema.enum.map(v=>`<option value="${escHtml(String(v))}">${escHtml(String(v))}</option>`).join('')}</select>${hint}</div>`;
+        } else if(schema.type==='boolean'){
+            html+=`<div><label class="form-label">${label}</label><select name="${param.name}" class="form-select"${req?' required':''}><option value="true">true</option><option value="false">false</option></select>${hint}</div>`;
+        } else {
+            const t=(schema.type==='number'||schema.type==='integer')?'number':'text';
+            html+=`<div><label class="form-label">${label}</label><input type="${t}" name="${param.name}" class="form-input" placeholder="${escHtml(ph)}"${req?' required':''}>${hint}</div>`;
+        }
+    });
+    if(requestBody&&requestBody.content){
+        const c=requestBody.content;
+        if(c['multipart/form-data']){
+            const schema=c['multipart/form-data'].schema||{};
+            const reqList=schema.required||[];
+            Object.entries(schema.properties||{}).forEach(([name,prop])=>{
+                const isReq=reqList.includes(name);
+                const label=`${name}${isReq?' <span class="req">*</span>':''}`;
+                const ph=String(prop.example??prop.default??'');
+                const hint=prop.description?`<div class="form-hint">${prop.description}</div>`:'';
+                if(prop.format==='binary'){
+                    let accept='';
+                    const d=(prop.description||'').toLowerCase();
+                    if(name.toLowerCase().includes('image')||d.includes('gambar')) accept=' accept="image/*"';
+                    else if(name.toLowerCase().includes('video')||d.includes('vidio')) accept=' accept="video/*"';
+                    html+=`<div><label class="form-label">${label}</label><input type="file" name="${name}" class="form-input"${accept}${isReq?' required':''}>${hint}</div>`;
+                } else if(Array.isArray(prop.enum)&&prop.enum.length){
+                    html+=`<div><label class="form-label">${label}</label><select name="${name}" class="form-select"${isReq?' required':''}>${prop.enum.map(v=>`<option value="${escHtml(String(v))}">${escHtml(String(v))}</option>`).join('')}</select>${hint}</div>`;
+                } else if(prop.type==='boolean'){
+                    html+=`<div><label class="form-label">${label}</label><select name="${name}" class="form-select"${isReq?' required':''}><option value="true">true</option><option value="false">false</option></select>${hint}</div>`;
+                } else {
+                    const t=(prop.type==='number'||prop.type==='integer')?'number':'text';
+                    html+=`<div><label class="form-label">${label}</label><input type="${t}" name="${name}" class="form-input" placeholder="${escHtml(ph)}"${isReq?' required':''}>${hint}</div>`;
+                }
+            });
+        }
+        if(c['application/json']){
+            html+=`<div><label class="form-label">Body <span style="color:var(--accent);">application/json</span></label><textarea name="__raw_json__" class="form-textarea" placeholder='{"key":"value"}'></textarea><div class="form-hint">Masukkan JSON valid.</div></div>`;
+        }
     }
+    return html;
+}
 
-    // ─── Render single API card ────────────────────────────────────────────────
-    function renderCard(method, path, operation, index) {
-        const summary     = operation.summary     || operation.description || '—';
-        const description = operation.description || '';
-        const tags        = (operation.tags || []).slice(0, 3);
-        const cardId      = `card-${index}`;
-        const detailId    = `detail-${index}`;
+const STATUS_CODES=[
+    ['200','OK — Request successful','2xx'],
+    ['400','Bad Request — Invalid parameters or missing required fields','4xx'],
+    ['401','Unauthorized — Missing or invalid API key','4xx'],
+    ['403','Forbidden — You do not have permission to access this resource','4xx'],
+    ['404','Not Found — The requested resource could not be found','4xx'],
+    ['405','Method Not Allowed — HTTP method not supported','4xx'],
+    ['429','Too Many Requests — You have hit the rate limit','429'],
+    ['500','Internal Server Error — Something went wrong on our end','5xx'],
+    ['503','Service Unavailable — The server is temporarily unavailable','5xx'],
+];
+function statusTable(){
+    const rows=STATUS_CODES.map(([code,desc,type])=>{
+        const cls=type==='2xx'?'code-2xx':type==='429'?'code-429':'code-4xx';
+        const icon=type==='2xx'?'check_circle':type==='429'?'warning':'error';
+        return `<tr><td class="code-col ${cls}" style="white-space:nowrap;padding:0.5rem 0.75rem;"><span class="material-icons" style="font-size:0.85rem;vertical-align:middle;margin-right:0.35rem;">${icon}</span>${code}</td><td style="padding:0.5rem 0.75rem;color:var(--fg2);font-size:0.73rem;">${desc}</td></tr>`;
+    }).join('');
+    return `<table class="status-table"><thead><tr><th>Code</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
 
-        const tagsHtml = tags.map(tagBadge).join(' ');
-
-        // Build parameter rows if any
-        const params = (operation.parameters || []);
-        let paramsHtml = '';
-        if (params.length) {
-            const rows = params.map(p => `
-                <tr>
-                    <td style="padding:0.35rem 0.6rem; color:#93c5fd; font-size:0.75rem;">${p.name}</td>
-                    <td style="padding:0.35rem 0.6rem; color:#6b7280; font-size:0.7rem;">${p.in || ''}</td>
-                    <td style="padding:0.35rem 0.6rem; color:${p.required ? '#f87171' : '#4b5563'}; font-size:0.7rem;">${p.required ? 'required' : 'optional'}</td>
-                    <td style="padding:0.35rem 0.6rem; color:#9ca3af; font-size:0.7rem;">${(p.schema && p.schema.type) || p.type || ''}</td>
-                    <td style="padding:0.35rem 0.6rem; color:#6b7280; font-size:0.7rem;">${p.description || ''}</td>
-                </tr>`).join('');
-            paramsHtml = `
-                <div style="margin-top:0.75rem;">
-                    <p style="color:#4b5563; font-size:0.68rem; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.08em;">Parameters</p>
-                    <div style="overflow-x:auto; border-radius:0.4rem; border:1px solid rgba(255,255,255,0.07);">
-                        <table style="width:100%; border-collapse:collapse; font-family:'Ubuntu Mono',monospace;">
-                            <thead>
-                                <tr style="background:rgba(255,255,255,0.03);">
-                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Name</th>
-                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">In</th>
-                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Required</th>
-                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Type</th>
-                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>${rows}</tbody>
-                        </table>
+async function loadNotifications(){
+    const listEl=document.getElementById('notifications-list');
+    const badgeEl=document.getElementById('unread-count');
+    try {
+        const res=await fetch(`/src/notifications.json?t=${Date.now()}`);
+        let notifs=await res.json();
+        if(!Array.isArray(notifs)) notifs=notifs?[notifs]:[];
+        notifs.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+        listEl.innerHTML='';
+        let unread=0;
+        if(!notifs.length){ listEl.innerHTML=`<p style="color:var(--fg3);font-size:0.75rem;text-align:center;padding:1rem 0;">Tidak ada notifikasi</p>`; return; }
+        notifs.forEach((n,i)=>{
+            if(!n.read) unread++;
+            const el=document.createElement('div');
+            el.className=`notif-item will-fade-in fade-in${n.read?'',' unread'}`;
+            el.style.animationDelay=`${i*45}ms`;
+            el.innerHTML=`
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;">
+                    <div style="flex:1;min-width:0;">
+                        <p style="font-weight:600;color:var(--fg);margin:0 0 0.2rem;font-size:0.8rem;">${n.title||'Tanpa Judul'}</p>
+                        <p style="color:var(--fg2);margin:0;font-size:0.75rem;line-height:1.4;">${n.message||''}</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+                        ${!n.read?'<span style="width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block;"></span>':''}
+                        <span style="color:var(--fg3);font-size:0.68rem;white-space:nowrap;">${n.date?new Date(n.date).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):''}</span>
                     </div>
                 </div>`;
-        }
-
-        // Base URL
-        const baseUrl = window._openapiBaseUrl || '';
-        const exampleUrl = baseUrl + path;
-
-        return `
-        <div id="${cardId}" class="api-card" style="cursor:pointer;" onclick="toggleDetail('${detailId}', this)">
-            <!-- Card header -->
-            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.75rem;">
-                <div style="display:flex; flex-direction:column; gap:0.45rem; flex:1; min-width:0;">
-                    <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                        ${methodBadge(method)}
-                        <code style="color:#e0e0e0; font-size:0.8rem; font-family:'Ubuntu Mono',monospace; word-break:break-all;">${path}</code>
-                    </div>
-                    ${summary ? `<p style="color:#9ca3af; font-size:0.78rem; margin:0; line-height:1.4;">${summary}</p>` : ''}
-                    ${tagsHtml ? `<div style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-top:0.15rem;">${tagsHtml}</div>` : ''}
-                </div>
-                <span id="chevron-${index}" class="material-icons" style="color:#4b5563; font-size:1.1rem; flex-shrink:0; margin-top:0.1rem; transition:transform 0.25s;">expand_more</span>
-            </div>
-
-            <!-- Expandable detail -->
-            <div id="${detailId}" style="display:none; margin-top:1rem; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.85rem;">
-                ${description && description !== summary ? `<p style="color:#6b7280; font-size:0.78rem; margin:0 0 0.75rem; line-height:1.5;">${description}</p>` : ''}
-                ${paramsHtml}
-                <div style="margin-top:0.85rem;">
-                    <p style="color:#4b5563; font-size:0.68rem; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.08em;">Example URL</p>
-                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.07); border-radius:0.4rem; padding:0.5rem 0.75rem; gap:0.5rem;">
-                        <code style="color:#67e8f9; font-size:0.75rem; font-family:'Ubuntu Mono',monospace; word-break:break-all; flex:1;">${exampleUrl}</code>
-                        <button class="copy-btn" onclick="event.stopPropagation(); copyText('${exampleUrl}', this)" title="Copy URL">
-                            <i class="material-icons" style="font-size:0.9rem;">content_copy</i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-    }
-
-    // ─── Toggle expand/collapse ────────────────────────────────────────────────
-    function toggleDetail(detailId, card) {
-        const detail = document.getElementById(detailId);
-        const index  = detailId.replace('detail-', '');
-        const chevron = document.getElementById('chevron-' + index);
-        const isOpen = detail.style.display !== 'none';
-        detail.style.display = isOpen ? 'none' : 'block';
-        if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-        if (!isOpen) card.style.borderColor = 'rgba(59,130,246,0.35)';
-        else card.style.borderColor = '';
-    }
-
-    // ─── Copy utility ──────────────────────────────────────────────────────────
-    function copyText(text, btn) {
-        navigator.clipboard.writeText(text).then(() => {
-            const icon = btn.querySelector('i');
-            icon.textContent = 'check';
-            icon.style.color = '#4ade80';
-            setTimeout(() => { icon.textContent = 'content_copy'; icon.style.color = ''; }, 1500);
+            listEl.appendChild(el);
         });
+        if(unread>0){ badgeEl.textContent=unread; badgeEl.style.display='inline-block'; }
+    } catch(err){
+        console.error('Failed to load notifications:',err);
+        listEl.innerHTML=`<p style="color:#f87171;font-size:0.75rem;text-align:center;padding:1rem 0;">Gagal memuat notifikasi</p>`;
     }
+}
 
-    // ─── Fetch & render openapi.json ───────────────────────────────────────────
-    async function loadApiList() {
-        const apiList = document.getElementById('apiList');
-        const noResults = document.getElementById('noResults');
+async function loadApis(){
+    const apiList=document.getElementById('apiList');
+    apiList.innerHTML=[1,2,3].map(()=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;opacity:0.4;"><div style="display:flex;gap:0.6rem;align-items:center;"><div style="width:2rem;height:2rem;background:var(--bg3);border-radius:0.4rem;"></div><div style="width:55%;height:13px;background:var(--bg3);border-radius:0.25rem;"></div></div></div>`).join('');
 
-        // Loading skeleton
-        apiList.innerHTML = [1,2,3].map(() => `
-            <div class="api-card" style="opacity:0.4; pointer-events:none;">
-                <div style="display:flex; gap:0.6rem; align-items:center;">
-                    <div style="width:42px; height:20px; background:rgba(255,255,255,0.06); border-radius:0.25rem;"></div>
-                    <div style="width:60%; height:14px; background:rgba(255,255,255,0.06); border-radius:0.25rem;"></div>
-                </div>
-                <div style="margin-top:0.5rem; width:80%; height:12px; background:rgba(255,255,255,0.04); border-radius:0.25rem;"></div>
-            </div>`).join('');
+    try {
+        const res=await fetch('/src/openapi.json');
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const spec=await res.json();
 
-        try {
-            const res = await fetch('/src/openapi.json');
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const spec = await res.json();
-
-            // Store base URL for example URLs
-            const servers = spec.servers || [];
-            window._openapiBaseUrl = servers.length ? (servers[0].url || '').replace(/\/$/, '') : '';
-
-            const paths  = spec.paths || {};
-            const HTTP_METHODS = ['get','post','put','patch','delete','head','options'];
-
-            let cards = [];
-            let index = 0;
-            for (const [path, pathItem] of Object.entries(paths)) {
-                for (const method of HTTP_METHODS) {
-                    if (pathItem[method]) {
-                        cards.push(renderCard(method, path, pathItem[method], index++));
-                    }
-                }
-            }
-
-            if (cards.length === 0) {
-                apiList.innerHTML = '';
-                noResults.style.display = 'block';
-                return;
-            }
-
-            apiList.innerHTML = cards.join('');
-
-            // Stagger fade-in
-            const allCards = apiList.querySelectorAll('.api-card');
-            allCards.forEach((card, i) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(8px)';
-                card.style.transition = `opacity 0.35s ease ${i * 0.04}s, transform 0.35s ease ${i * 0.04}s, border-color 0.2s`;
-                requestAnimationFrame(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
+        const categories={};
+        (spec.tags||[]).forEach(t=>{ categories[t.name]={name:t.name,items:[]}; });
+        const HTTP_METHODS=['get','post','put','patch','delete','head','options'];
+        Object.entries(spec.paths||{}).forEach(([path,pathItem])=>{
+            HTTP_METHODS.forEach(method=>{
+                if(!pathItem[method]) return;
+                const op=pathItem[method];
+                const tag=(op.tags&&op.tags[0])||'Uncategorized';
+                if(!categories[tag]) categories[tag]={name:tag,items:[]};
+                categories[tag].items.push({
+                    path, method:method.toUpperCase(),
+                    name:op.summary||'No summary',
+                    desc:op.description||'No description',
+                    status:op.deprecated?'deprecated':'ready',
+                    parameters:op.parameters,
+                    requestBody:op.requestBody,
                 });
             });
+        });
 
-            // Update stats in header if elements exist
-            const totalEndpoints = document.getElementById('total-endpoints');
-            const totalCategories = document.getElementById('total-categories');
-            if (totalEndpoints) totalEndpoints.textContent = cards.length;
-            if (totalCategories) {
-                const cats = new Set((spec.tags || []).map(t => t.name));
-                totalCategories.textContent = cats.size;
-            }
+        let html='';
+        Object.values(categories).forEach((cat,cIdx)=>{
+            if(!cat.items.length) return;
+            html+=`
+            <div class="category-group will-fade-in fade-in" style="animation-delay:${cIdx*60}ms;" data-category="${escHtml(cat.name)}">
+                <button class="category-header-btn" onclick="toggleCategory(${cIdx})">
+                    <div style="display:flex;align-items:center;min-width:0;flex:1;">
+                        <div class="cat-icon-wrap"><span class="material-icons">folder_open</span></div>
+                        <span class="cat-name">${escHtml(cat.name)}</span>
+                        <span class="cat-count">${cat.items.length}</span>
+                    </div>
+                    <span class="material-icons cat-chevron" id="cat-icon-${cIdx}">expand_more</span>
+                </button>
+                <div id="category-${cIdx}" class="hidden">`;
 
-        } catch (err) {
-            console.error('Failed to load openapi.json:', err);
-            apiList.innerHTML = `
-                <div class="api-card" style="text-align:center; padding:2rem;">
-                    <i class="material-icons" style="font-size:2rem; color:#4b5563; margin-bottom:0.5rem; display:block;">cloud_off</i>
-                    <p style="color:#6b7280; font-size:0.8rem; margin:0;">Failed to load API list.</p>
-                    <p style="color:#4b5563; font-size:0.72rem; margin:0.25rem 0 0;">${err.message}</p>
+            cat.items.forEach((item,eIdx)=>{
+                const fields=buildFields(item.parameters,item.requestBody);
+                const hasFields=fields.trim().length>0;
+                html+=`
+                <div class="api-item" id="${escHtml(item.path.split('/').pop())}"
+                    data-method="${item.method}" data-path="${escHtml(item.path)}"
+                    data-alias="${escHtml(item.name)}" data-description="${escHtml(item.desc)}"
+                    data-category="${escHtml(cat.name)}">
+                    <button class="api-item-btn" onclick="toggleEndpoint(${cIdx},${eIdx})">
+                        <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;flex:1;">
+                            <span class="method-badge method-${item.method}">${item.method}</span>
+                            <div style="min-width:0;flex:1;">
+                                <div style="font-family:'Ubuntu Mono',monospace;font-size:0.8rem;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(item.path)}</div>
+                                <div style="display:flex;align-items:center;gap:0.4rem;margin-top:0.15rem;">
+                                    <span style="color:var(--fg3);font-size:0.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;">${escHtml(item.name)}</span>
+                                    <span class="status-${item.status}">${item.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="material-icons" id="ep-icon-${cIdx}-${eIdx}" style="color:var(--fg3);font-size:1.05rem;flex-shrink:0;transition:transform 0.25s;">expand_more</span>
+                    </button>
+
+                    <div id="endpoint-${cIdx}-${eIdx}" class="hidden endpoint-detail">
+                        <p style="color:var(--fg2);font-size:0.77rem;margin:0 0 1rem;line-height:1.5;">${escHtml(item.desc)}</p>
+
+                        ${item.status==='deprecated'
+                            ? `<div class="deprecated-notice"><span class="material-icons">warning</span>Endpoint ini sudah deprecated dan tidak direkomendasikan.</div>`
+                            : `<div style="margin-bottom:1.25rem;">
+                                <div class="section-label"><span class="material-icons">play_arrow</span>Try It Out</div>
+                                <form id="form-${cIdx}-${eIdx}" onsubmit="executeRequest(event,${cIdx},${eIdx},'${item.method}','${escHtml(item.path)}')">
+                                    ${hasFields?`<div style="display:flex;flex-direction:column;gap:0.65rem;margin-bottom:0.85rem;">${fields}</div>`:`<p style="color:var(--fg3);font-size:0.75rem;margin:0 0 0.85rem;">No parameters required.</p>`}
+                                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                                        <button type="submit" class="btn-execute"><span class="material-icons" style="font-size:0.9rem;">send</span>Execute</button>
+                                        <button type="button" id="clear-${cIdx}-${eIdx}" class="btn-clear" onclick="clearResponse(${cIdx},${eIdx})" style="display:none;"><span class="material-icons" style="font-size:0.9rem;">close</span>Clear</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="response-${cIdx}-${eIdx}" class="hidden" style="margin-bottom:1.25rem;">
+                                <div class="section-label"><span class="material-icons">code</span>Response</div>
+                                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                                    <div class="response-panel">
+                                        <div class="panel-header"><span class="panel-header-label">REQUEST URL</span><button class="copy-btn" onclick="copyToClipboard(document.getElementById('url-disp-${cIdx}-${eIdx}').textContent,this)"><span class="material-icons">content_copy</span></button></div>
+                                        <div class="panel-inner"><code id="url-disp-${cIdx}-${eIdx}" style="color:var(--accent);font-size:0.75rem;word-break:break-all;"></code></div>
+                                    </div>
+                                    <div class="response-panel">
+                                        <div class="panel-header"><span class="panel-header-label">CURL COMMAND</span><button class="copy-btn" onclick="copyToClipboard(document.getElementById('curl-disp-${cIdx}-${eIdx}').textContent,this)"><span class="material-icons">content_copy</span></button></div>
+                                        <div class="panel-inner"><code id="curl-disp-${cIdx}-${eIdx}" style="color:var(--fg);font-size:0.73rem;white-space:pre-wrap;word-break:break-all;"></code></div>
+                                    </div>
+                                    <div class="response-panel">
+                                        <div class="panel-header"><span class="panel-header-label">SERVER RESPONSE</span><button class="copy-btn" onclick="copyToClipboard(document.getElementById('resp-body-${cIdx}-${eIdx}').innerText,this)"><span class="material-icons">content_copy</span></button></div>
+                                        <div class="panel-inner" id="resp-body-${cIdx}-${eIdx}"></div>
+                                    </div>
+                                </div>
+                            </div>`}
+
+                        <div>
+                            <div class="section-label"><span class="material-icons">list</span>HTTP Status Codes</div>
+                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:0.4rem;overflow:hidden;overflow-x:auto;">${statusTable()}</div>
+                        </div>
+                    </div>
                 </div>`;
-        }
+            });
+            html+=`</div></div>`;
+        });
+
+        apiList.innerHTML = html || `<div style="text-align:center;padding:3rem 0;"><span class="material-icons" style="color:var(--fg3);font-size:2.5rem;display:block;margin-bottom:0.75rem;">inbox</span><p style="color:var(--fg3);font-size:0.8rem;">No API endpoints found.</p></div>`;
+
+    } catch(err){
+        console.error(err);
+        apiList.innerHTML=`<div style="background:var(--bg2);border:1px solid rgba(239,68,68,0.25);border-radius:var(--radius);padding:2rem;text-align:center;"><span class="material-icons" style="color:#f87171;font-size:2rem;display:block;margin-bottom:0.75rem;">cloud_off</span><p style="color:#f87171;font-size:0.8rem;margin:0;">Failed to load API data.</p><p style="color:var(--fg3);font-size:0.7rem;margin:0.3rem 0 0;">${escHtml(err.message)}</p></div>`;
     }
+}
 
-    loadApiList();
+document.getElementById('searchInput').addEventListener('input', function(){
+    const q=this.value.toLowerCase();
+    const items=document.querySelectorAll('.api-item');
+    const cats=document.querySelectorAll('.category-group');
+    const noRes=document.getElementById('noResults');
+    let visible=0;
+    items.forEach(el=>{
+        const match=(el.dataset.path+el.dataset.alias+el.dataset.description).toLowerCase().includes(q);
+        el.style.display=match?'':'none';
+        if(match) visible++;
+    });
+    cats.forEach(cat=>{
+        const hasVisible=[...cat.querySelectorAll('.api-item')].some(el=>el.style.display!=='none');
+        cat.style.display=hasVisible?'':'none';
+        if(q&&hasVisible){ const body=cat.querySelector('[id^="category-"]'); if(body) body.classList.remove('hidden'); }
+    });
+    noRes.style.display=(visible===0&&q)?'block':'none';
+});
+
+document.addEventListener('DOMContentLoaded',()=>{ loadApis(); loadNotifications(); });
 </script>
-
 </body>
 </html>
