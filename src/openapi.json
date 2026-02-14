@@ -18,6 +18,89 @@
   { "name": "Stalk" }
   ],
   "paths": {
+    "/anime/doronime": {
+  "get": {
+    "summary": "Doronime Anime Search",
+    "description": "Mengambil 3 anime dari hasil pencarian Doronime lengkap dengan detail singkat dan 5 episode terbaru",
+    "tags": ["Anime"],
+    "parameters": [
+      {
+        "name": "q",
+        "in": "query",
+        "description": "Keyword anime yang ingin dicari",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "creator": { "type": "string", "example": "Nayone API" },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "anime": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "anime": {
+                            "type": "object",
+                            "properties": {
+                              "title": { "type": "string" },
+                              "url": { "type": "string", "format": "uri" },
+                              "image": { "type": "string", "format": "uri" },
+                              "type": { "type": "string" },
+                              "status": { "type": "string" }
+                            }
+                          },
+                          "detail": {
+                            "type": "object",
+                            "properties": {
+                              "title": { "type": "string" },
+                              "description": { "type": "string" },
+                              "image": { "type": "string", "format": "uri" },
+                              "synopsis": { "type": "string" },
+                              "episodes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "episode": { "type": "string" },
+                                    "title": { "type": "string" },
+                                    "url": { "type": "string", "format": "uri" }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Query parameter 'q' tidak ditemukan"
+      },
+      "500": {
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+      },
     "/news/cnn": {
   "get": {
     "summary": "CNN Indonesia News",
