@@ -1,459 +1,275 @@
-</body>
-</html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Dokumentasi API modern dan antarmuka pengujian yang interaktif. Jelajahi berbagai endpoint API kami dengan mudah.">
-    <meta name="keywords" content="API, Dokumentasi API, REST API, Nayone API, AnayaOfficial, Alat Pengembang">
-    <meta name="author" content="AnayaOfficial">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nayoneapi.vercel.app/">
-    <meta property="og:title" content="Nayone API V1 - Dokumentasi API Modern">
-    <meta property="og:description" content="Jelajahi berbagai endpoint API kami dengan antarmuka yang modern dan mudah digunakan.">
-    <meta property="og:image" content="/src/banner.jpg">
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://nayoneapi.vercel.app/">
-    <meta property="twitter:title" content="Nayone API V1 - Dokumentasi API Modern">
-    <meta property="twitter:description" content="Jelajahi berbagai endpoint API kami dengan antarmuka yang modern dan mudah digunakan.">
-    <meta property="twitter:image" content="/src/banner.jpg">
-    <link rel="icon" href="https://theresapis.vercel.app/src/icon.png" type="image/png">
-    <title id="page">Nayone API V1.</title>
-
-    <script src="https://cdn.tailwindcss.com/"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'mono': ['Ubuntu Mono', 'monospace'],
-                        'sans': ['Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        :root {
-            --background: #f9fbff;
-            --foreground: #2c3e50;
-            --card: #ffffff;
-            --card-foreground: #2c3e50;
-            --primary: #3498db;
-            --primary-foreground: #ffffff;
-            --secondary: #85c1e9;
-            --accent: #48d1cc;
-            --muted: #f1f5f9;
-            --muted-foreground: #7f8c8d;
-            --border: rgba(0, 0, 0, 0.08);
-            --radius: 0.5rem;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--foreground);
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        #mouse-spotlight {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            background: radial-gradient(600px circle at 0px 0px, rgba(52, 152, 219, 0.08), transparent 80%);
-            transition: background 0.1s ease-out;
-        }
-
-        header, .bg-card {
-            background-color: var(--card) !important;
-            border-color: var(--border) !important;
-            box-shadow: var(--shadow);
-        }
-
-        .bg-card-hover:hover {
-            border-color: var(--primary) !important;
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-3px) scale(1.02);
-        }
-
-        .bg-primary {
-             background-color: var(--primary);
-             color: var(--primary-foreground);
-        }
-
-        .bg-primary:hover {
-            filter: brightness(1.1);
-            box-shadow: var(--shadow);
-        }
-
-        .text-primary { color: var(--primary); }
-        .text-foreground { color: var(--foreground); }
-        .text-muted-foreground { color: var(--muted-foreground); }
-
-        .border-primary { border-color: var(--primary); }
-        .border-default { border-color: var(--border); }
-
-        ::-webkit-scrollbar {
-            display: none !important;
-        }
-
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--background);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-        }
-
-        #loader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-on-load {
-            opacity: 0;
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-            transition-delay: var(--delay, 0s);
-        }
-
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .feature-icon {
-            transition: transform 0.3s ease;
-        }
-        .bg-card-hover:hover .feature-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        .stat-item {
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            border-radius: var(--radius);
-            padding: 0.5rem 0;
-        }
-        .stat-item:hover {
-            transform: translateY(-3px);
-            background-color: var(--card);
-            box-shadow: var(--shadow);
-        }
-
-        .step-item {
-            transition: transform 0.3s ease;
-        }
-        .step-item:hover {
-            transform: translateX(5px);
-        }
-        .step-number {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .step-item:hover .step-number {
-             transform: scale(1.1);
-             box-shadow: var(--shadow);
-        }
-    </style>
-</head>
-<body class="text-foreground antialiased font-mono min-h-screen">
-
-    <div id="mouse-spotlight"></div>
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
-
-    <header class="sticky top-0 z-40 bg-card border-b py-5">
-        <div class="max-w-2xl mx-auto px-8 flex justify-between items-center">
-            <div class="flex items-center"></div>
-            <div class="flex items-center space-x-4"></div>
-        </div>
-    </header>
-
-    <main class="max-w-2xl mx-auto px-8 py-10">
-        <div class="text-left mb-6">
-            <p class="text-muted-foreground text-xs mb-4 animate-on-load" style="animation-delay: 0.1s;">Hi Developer! Welcome To</p>
-            <h2 class="flex flex-wrap items-center gap-1 text-3xl text-foreground font-bold mb-1.5 animate-on-load" style="animation-delay: 0.2s;">
-    <span class="flex-grow text-black">Nayone API</span>
-    <span class="text-xs font-bold text-white bg-black px-3 py-1 whitespace-nowrap">
-        v1.0
-    </span>
-</h2>
-            <p class="text-muted-foreground text-xs mx-auto mb-4 animate-on-load" style="animation-delay: 0.3s;">Powerful API platform for modern applications</p>
-
-            <div class="mb-4 animate-on-load" style="animation-delay: 0.4s;">
-    <a href="/docs" class="inline-block bg-black text-white px-6 py-2 rounded text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-        <i class="fas fa-rocket mr-2"></i>START
-    </a>
-</div>
-
-            <div class="text-xs space-y-1 animate-on-load" style="animation-delay: 0.5s;">
-                <div>
-                    <a href="#features" class="text-foreground underline hover:text-primary">Features</a>
-                </div>
-                <div>
-                    <a href="https://tiktok.com/@nayaoffc21" target="_blank" class="text-foreground underline hover:text-primary">TikTok</a>
-                </div>
-                <div>
-                  <a href="https://whatsapp.com/channel/0029VamVFi85fM5dVCtcDJ3g" target="_blank" class="text-foreground underline hover:text-primary">
-                    WhatsApp Channel
-                  </a>
-                </div>
-                <div>
-                  <a href="https://t.me/AnayaZulfa" target="_blank" class="text-foreground underline hover:text-primary">
-                    Contact Me
-                  </a>
-                </div>
-            </div>
-        </div>
-<div class="bg-card border-default p-4 my-3 animate-on-scroll">
-    <div class="grid grid-cols-3 gap-4">
-        <div class="text-center stat-item">
-            <div id="total-endpoints" class="text-lg font-bold text-foreground">0</div>
-            <div class="text-xs text-muted-foreground">Endpoints</div>
-        </div>
-        <div class="text-center stat-item">
-            <div id="total-categories" class="text-lg font-bold text-foreground">0</div>
-            <div class="text-xs text-muted-foreground">Categories</div>
-        </div>
-        <div class="text-center stat-item">
-            <div class="text-lg font-bold text-foreground">24/7</div>
-            <div class="text-xs text-muted-foreground">Support</div>
-        </div>
-    </div>
-</div>
-
-<script>
-async function updateStats() {
-    try {
-        // Load JSON OpenAPI
-        const response = await fetch('/src/openapi.json');
-        const data = await response.json();
-
-        // Total endpoints
-        const totalEndpoints = Object.keys(data.paths || {}).length;
-
-        // Total kategori unik
-        const categories = new Set((data.tags || []).map(tag => tag.name));
-        const totalCategories = categories.size;
-
-        // Update HTML
-        document.getElementById('total-endpoints').textContent = totalEndpoints;
-        document.getElementById('total-categories').textContent = totalCategories;
-    } catch (err) {
-        console.error('Gagal load openapi.json', err);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nayone API V1 - Popup Side Menu Responsive</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+  --bg: #0f111a;
+  --fg: #e0e0e0;
+  --card-bg: rgba(15,17,26,0.9);
+  --card-fg: #ffffff;
+  --primary: #3b82f6;
+  --secondary: #60a5fa;
+  --accent: #22d3ee;
+  --border: rgba(255,255,255,0.1);
+  --radius: 0.8rem;
+  --shadow: 0 4px 14px rgba(0,0,0,0.5);
+  --shadow-lg: 0 10px 28px rgba(0,0,0,0.7);
 }
 
-// Jalankan saat halaman siap
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  margin:0;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+header {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.5rem;
+  position: sticky;
+  top:0;
+  z-index:40;
+  display:flex; align-items:center; justify-content:space-between;
+}
+
+.main-container { max-width: 1000px; margin:0 auto; padding:2rem 1rem; }
+
+a { transition: all 0.3s; }
+a:hover { color: var(--primary); transform: scale(1.05); }
+
+.bg-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border:1px solid var(--border);
+  padding:1rem 1.2rem;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+}
+.bg-card-hover:hover { transform: translateY(-3px) scale(1.02); box-shadow: var(--shadow-lg); }
+
+#loader {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  background: var(--bg); z-index:9999;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+#loader.hidden { opacity:0; visibility:hidden; }
+.spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color: var(--primary); border-radius:50%; animation:spin 1s linear infinite;}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#mouse-spotlight {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  pointer-events:none; z-index:-1;
+  background: radial-gradient(500px circle at 0 0, rgba(59,130,246,0.1), transparent 80%);
+  transition: background 0.1s ease-out;
+}
+
+.hero-title { font-size:2rem; font-weight:700; color:#ffffff; line-height:1.2; }
+.hero-subtitle { font-size:1rem; color:#a1a1aa; margin-bottom:1.5rem; }
+.hero-btn {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: #fff; padding:0.6rem 1.2rem; border-radius:var(--radius);
+  font-weight:500; display:inline-flex; align-items:center; gap:0.4rem;
+  box-shadow:0 3px 14px rgba(59,130,246,0.4);
+  transition: all 0.3s;
+}
+.hero-btn:hover { transform:scale(1.05); box-shadow:0 5px 24px rgba(59,130,246,0.6); }
+
+.feature-icon { width:2.5rem; height:2.5rem; display:flex; align-items:center; justify-content:center; border-radius:50%; border:2px solid var(--border); color: var(--primary); transition: transform 0.3s ease; }
+.bg-card-hover:hover .feature-icon { transform: scale(1.1) rotate(-3deg); }
+
+.stat-item { text-align:center; padding:0.8rem; border-radius:var(--radius); transition: all 0.3s; }
+.stat-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+.step-item { display:flex; gap:0.8rem; align-items:flex-start; transition: transform 0.3s ease; margin-bottom:0.8rem; }
+.step-item:hover { transform: translateX(4px); }
+.step-number { width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold; border:2px dashed var(--primary); color:var(--primary); transition: transform 0.3s, box-shadow 0.3s; }
+.step-item:hover .step-number { transform:scale(1.1); box-shadow: var(--shadow-lg); }
+
+.animate-on-load { opacity:0; transform:translateY(15px); animation:fadeInUp 0.7s forwards;}
+@keyframes fadeInUp { from {opacity:0; transform:translateY(15px);} to {opacity:1; transform:translateY(0);} }
+
+.animate-on-scroll { opacity:0; transform:translateY(15px); transition: opacity 0.7s, transform 0.7s; transition-delay:var(--delay,0s);}
+.animate-on-scroll.visible { opacity:1; transform:translateY(0); }
+
+footer { text-align:center; margin-top:4rem; color:#a1a1aa; font-size:0.7rem; }
+footer a { text-decoration:none; margin:0 0.3rem; }
+footer a:hover { color: var(--primary); }
+
+/* Side Menu Popup */
+#side-menu-wrapper { position: absolute; left:1rem; display:none; flex-direction:column; gap:0.8rem; z-index:50; }
+#side-menu {
+  background:var(--card-bg); border-radius:var(--radius); padding:1rem; backdrop-filter:blur(12px);
+  display:flex; flex-direction:column; gap:0.8rem; box-shadow:var(--shadow);
+}
+#side-menu a { font-size:0.9rem; color:#fff; display:flex; align-items:center; gap:0.5rem; text-decoration:none; }
+#side-menu a:hover { color: var(--accent); transform:scale(1.05); }
+#menu-toggle { cursor:pointer; font-size:1.2rem; color:#fff; transition: all 0.3s; }
+#menu-toggle:hover { color:var(--primary); transform: scale(1.2); }
+
+/* Responsiveness */
+@media (max-width:768px){ 
+  .grid-cols-3 { grid-template-columns:1fr; gap:1rem; }
+  .hero-title { font-size:1.6rem; } .hero-subtitle { font-size:0.9rem; }
+}
+@media (max-width:480px){
+  .hero-title { font-size:1.4rem; }
+  .hero-subtitle { font-size:0.85rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="mouse-spotlight"></div>
+<div id="loader"><div class="spinner"></div></div>
+
+<header>
+  <h1 class="text-white font-bold">Nayone API V1</h1>
+  <div id="menu-toggle"><i class="fas fa-bars"></i></div>
+</header>
+
+<!-- Side Menu Popup Wrapper -->
+<div id="side-menu-wrapper">
+  <div id="side-menu">
+    <a href="https://github.com/Reyz2902" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+    <a href="https://t.me/ReyzID12" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+    <a href="https://whatsapp.com/channel/0029Vb6pfuzJf05iZHfkli44" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp Channel</a>
+    <a href="mailto:developer@example.com"><i class="fas fa-envelope"></i> Email</a>
+  </div>
+</div>
+
+<main class="main-container">
+  <!-- Hero -->
+  <section class="text-center mb-12 px-4">
+    <h2 class="hero-title animate-on-load">Hi Developer! Welcome to Nayone API</h2>
+    <p class="hero-subtitle animate-on-load">Powerful Dark Mode API platform for modern applications, fast, secure, and easy to integrate</p>
+    <a href="/docs" class="hero-btn animate-on-load"><i class="fas fa-rocket"></i> Start</a>
+  </section>
+
+  <!-- Stats -->
+  <section class="grid grid-cols-3 gap-4 mb-12 max-w-3xl mx-auto">
+    <div class="stat-item animate-on-scroll"><div id="total-endpoints" class="text-xl font-bold">0</div><div class="text-xs text-muted mt-1">Endpoints</div></div>
+    <div class="stat-item animate-on-scroll"><div id="total-categories" class="text-xl font-bold">0</div><div class="text-xs text-muted mt-1">Categories</div></div>
+    <div class="stat-item animate-on-scroll"><div class="text-xl font-bold">24/7</div><div class="text-xs text-muted mt-1">Support</div></div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="space-y-4 max-w-4xl mx-auto px-2">
+    <div class="bg-card bg-card-hover flex items-center gap-4 animate-on-scroll">
+      <div class="feature-icon"><i class="fas fa-bolt fa-lg"></i></div>
+      <div>
+        <h3 class="font-semibold text-md">Fast & Reliable</h3>
+        <p class="text-xs text-muted mt-1">High-performance API endpoints with low latency</p>
+      </div>
+    </div>
+    <div class="bg-card bg-card-hover flex items-center gap-4 animate-on-scroll" style="--delay:0.1s">
+      <div class="feature-icon"><i class="fas fa-shield-alt fa-lg"></i></div>
+      <div>
+        <h3 class="font-semibold text-md">Secure</h3>
+        <p class="text-xs text-muted mt-1">Enterprise-grade security and encryption</p>
+      </div>
+    </div>
+    <div class="bg-card bg-card-hover flex items-center gap-4 animate-on-scroll" style="--delay:0.2s">
+      <div class="feature-icon"><i class="fas fa-code fa-lg"></i></div>
+      <div>
+        <h3 class="font-semibold text-md">Easy Integration</h3>
+        <p class="text-xs text-muted mt-1">Simple REST API with clear documentation</p>
+      </div>
+    </div>
+    <div class="bg-card bg-card-hover flex items-center gap-4 animate-on-scroll" style="--delay:0.3s">
+      <div class="feature-icon"><i class="fas fa-chart-line fa-lg"></i></div>
+      <div>
+        <h3 class="font-semibold text-md">Analytics</h3>
+        <p class="text-xs text-muted mt-1">Detailed usage analytics and monitoring</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <section class="my-12 bg-card rounded max-w-4xl mx-auto p-6 animate-on-scroll">
+    <h3 class="text-lg font-bold mb-4">Getting Started</h3>
+    <div class="space-y-3">
+      <div class="step-item animate-on-scroll">
+        <div class="step-number">1</div>
+        <div><h4 class="font-semibold">Choose Your Category</h4><p class="text-xs text-muted">Browse API categories and select what you need.</p></div>
+      </div>
+      <div class="step-item animate-on-scroll">
+        <div class="step-number">2</div>
+        <div><h4 class="font-semibold">Read the Docs</h4><p class="text-xs text-muted">Check endpoint parameters, response format, and example usage.</p></div>
+      </div>
+      <div class="step-item animate-on-scroll">
+        <div class="step-number">3</div>
+        <div><h4 class="font-semibold">Make Your Request</h4><p class="text-xs text-muted">Send HTTP requests and integrate the JSON response into your app.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Nayone API — All Rights Reserved.</p>
+    <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
+  </footer>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const loader = document.getElementById('loader'); loader.classList.add('hidden');
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const spotlight = document.getElementById('mouse-spotlight');
+  document.addEventListener('mousemove', e => { spotlight.style.background = `radial-gradient(500px circle at ${e.clientX}px ${e.clientY}px, rgba(59,130,246,0.15), transparent 80%)`; });
+
+  const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
+  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', e=>{ e.preventDefault(); const target=document.querySelector(anchor.getAttribute('href')); if(target) target.scrollIntoView({behavior:'smooth', block:'start'}); }); });
+
+  // Side Menu popup
+  const menuToggle = document.getElementById('menu-toggle');
+  const sideWrapper = document.getElementById('side-menu-wrapper');
+  menuToggle.addEventListener('click', e=>{
+    const rect = menuToggle.getBoundingClientRect();
+    sideWrapper.style.top = (window.scrollY + rect.bottom + 8) + 'px';
+    sideWrapper.style.display = 'flex';
+  });
+
+  // Auto-close side menu when click outside
+  document.addEventListener('click', e=>{
+    if(!sideWrapper.contains(e.target) && !menuToggle.contains(e.target)){
+      sideWrapper.style.display = 'none';
+    }
+  });
+
+  // Keep side menu following scroll
+  window.addEventListener('scroll', () => {
+    if(sideWrapper.style.display==='flex'){
+      const rect = menuToggle.getBoundingClientRect();
+      sideWrapper.style.top = (window.scrollY + rect.bottom + 8) + 'px';
+    }
+  });
+});
+
+// Update stats
+async function updateStats() {
+    try {
+        const response = await fetch('/src/openapi.json');
+        const data = await response.json();
+        document.getElementById('total-endpoints').textContent = Object.keys(data.paths||{}).length;
+        document.getElementById('total-categories').textContent = new Set((data.tags||[]).map(t=>t.name)).size;
+    } catch(err){ console.error(err); }
+}
 updateStats();
 </script>
 
-        <div class="space-y-3" id="features">
-    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll">
-        <div class="px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center min-w-0 flex-1">
-                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
-                    <i class="fas fa-bolt text-black text-sm"></i>
-                </div>
-                <div class="flex flex-col min-w-0 flex-1">
-                    <h3 class="font-bold text-sm text-foreground truncate">Fast & Reliable</h3>
-                    <p class="text-xs text-muted-foreground">High-performance API endpoints with low latency</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll" style="--delay: 0.1s;">
-        <div class="px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center min-w-0 flex-1">
-                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
-                    <i class="fas fa-shield-alt text-black text-sm"></i>
-                </div>
-                <div class="flex flex-col min-w-0 flex-1">
-                    <h3 class="font-bold text-sm text-foreground truncate">Secure</h3>
-                    <p class="text-xs text-muted-foreground">Enterprise-grade security and encryption</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll" style="--delay: 0.2s;">
-        <div class="px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center min-w-0 flex-1">
-                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
-                    <i class="fas fa-code text-black text-sm"></i>
-                </div>
-                <div class="flex flex-col min-w-0 flex-1">
-                    <h3 class="font-bold text-sm text-foreground truncate">Easy Integration</h3>
-                    <p class="text-xs text-muted-foreground">Simple REST API with clear documentation</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll" style="--delay: 0.3s;">
-        <div class="px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center min-w-0 flex-1">
-                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
-                    <i class="fas fa-chart-line text-black text-sm"></i>
-                </div>
-                <div class="flex flex-col min-w-0 flex-1">
-                    <h3 class="font-bold text-sm text-foreground truncate">Analytics</h3>
-                    <p class="text-xs text-muted-foreground">Detailed usage analytics and monitoring</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="my-8"></div>
-<div class="bg-card border-default p-6 mb-6 rounded-none animate-on-scroll">
-    <h3 class="flex items-center gap-2 font-bold text-lg text-foreground mb-5">
-        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        Getting Started
-    </h3>
-
-    <div class="space-y-4">
-        <div class="flex items-start gap-4 step-item">
-            <div class="step-number border-2 border-dashed border-black text-black w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm rounded-none">1</div>
-            <div class="flex-1">
-                <h4 class="font-bold text-sm text-foreground mb-1">Choose Your Category</h4>
-                <p class="text-xs text-muted-foreground">Browse through available API categories on sidebar and select what you need.</p>
-            </div>
-        </div>
-
-        <div class="flex items-start gap-4 step-item">
-            <div class="step-number border-2 border-dashed border-black text-black w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm rounded-none">2</div>
-            <div class="flex-1">
-                <h4 class="font-bold text-sm text-foreground mb-1">Read the Docs</h4>
-                <p class="text-xs text-muted-foreground">Check endpoint parameters, response format, and example usage.</p>
-            </div>
-        </div>
-
-        <div class="flex items-start gap-4 step-item">
-            <div class="step-number border-2 border-dashed border-black text-black w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm rounded-none">3</div>
-            <div class="flex-1">
-                <h4 class="font-bold text-sm text-foreground mb-1">Make Your Request</h4>
-                <p class="text-xs text-muted-foreground">Send HTTP requests and integrate the JSON response into your app.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="flex flex-col mt-10 text-center space-y-2 animate-on-scroll">
-  <p class="text-muted-foreground" style="font-size: 0.7rem; line-height: 1rem;">
-    © <span id="year"></span> Nayone API — All Rights Reserved.
-  </p>
-  <p class="text-muted-foreground space-x-3" style="font-size: 0.7rem; line-height: 1rem;">
-    <a href="/privacy-policy" class="hover:underline hover:text-black">Privacy Policy</a>
-    <span aria-hidden="true">|</span>
-    <a href="/terms-of-service" class="hover:underline hover:text-black">Terms of Service</a>
-  </p>
-</div>
-    </main>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const loader = document.getElementById('loader');
-            loader.classList.add('hidden');
-
-            document.getElementById("year").textContent = new Date().getFullYear();
-
-            const spotlight = document.getElementById('mouse-spotlight');
-            if (spotlight) {
-                document.addEventListener('mousemove', (e) => {
-                    spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(52, 152, 219, 0.08), transparent 80%)`;
-                });
-            }
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
-
-            const observerCallback = (entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            };
-
-            const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-            document.querySelectorAll('.animate-on-scroll').forEach(target => {
-                observer.observe(target);
-            });
-
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        });
-    </script>
 </body>
-</html>
+                                                    </html>
