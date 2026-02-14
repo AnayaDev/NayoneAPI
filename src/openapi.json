@@ -240,6 +240,61 @@
     }
   }
 },
+"/download/rednote": {
+  "get": {
+    "summary": "RedNote (Xiaohongshu) Downloader",
+    "description": "Mengambil data media dari URL Xiaohongshu / RedNote",
+    "tags": ["Downloader"],
+    "parameters": [
+      {
+        "name": "url",
+        "in": "query",
+        "description": "URL postingan Xiaohongshu yang ingin diambil",
+        "required": true,
+        "schema": { 
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { 
+                  "type": "boolean",
+                  "example": true
+                },
+                "creator": {
+                  "type": "string",
+                  "example": "Nayone API"
+                },
+                "result": {
+                  "type": "object",
+                  "description": "Raw response dari RedNote downloader",
+                  "example": {
+                    "title": "Contoh Judul",
+                    "media": "https://example.com/video.mp4"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": { 
+        "description": "URL tidak disertakan"
+      },
+      "500": { 
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+      }    
 "/download/pinterest": {
   "get": {
     "summary": "Pinterest ",
