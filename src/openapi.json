@@ -14,9 +14,77 @@
     { "name": "Anime" },
     { "name": "Downloader" },
     { "name": "Image" },
-   { "name": "News" }
+   { "name": "News" },
+  { "name": "Stalk" }
   ],
   "paths": {
+    "/stalk/enka": {
+  "get": {
+    "summary": "Enka Network Profile",
+    "description": "Mengambil data profil pemain Genshin Impact berdasarkan UID dari Enka Network",
+    "tags": ["Game"],
+    "parameters": [
+      {
+        "name": "uid",
+        "in": "query",
+        "description": "UID pemain Genshin Impact",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "886567006"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Respon berhasil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "creator": { "type": "string", "example": "Nayone API" },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "uid": { "type": "string" },
+                    "playerInfo": {
+                      "type": "object",
+                      "properties": {
+                        "nickname": { "type": "string" },
+                        "level": { "type": "integer" },
+                        "signature": { "type": "string" },
+                        "worldLevel": { "type": "integer" },
+                        "achievements": { "type": "integer" },
+                        "spiralAbyss": { "type": "string" },
+                        "theater": { "type": "string" },
+                        "stygianOnslaught": { "type": "string" },
+                        "avatar": { "type": "string", "format": "uri" }
+                      }
+                    },
+                    "characters": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "UID tidak disertakan"
+      },
+      "500": {
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+    },
       "/ai/copilot": {
   "get": {
     "summary": "Copilot Chat",
