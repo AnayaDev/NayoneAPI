@@ -460,8 +460,214 @@
             card.style.display = match ? '' : 'none';
             if (match) visible++;
         });
-        document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+        document.getElementById('noResults').style.display = visible === 0 && searchInput.value ? 'block' : 'none';
     }
+
+    // ─── Method badge colors ───────────────────────────────────────────────────
+    const METHOD_COLORS = {
+        get:    { bg: 'rgba(34,197,94,0.12)',  border: 'rgba(34,197,94,0.4)',  text: '#4ade80' },
+        post:   { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.4)', text: '#60a5fa' },
+        put:    { bg: 'rgba(234,179,8,0.12)',  border: 'rgba(234,179,8,0.4)',  text: '#facc15' },
+        patch:  { bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.4)', text: '#fb923c' },
+        delete: { bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.4)',  text: '#f87171' },
+    };
+
+    function methodBadge(method) {
+        const m = method.toLowerCase();
+        const c = METHOD_COLORS[m] || { bg: 'rgba(148,163,184,0.12)', border: 'rgba(148,163,184,0.4)', text: '#94a3b8' };
+        return `<span style="
+            background:${c.bg}; border:1px solid ${c.border}; color:${c.text};
+            font-size:0.65rem; font-weight:700; padding:0.15rem 0.5rem;
+            border-radius:0.25rem; letter-spacing:0.08em; font-family:'Ubuntu Mono',monospace;
+        ">${method.toUpperCase()}</span>`;
+    }
+
+    function tagBadge(tag) {
+        return `<span style="
+            background:rgba(34,211,238,0.08); border:1px solid rgba(34,211,238,0.2);
+            color:#67e8f9; font-size:0.62rem; padding:0.1rem 0.45rem;
+            border-radius:9999px; font-family:'Inter',sans-serif;
+        ">${tag}</span>`;
+    }
+
+    // ─── Render single API card ────────────────────────────────────────────────
+    function renderCard(method, path, operation, index) {
+        const summary     = operation.summary     || operation.description || '—';
+        const description = operation.description || '';
+        const tags        = (operation.tags || []).slice(0, 3);
+        const cardId      = `card-${index}`;
+        const detailId    = `detail-${index}`;
+
+        const tagsHtml = tags.map(tagBadge).join(' ');
+
+        // Build parameter rows if any
+        const params = (operation.parameters || []);
+        let paramsHtml = '';
+        if (params.length) {
+            const rows = params.map(p => `
+                <tr>
+                    <td style="padding:0.35rem 0.6rem; color:#93c5fd; font-size:0.75rem;">${p.name}</td>
+                    <td style="padding:0.35rem 0.6rem; color:#6b7280; font-size:0.7rem;">${p.in || ''}</td>
+                    <td style="padding:0.35rem 0.6rem; color:${p.required ? '#f87171' : '#4b5563'}; font-size:0.7rem;">${p.required ? 'required' : 'optional'}</td>
+                    <td style="padding:0.35rem 0.6rem; color:#9ca3af; font-size:0.7rem;">${(p.schema && p.schema.type) || p.type || ''}</td>
+                    <td style="padding:0.35rem 0.6rem; color:#6b7280; font-size:0.7rem;">${p.description || ''}</td>
+                </tr>`).join('');
+            paramsHtml = `
+                <div style="margin-top:0.75rem;">
+                    <p style="color:#4b5563; font-size:0.68rem; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.08em;">Parameters</p>
+                    <div style="overflow-x:auto; border-radius:0.4rem; border:1px solid rgba(255,255,255,0.07);">
+                        <table style="width:100%; border-collapse:collapse; font-family:'Ubuntu Mono',monospace;">
+                            <thead>
+                                <tr style="background:rgba(255,255,255,0.03);">
+                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Name</th>
+                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">In</th>
+                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Required</th>
+                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Type</th>
+                                    <th style="padding:0.3rem 0.6rem; text-align:left; color:#4b5563; font-size:0.65rem; font-weight:600;">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                </div>`;
+        }
+
+        // Base URL
+        const baseUrl = window._openapiBaseUrl || '';
+        const exampleUrl = baseUrl + path;
+
+        return `
+        <div id="${cardId}" class="api-card" style="cursor:pointer;" onclick="toggleDetail('${detailId}', this)">
+            <!-- Card header -->
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.75rem;">
+                <div style="display:flex; flex-direction:column; gap:0.45rem; flex:1; min-width:0;">
+                    <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                        ${methodBadge(method)}
+                        <code style="color:#e0e0e0; font-size:0.8rem; font-family:'Ubuntu Mono',monospace; word-break:break-all;">${path}</code>
+                    </div>
+                    ${summary ? `<p style="color:#9ca3af; font-size:0.78rem; margin:0; line-height:1.4;">${summary}</p>` : ''}
+                    ${tagsHtml ? `<div style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-top:0.15rem;">${tagsHtml}</div>` : ''}
+                </div>
+                <span id="chevron-${index}" class="material-icons" style="color:#4b5563; font-size:1.1rem; flex-shrink:0; margin-top:0.1rem; transition:transform 0.25s;">expand_more</span>
+            </div>
+
+            <!-- Expandable detail -->
+            <div id="${detailId}" style="display:none; margin-top:1rem; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.85rem;">
+                ${description && description !== summary ? `<p style="color:#6b7280; font-size:0.78rem; margin:0 0 0.75rem; line-height:1.5;">${description}</p>` : ''}
+                ${paramsHtml}
+                <div style="margin-top:0.85rem;">
+                    <p style="color:#4b5563; font-size:0.68rem; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.08em;">Example URL</p>
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.07); border-radius:0.4rem; padding:0.5rem 0.75rem; gap:0.5rem;">
+                        <code style="color:#67e8f9; font-size:0.75rem; font-family:'Ubuntu Mono',monospace; word-break:break-all; flex:1;">${exampleUrl}</code>
+                        <button class="copy-btn" onclick="event.stopPropagation(); copyText('${exampleUrl}', this)" title="Copy URL">
+                            <i class="material-icons" style="font-size:0.9rem;">content_copy</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    // ─── Toggle expand/collapse ────────────────────────────────────────────────
+    function toggleDetail(detailId, card) {
+        const detail = document.getElementById(detailId);
+        const index  = detailId.replace('detail-', '');
+        const chevron = document.getElementById('chevron-' + index);
+        const isOpen = detail.style.display !== 'none';
+        detail.style.display = isOpen ? 'none' : 'block';
+        if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+        if (!isOpen) card.style.borderColor = 'rgba(59,130,246,0.35)';
+        else card.style.borderColor = '';
+    }
+
+    // ─── Copy utility ──────────────────────────────────────────────────────────
+    function copyText(text, btn) {
+        navigator.clipboard.writeText(text).then(() => {
+            const icon = btn.querySelector('i');
+            icon.textContent = 'check';
+            icon.style.color = '#4ade80';
+            setTimeout(() => { icon.textContent = 'content_copy'; icon.style.color = ''; }, 1500);
+        });
+    }
+
+    // ─── Fetch & render openapi.json ───────────────────────────────────────────
+    async function loadApiList() {
+        const apiList = document.getElementById('apiList');
+        const noResults = document.getElementById('noResults');
+
+        // Loading skeleton
+        apiList.innerHTML = [1,2,3].map(() => `
+            <div class="api-card" style="opacity:0.4; pointer-events:none;">
+                <div style="display:flex; gap:0.6rem; align-items:center;">
+                    <div style="width:42px; height:20px; background:rgba(255,255,255,0.06); border-radius:0.25rem;"></div>
+                    <div style="width:60%; height:14px; background:rgba(255,255,255,0.06); border-radius:0.25rem;"></div>
+                </div>
+                <div style="margin-top:0.5rem; width:80%; height:12px; background:rgba(255,255,255,0.04); border-radius:0.25rem;"></div>
+            </div>`).join('');
+
+        try {
+            const res = await fetch('/src/openapi.json');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const spec = await res.json();
+
+            // Store base URL for example URLs
+            const servers = spec.servers || [];
+            window._openapiBaseUrl = servers.length ? (servers[0].url || '').replace(/\/$/, '') : '';
+
+            const paths  = spec.paths || {};
+            const HTTP_METHODS = ['get','post','put','patch','delete','head','options'];
+
+            let cards = [];
+            let index = 0;
+            for (const [path, pathItem] of Object.entries(paths)) {
+                for (const method of HTTP_METHODS) {
+                    if (pathItem[method]) {
+                        cards.push(renderCard(method, path, pathItem[method], index++));
+                    }
+                }
+            }
+
+            if (cards.length === 0) {
+                apiList.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            apiList.innerHTML = cards.join('');
+
+            // Stagger fade-in
+            const allCards = apiList.querySelectorAll('.api-card');
+            allCards.forEach((card, i) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(8px)';
+                card.style.transition = `opacity 0.35s ease ${i * 0.04}s, transform 0.35s ease ${i * 0.04}s, border-color 0.2s`;
+                requestAnimationFrame(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Update stats in header if elements exist
+            const totalEndpoints = document.getElementById('total-endpoints');
+            const totalCategories = document.getElementById('total-categories');
+            if (totalEndpoints) totalEndpoints.textContent = cards.length;
+            if (totalCategories) {
+                const cats = new Set((spec.tags || []).map(t => t.name));
+                totalCategories.textContent = cats.size;
+            }
+
+        } catch (err) {
+            console.error('Failed to load openapi.json:', err);
+            apiList.innerHTML = `
+                <div class="api-card" style="text-align:center; padding:2rem;">
+                    <i class="material-icons" style="font-size:2rem; color:#4b5563; margin-bottom:0.5rem; display:block;">cloud_off</i>
+                    <p style="color:#6b7280; font-size:0.8rem; margin:0;">Failed to load API list.</p>
+                    <p style="color:#4b5563; font-size:0.72rem; margin:0.25rem 0 0;">${err.message}</p>
+                </div>`;
+        }
+    }
+
+    loadApiList();
 </script>
 
 </body>
