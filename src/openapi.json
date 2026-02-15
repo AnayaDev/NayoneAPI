@@ -17,7 +17,62 @@
    { "name": "News" },
   { "name": "Stalk" }
   ],
-  "paths": { 
+  "paths": {
+  "/ai/lyrics": {
+    "get": {
+      "summary": "Generate Lyrics",
+      "description": "Menghasilkan lirik lagu berdasarkan prompt menggunakan LyricsGenerator",
+      "tags": ["AI"],
+      "parameters": [
+        {
+          "name": "prompt",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Prompt atau tema lirik yang ingin dibuat",
+          "example": "jika kamu mendua"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Respon berhasil",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "code": {
+                    "type": "integer",
+                    "example": 200
+                  },
+                  "creator": {
+                    "type": "string",
+                    "example": "Nayone API"
+                  },
+                  "result": {
+                    "type": "string",
+                    "example": "Jika kamu mendua, hatiku terluka..."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Parameter 'prompt' tidak ditemukan"
+        },
+        "500": {
+          "description": "Terjadi kesalahan pada server"
+        }
+      }
+    }
+  },  
   "/anime/top": {
     "get": {
       "summary": "Top Anime",
