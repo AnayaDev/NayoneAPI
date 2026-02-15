@@ -17,7 +17,85 @@
    { "name": "News" },
   { "name": "Stalk" }
   ],
-  "paths": {   
+  "paths": { 
+  "/anime/gore": {
+    "get": {
+      "summary": "GoreCenter Search",
+      "description": "Mengambil 3 artikel terbaru dari GoreCenter berdasarkan keyword yang diberikan",
+      "tags": ["News"],
+      "parameters": [
+        {
+          "name": "q",
+          "in": "query",
+          "description": "Keyword untuk pencarian artikel",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "example": "accident"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Respon berhasil",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "boolean", "example": true },
+                  "creator": { "type": "string", "example": "Nayone API" },
+                  "query": { "type": "string", "example": "accident" },
+                  "result": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "news": {
+                          "type": "object",
+                          "properties": {
+                            "title": { "type": "string", "example": "ACCIDENT IN CITY" },
+                            "url": { "type": "string", "format": "uri" },
+                            "image": { "type": "string", "format": "uri" },
+                            "source": { "type": "string", "example": "GoreCenter" }
+                          }
+                        },
+                        "detail": {
+                          "type": "object",
+                          "properties": {
+                            "title": { "type": "string" },
+                            "content": {
+                              "type": "array",
+                              "items": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Gagal memproses request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Error message" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+                  },
     "/download/mediafire": {
   "get": {
     "summary": "MediaFire Downloader",
