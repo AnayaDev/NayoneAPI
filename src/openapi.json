@@ -20,8 +20,8 @@
   "paths": {
 "/news/cuaca": {
   "get": {
-    "summary": "Info Cuaca Berdasarkan Nama Wilayah",
-    "description": "Mengambil data prakiraan cuaca berdasarkan nama kota/kabupaten dari BMKG. Jika parameter tidak diisi, default Jakarta.",
+    "summary": "Info Cuaca Berdasarkan Nama Wilayah (Global)",
+    "description": "Mengambil data cuaca terkini berdasarkan nama kota menggunakan Open-Meteo. Jika parameter tidak diisi, default Jakarta.",
     "tags": ["News"],
     "parameters": [
       {
@@ -32,7 +32,7 @@
           "type": "string",
           "example": "Jakarta"
         },
-        "description": "Nama kota/kabupaten (case-insensitive). Default: Jakarta"
+        "description": "Nama kota (contoh: Jakarta, Tokyo, London). Default: Jakarta"
       }
     ],
     "responses": {
@@ -53,7 +53,7 @@
                 },
                 "source": {
                   "type": "string",
-                  "example": "BMKG"
+                  "example": "Open-Meteo"
                 },
                 "result": {
                   "type": "object",
@@ -61,10 +61,10 @@
                     "lokasi": {
                       "type": "object",
                       "properties": {
-                        "provinsi": { "type": "string" },
-                        "kabupaten": { "type": "string" },
-                        "kecamatan": { "type": "string" },
-                        "desa": { "type": "string" }
+                        "nama": { "type": "string" },
+                        "negara": { "type": "string" },
+                        "latitude": { "type": "number" },
+                        "longitude": { "type": "number" }
                       }
                     },
                     "cuaca": {
@@ -72,11 +72,8 @@
                       "properties": {
                         "waktu": { "type": "string" },
                         "suhu": { "type": "string", "example": "30 °C" },
-                        "kelembapan": { "type": "string", "example": "70 %" },
-                        "kondisi": { "type": "string", "example": "Cerah Berawan" },
-                        "kecepatan_angin": { "type": "string", "example": "10 km/jam" },
-                        "arah_angin": { "type": "string", "example": "Barat Daya" },
-                        "jarak_pandang": { "type": "string", "example": "10000 m" }
+                        "kecepatan_angin": { "type": "string", "example": "15 km/jam" },
+                        "arah_angin": { "type": "string", "example": "120°" }
                       }
                     }
                   }
