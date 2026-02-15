@@ -14,10 +14,328 @@
     { "name": "Anime" },
     { "name": "Downloader" },
     { "name": "Image" },
+    { "name": "Maker" },
    { "name": "News" },
   { "name": "Stalk" }
   ],
   "paths": {
+  "/maker/ektp": {
+    "get": {
+      "summary": "ektp generator",
+      "description": "This API generates a simulated Indonesian e-KTP (Kartu Tanda Penduduk) image based on the provided query parameters. Users can input various personal details such as province, city, NIK (National Identification Number), name, date of birth, gender, blood type, address, RT/RW, sub-district/village, district, religion, marital status, occupation, citizenship, validity period, issue date, and a URL for a passport-style photo. The API then renders these details onto an e-KTP template and returns the generated image as a PNG buffer.",
+      "tags": ["Maker"],
+      "parameters": [
+        {
+          "name": "provinsi",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 100, "example": "JAWA BARAT" },
+          "description": "The province."
+        },
+        {
+          "name": "kota",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 100, "example": "BANDUNG" },
+          "description": "The city."
+        },
+        {
+          "name": "nik",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 16, "maxLength": 16, "example": "1234567890123456" },
+          "description": "The National Identification Number (16 digits)."
+        },
+        {
+          "name": "nama",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 100, "example": "John Doe" },
+          "description": "The full name."
+        },
+        {
+          "name": "ttl",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 100, "example": "Bandung, 01-01-1990" },
+          "description": "The place and date of birth (e.g., Bandung, 01-01-1990)."
+        },
+        {
+          "name": "jenis_kelamin",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "enum": ["Laki-laki", "Perempuan"], "example": "Laki-laki" },
+          "description": "The gender."
+        },
+        {
+          "name": "golongan_darah",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "enum": ["A", "B", "AB", "O", "-"], "example": "O" },
+          "description": "The blood type."
+        },
+        {
+          "name": "alamat",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 200, "example": "Jl. Contoh No. 123" },
+          "description": "The address."
+        },
+        {
+          "name": "rt/rw",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 10, "example": "001/002" },
+          "description": "The RT/RW (neighborhood/community unit)."
+        },
+        {
+          "name": "kel/desa",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 100, "example": "Sukajadi" },
+          "description": "The sub-district/village."
+        },
+        {
+          "name": "kecamatan",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 100, "example": "Sukajadi" },
+          "description": "The district."
+        },
+        {
+          "name": "agama",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 50, "example": "Islam" },
+          "description": "The religion."
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 50, "example": "Belum Kawin" },
+          "description": "The marital status."
+        },
+        {
+          "name": "pekerjaan",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 100, "example": "Pegawai Swasta" },
+          "description": "The occupation."
+        },
+        {
+          "name": "kewarganegaraan",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 50, "example": "WNI" },
+          "description": "The citizenship."
+        },
+        {
+          "name": "masa_berlaku",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 50, "example": "Seumur Hidup" },
+          "description": "The validity period."
+        },
+        {
+          "name": "terbuat",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "minLength": 1, "maxLength": 50, "example": "01-01-2023" },
+          "description": "The date of issue."
+        },
+        {
+          "name": "pas_photo",
+          "in": "query",
+          "required": true,
+          "schema": { "type": "string", "format": "url", "example": "https://i.pinimg.com/736x/0b/9f/0a/0b9f0a92a598e6c22629004c1027d23f.jpg" },
+          "description": "URL of the passport photo."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successfully generated e-KTP image",
+          "content": {
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Missing or invalid parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Missing required parameters" },
+                  "code": { "type": "integer", "example": 400 }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Internal Server Error" },
+                  "code": { "type": "integer", "example": 500 }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "ektp generator",
+      "description": "This API generates a simulated Indonesian e-KTP (Kartu Tanda Penduduk) image using data provided in the request body and an uploaded passport-style photo. Users can supply personal details such as province, city, NIK, name, date of birth, gender, blood type, address, RT/RW, sub-district/village, district, religion, marital status, occupation, citizenship, validity period, and issue date — along with a direct file upload for the photo.",
+      "tags": ["Maker"],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "provinsi", "kota", "nik", "nama", "ttl",
+                "jenis_kelamin", "golongan_darah", "alamat",
+                "rt/rw", "kel/desa", "kecamatan", "agama",
+                "status", "pekerjaan", "kewarganegaraan",
+                "masa_berlaku", "terbuat", "pas_photo"
+              ],
+              "properties": {
+                "provinsi": {
+                  "type": "string", "minLength": 1, "maxLength": 100,
+                  "example": "JAWA BARAT", "description": "The province."
+                },
+                "kota": {
+                  "type": "string", "minLength": 1, "maxLength": 100,
+                  "example": "BANDUNG", "description": "The city."
+                },
+                "nik": {
+                  "type": "string", "minLength": 16, "maxLength": 16,
+                  "example": "1234567890123456", "description": "The National Identification Number (16 digits)."
+                },
+                "nama": {
+                  "type": "string", "minLength": 1, "maxLength": 100,
+                  "example": "John Doe", "description": "The full name."
+                },
+                "ttl": {
+                  "type": "string", "minLength": 1, "maxLength": 100,
+                  "example": "Bandung, 01-01-1990", "description": "The place and date of birth."
+                },
+                "jenis_kelamin": {
+                  "type": "string", "enum": ["Laki-laki", "Perempuan"],
+                  "example": "Laki-laki", "description": "The gender."
+                },
+                "golongan_darah": {
+                  "type": "string", "enum": ["A", "B", "AB", "O", "-"],
+                  "example": "O", "description": "The blood type."
+                },
+                "alamat": {
+                  "type": "string", "minLength": 1, "maxLength": 200,
+                  "example": "Jl. Contoh No. 123", "description": "The address."
+                },
+                "rt/rw": {
+                  "type": "string", "minLength": 1, "maxLength": 10,
+                  "example": "001/002", "description": "The RT/RW."
+                },
+                "kel/desa": {
+                  "type": "string", "minLength": 1, "maxLength": 100,
+                  "example": "Sukajadi", "description": "The sub-district/village."
+                },
+                "kecamatan": {
+                  "type": "string", "minLength": 1, "maxLength": 100,
+                  "example": "Sukajadi", "description": "The district."
+                },
+                "agama": {
+                  "type": "string", "minLength": 1, "maxLength": 50,
+                  "example": "Islam", "description": "The religion."
+                },
+                "status": {
+                  "type": "string", "minLength": 1, "maxLength": 50,
+                  "example": "Belum Kawin", "description": "The marital status."
+                },
+                "pekerjaan": {
+                  "type": "string", "minLength": 1, "maxLength": 100,
+                  "example": "Pegawai Swasta", "description": "The occupation."
+                },
+                "kewarganegaraan": {
+                  "type": "string", "minLength": 1, "maxLength": 50,
+                  "example": "WNI", "description": "The citizenship."
+                },
+                "masa_berlaku": {
+                  "type": "string", "minLength": 1, "maxLength": 50,
+                  "example": "Seumur Hidup", "description": "The validity period."
+                },
+                "terbuat": {
+                  "type": "string", "minLength": 1, "maxLength": 50,
+                  "example": "01-01-2023", "description": "The date of issue."
+                },
+                "pas_photo": {
+                  "type": "string", "format": "binary",
+                  "description": "The passport photo file upload (PNG, JPG, WEBP, GIF supported)."
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successfully generated e-KTP image",
+          "content": {
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Missing or invalid parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Missing required parameters" },
+                  "code": { "type": "integer", "example": 400 }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Internal Server Error" },
+                  "code": { "type": "integer", "example": 500 }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },    
 "/news/jadwalsholat": {
   "get": {
     "summary": "Jadwal Sholat Harian",
