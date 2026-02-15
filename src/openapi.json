@@ -19,6 +19,7 @@
   { "name": "Stalk" }
   ],
   "paths": {
+    {
   "/game/family100": {
     "get": {
       "summary": "Start Family100 Game",
@@ -74,7 +75,8 @@
         }
       }
     }
-  },  
+  }
+  },
   "/anime/top": {
     "get": {
       "summary": "Top Anime",
