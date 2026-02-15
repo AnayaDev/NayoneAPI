@@ -18,6 +18,120 @@
   { "name": "Stalk" }
   ],
   "paths": {
+"/news/gempa": {
+  "get": {
+    "summary": "Info Gempa Indonesia",
+    "description": "Mengambil data gempa terbaru atau daftar gempa berdasarkan filter magnitude dan limit dari BMKG",
+    "tags": ["News"],
+    "parameters": [
+      {
+        "name": "min",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 5
+        },
+        "description": "Filter minimal magnitude (contoh: 5)"
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 5
+        },
+        "description": "Jumlah data gempa yang ditampilkan (default: 5)"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mengambil data gempa",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "creator": {
+                  "type": "string",
+                  "example": "Nayone API"
+                },
+                "source": {
+                  "type": "string",
+                  "example": "BMKG"
+                },
+                "result": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "waktu": {
+                          "type": "object",
+                          "properties": {
+                            "tanggal": { "type": "string" },
+                            "jam": { "type": "string" },
+                            "dateTime": { "type": "string" }
+                          }
+                        },
+                        "lokasi": {
+                          "type": "object",
+                          "properties": {
+                            "wilayah": { "type": "string" },
+                            "lintang": { "type": "string" },
+                            "bujur": { "type": "string" },
+                            "coordinates": { "type": "string" }
+                          }
+                        },
+                        "kekuatan": {
+                          "type": "object",
+                          "properties": {
+                            "magnitude": { "type": "number" },
+                            "kedalaman": { "type": "string" },
+                            "potensi": { "type": "string" },
+                            "dirasakan": { "type": "string" }
+                          }
+                        },
+                        "shakemap": {
+                          "type": "string",
+                          "format": "uri",
+                          "nullable": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "waktu": { "type": "object" },
+                          "lokasi": { "type": "object" },
+                          "kekuatan": { "type": "object" },
+                          "shakemap": {
+                            "type": "string",
+                            "format": "uri",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+                      },    
 "/download/mediafire": {
   "get": {
     "summary": "MediaFire Downloader",
