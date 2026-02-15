@@ -18,6 +18,106 @@
   { "name": "Stalk" }
   ],
   "paths": {
+"/news/jadwalsholat": {
+  "get": {
+    "summary": "Jadwal Sholat Harian",
+    "description": "Mengambil jadwal sholat hari ini untuk kota/daerah di Indonesia. Data real-time dari Aladhan API.",
+    "tags": ["News"],
+    "parameters": [
+      {
+        "name": "kota",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "Jakarta"
+        },
+        "description": "Nama kota/daerah di Indonesia. Default: Jakarta"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mengambil jadwal sholat hari ini",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "creator": {
+                  "type": "string",
+                  "example": "Nayone API"
+                },
+                "source": {
+                  "type": "string",
+                  "example": "Aladhan API"
+                },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "tanggal": {
+                      "type": "string",
+                      "example": "15-02-2026"
+                    },
+                    "hijriyah": {
+                      "type": "string",
+                      "example": "05-08-1447"
+                    },
+                    "kota": {
+                      "type": "string",
+                      "example": "Jakarta"
+                    },
+                    "imsak": {
+                      "type": "string",
+                      "example": "04:33"
+                    },
+                    "subuh": {
+                      "type": "string",
+                      "example": "04:43"
+                    },
+                    "dzuhur": {
+                      "type": "string",
+                      "example": "11:45"
+                    },
+                    "ashar": {
+                      "type": "string",
+                      "example": "15:10"
+                    },
+                    "maghrib": {
+                      "type": "string",
+                      "example": "18:05"
+                    },
+                    "isya": {
+                      "type": "string",
+                      "example": "19:15"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Terjadi kesalahan pada server",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Gagal mengambil data dari Aladhan API" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+                },    
 "/news/jadwalpuasa": {
   "get": {
     "summary": "Jadwal Imsak & Buka Puasa (Auto Detect Ramadan)",
