@@ -21,18 +21,18 @@
 "/news/cuaca": {
   "get": {
     "summary": "Info Cuaca Berdasarkan Nama Wilayah",
-    "description": "Mengambil prakiraan cuaca berdasarkan nama wilayah (contoh: Jakarta, Bandung, Surabaya) dari BMKG",
+    "description": "Mengambil data prakiraan cuaca berdasarkan nama kota/kabupaten dari BMKG. Jika parameter tidak diisi, default Jakarta.",
     "tags": ["News"],
     "parameters": [
       {
         "name": "wilayah",
         "in": "query",
-        "required": true,
+        "required": false,
         "schema": {
           "type": "string",
           "example": "Jakarta"
         },
-        "description": "Nama kota/kabupaten (case-insensitive)"
+        "description": "Nama kota/kabupaten (case-insensitive). Default: Jakarta"
       }
     ],
     "responses": {
@@ -73,9 +73,9 @@
                         "waktu": { "type": "string" },
                         "suhu": { "type": "string", "example": "30 °C" },
                         "kelembapan": { "type": "string", "example": "70 %" },
-                        "kondisi": { "type": "string" },
+                        "kondisi": { "type": "string", "example": "Cerah Berawan" },
                         "kecepatan_angin": { "type": "string", "example": "10 km/jam" },
-                        "arah_angin": { "type": "string" },
+                        "arah_angin": { "type": "string", "example": "Barat Daya" },
                         "jarak_pandang": { "type": "string", "example": "10000 m" }
                       }
                     }
@@ -86,15 +86,12 @@
           }
         }
       },
-      "400": {
-        "description": "Parameter wilayah tidak diisi"
-      },
       "500": {
         "description": "Gagal memproses request atau wilayah tidak ditemukan"
       }
     }
   }
-                },
+},
 "/news/gempa": {
   "get": {
     "summary": "Info Gempa Indonesia",
