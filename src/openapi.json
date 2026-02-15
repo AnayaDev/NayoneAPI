@@ -18,6 +18,98 @@
   { "name": "Stalk" }
   ],
   "paths": { 
+  "/anime/searchanime": {
+    "get": {
+      "summary": "Search Anime",
+      "description": "Mencari anime berdasarkan query dan mengembalikan daftar hasil pencarian",
+      "tags": ["Anime"],
+      "parameters": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Judul anime yang ingin dicari",
+          "example": "boruto"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Respon berhasil",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "creator": {
+                    "type": "string",
+                    "example": "Nayone API"
+                  },
+                  "result": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "example": "Boruto: Naruto Next Generations"
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://s9.nontonanimeid.boats/boruto-naruto-next-generations"
+                        },
+                        "image": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://s9.nontonanimeid.boats/wp-content/uploads/2026/01/boruto.jpg"
+                        },
+                        "rating": {
+                          "type": "string",
+                          "example": "8.5"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "TV"
+                        },
+                        "season": {
+                          "type": "string",
+                          "example": "Spring 2024"
+                        },
+                        "synopsis": {
+                          "type": "string",
+                          "example": "Boruto mengikuti petualangan anak Naruto..."
+                        },
+                        "genres": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": ["Action", "Adventure", "Shounen"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Query parameter tidak ditemukan"
+        },
+        "500": {
+          "description": "Gagal memproses request"
+        }
+      }
+    }
+  },  
   "/download/mediafire": {
   "get": {
     "summary": "MediaFire Downloader",
