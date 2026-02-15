@@ -18,6 +18,33 @@
   { "name": "Stalk" }
   ],
   "paths": {
+"/news/cuaca": {
+  "get": {
+    "summary": "Info Cuaca Indonesia",
+    "description": "Mengambil prakiraan cuaca berdasarkan kode wilayah (ADM4) dari BMKG",
+    "tags": ["News"],
+    "parameters": [
+      {
+        "name": "wilayah",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "31.71.01.1001"
+        },
+        "description": "Kode ADM4 wilayah (default: Jakarta Pusat)"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mengambil data cuaca"
+      },
+      "500": {
+        "description": "Gagal memproses request"
+      }
+    }
+  }
+},    
 "/news/gempa": {
   "get": {
     "summary": "Info Gempa Indonesia",
