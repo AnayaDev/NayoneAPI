@@ -18,6 +18,122 @@
   { "name": "Stalk" }
   ],
   "paths": {
+"/news/jadwalpuasa": {
+  "get": {
+    "summary": "Jadwal Imsak & Buka Puasa (Auto Detect Ramadan)",
+    "description": "Mengambil jadwal imsak, subuh, dan buka puasa berdasarkan kota dengan auto detect bulan Ramadan secara otomatis.",
+    "tags": ["News"],
+    "parameters": [
+      {
+        "name": "kota",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "Jakarta"
+        },
+        "description": "Nama kota di Indonesia. Default: Jakarta"
+      },
+      {
+        "name": "tahun",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 2026
+        },
+        "description": "Tahun yang ingin dicek. Default: tahun sekarang"
+      },
+      {
+        "name": "today",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Jika true, hanya menampilkan jadwal hari ini saja"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mengambil jadwal Ramadan",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "creator": {
+                  "type": "string",
+                  "example": "Nayone API"
+                },
+                "source": {
+                  "type": "string",
+                  "example": "Aladhan API"
+                },
+                "kota": {
+                  "type": "string",
+                  "example": "Jakarta"
+                },
+                "tahun": {
+                  "type": "integer",
+                  "example": 2026
+                },
+                "ramadan_bulan_masehi": {
+                  "type": "integer",
+                  "example": 3
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 30
+                },
+                "result": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "tanggal_masehi": {
+                        "type": "string",
+                        "example": "01-03-2026"
+                      },
+                      "tanggal_hijriyah": {
+                        "type": "string",
+                        "example": "1-09-1447"
+                      },
+                      "imsak": {
+                        "type": "string",
+                        "example": "04:33"
+                      },
+                      "subuh": {
+                        "type": "string",
+                        "example": "04:43"
+                      },
+                      "maghrib": {
+                        "type": "string",
+                        "example": "18:05"
+                      },
+                      "buka_puasa": {
+                        "type": "string",
+                        "example": "18:05"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Terjadi kesalahan pada server"
+      }
+    }
+  }
+},    
 "/news/liburnasional": {
   "get": {
     "summary": "Libur Nasional & Cuti Bersama Indonesia",
