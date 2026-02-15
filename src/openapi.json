@@ -13,11 +13,68 @@
     { "name": "AI" },
     { "name": "Anime" },
     { "name": "Downloader" },
+    { "name": "Game" },
     { "name": "Image" },
    { "name": "News" },
   { "name": "Stalk" }
   ],
   "paths": {
+  "/game/family100": {
+    "get": {
+      "summary": "Start Family100 Game",
+      "description": "Mengambil soal Family100 secara random beserta daftar jawaban",
+      "tags": ["Game"],
+      "responses": {
+        "200": {
+          "description": "Berhasil mengambil soal",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "code": {
+                    "type": "integer",
+                    "example": 200
+                  },
+                  "creator": {
+                    "type": "string",
+                    "example": "Nayone API"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "soal": {
+                        "type": "string",
+                        "example": "Sebutkan hewan yang bisa terbang"
+                      },
+                      "total_jawaban": {
+                        "type": "integer",
+                        "example": 5
+                      },
+                      "jawaban": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["burung", "kelelawar", "elang"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Terjadi kesalahan pada server"
+        }
+      }
+    }
+  },  
   "/anime/top": {
     "get": {
       "summary": "Top Anime",
