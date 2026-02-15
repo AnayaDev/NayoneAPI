@@ -18,6 +18,127 @@
   { "name": "Stalk" }
   ],
   "paths": {
+"/news/liburnasional": {
+  "get": {
+    "summary": "Libur Nasional & Cuti Bersama Indonesia",
+    "description": "Mengambil daftar tanggal merah, libur nasional, dan cuti bersama berdasarkan tahun dan bulan tertentu.",
+    "tags": ["News"],
+    "parameters": [
+      {
+        "name": "tahun",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 2026
+        },
+        "description": "Tahun yang ingin dicek. Default: tahun sekarang"
+      },
+      {
+        "name": "bulan",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "example": 1
+        },
+        "description": "Filter berdasarkan bulan (1 = Januari, 12 = Desember)"
+      },
+      {
+        "name": "tipe",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": ["merah", "semua"],
+          "example": "merah"
+        },
+        "description": "Filter hanya tanggal merah atau semua jenis libur"
+      },
+      {
+        "name": "upcoming",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Jika true, hanya menampilkan libur yang belum lewat"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil mengambil data libur",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "creator": {
+                  "type": "string",
+                  "example": "Nayone API"
+                },
+                "source": {
+                  "type": "string",
+                  "example": "Nager.Date + Cuti Bersama Manual"
+                },
+                "tahun": {
+                  "type": "integer",
+                  "example": 2026
+                },
+                "bulan": {
+                  "type": "string",
+                  "example": "Januari"
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 3
+                },
+                "result": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "tanggal": {
+                        "type": "string",
+                        "example": "2026-01-01"
+                      },
+                      "nama": {
+                        "type": "string",
+                        "example": "Tahun Baru Masehi"
+                      },
+                      "nama_internasional": {
+                        "type": "string",
+                        "example": "New Year's Day"
+                      },
+                      "tipe": {
+                        "type": "string",
+                        "example": "Libur Nasional"
+                      },
+                      "kategori": {
+                        "type": "string",
+                        "example": "tanggal_merah"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Terjadi kesalahan pada server"
+      }
+    }
+  }
+                    },    
 "/news/cuaca": {
   "get": {
     "summary": "Info Cuaca Berdasarkan Nama Wilayah (Global)",
