@@ -23,7 +23,7 @@
   "get": {
     "summary": "Generate E-KTP Image",
     "description": "Menghasilkan gambar E-KTP dengan data pengguna yang diberikan. Output berupa file PNG.",
-    "tags": ["Maker"],
+    "tags": ["Canvas"],
     "parameters": [
       {
         "name": "nik",
@@ -57,7 +57,7 @@
         "name": "pas_photo",
         "in": "query",
         "required": true,
-        "schema": { "type": "string", "example": "https://example.com/photo.jpg" },
+        "schema": { "type": "string", "format": "uri", "example": "https://example.com/photo.jpg" },
         "description": "URL foto pengguna"
       },
       {
@@ -156,9 +156,7 @@
       "200": {
         "description": "Berhasil membuat gambar E-KTP",
         "content": {
-          "image/png": {
-            "schema": { "type": "string", "format": "binary" }
-          }
+          "image/png": { "schema": { "type": "string", "format": "binary" } }
         }
       },
       "400": {
@@ -170,7 +168,7 @@
               "properties": {
                 "status": { "type": "boolean", "example": false },
                 "creator": { "type": "string", "example": "Z7" },
-                "error": { "type": "string", "example": "Missing required parameters" }
+                "error": { "type": "string", "example": "Missing required parameter: nik" }
               }
             }
           }
@@ -193,7 +191,7 @@
       }
     }
   }
-      },    
+},
 "/news/jadwalsholat": {
   "get": {
     "summary": "Jadwal Sholat Harian",
