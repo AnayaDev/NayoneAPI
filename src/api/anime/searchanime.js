@@ -45,7 +45,7 @@ class NontonAnimeAPI {
 
     const response = await axios.get(`${this.baseURL}/`, {
       headers: { ...this.getHeaders(), cookie: cookieString },
-      params: { 's': query },
+      params: { s: query },
       timeout: 10000
     });
 
@@ -58,9 +58,9 @@ class NontonAnimeAPI {
         title: $el.find('.as-anime-title').text().trim(),
         url: $el.attr('href'),
         image: $el.find('img').attr('src'),
-        rating: $el.find('.as-rating').text().replace('⭐','').trim(),
-        type: $el.find('.as-type').text().replace('📺','').trim(),
-        season: $el.find('.as-season').text().replace('📅','').trim(),
+        rating: $el.find('.as-rating').text().replace('⭐', '').trim(),
+        type: $el.find('.as-type').text().replace('📺', '').trim(),
+        season: $el.find('.as-season').text().replace('📅', '').trim(),
         synopsis: $el.find('.as-synopsis').text().trim(),
         genres: $el.find('.as-genre-tag').map((i,g) => $(g).text()).get()
       });
@@ -77,7 +77,7 @@ module.exports = function(app) {
       if (!q) {
         return res.status(400).json({
           status: false,
-          message: "Query parameter 'q' is required"
+          message: "Query parameter 'q' wajib diisi"
         });
       }
 
@@ -89,8 +89,8 @@ module.exports = function(app) {
         creator: "Nayone API",
         result: results
       });
-
     } catch (err) {
+      console.error(err);
       res.status(500).json({
         status: false,
         error: err.message
