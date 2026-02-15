@@ -20,31 +20,81 @@
   "paths": {
 "/news/cuaca": {
   "get": {
-    "summary": "Info Cuaca Indonesia",
-    "description": "Mengambil prakiraan cuaca berdasarkan kode wilayah (ADM4) dari BMKG",
+    "summary": "Info Cuaca Berdasarkan Nama Wilayah",
+    "description": "Mengambil prakiraan cuaca berdasarkan nama wilayah (contoh: Jakarta, Bandung, Surabaya) dari BMKG",
     "tags": ["News"],
     "parameters": [
       {
         "name": "wilayah",
         "in": "query",
-        "required": false,
+        "required": true,
         "schema": {
           "type": "string",
-          "example": "31.71.01.1001"
+          "example": "Jakarta"
         },
-        "description": "Kode ADM4 wilayah (default: Jakarta Pusat)"
+        "description": "Nama kota/kabupaten (case-insensitive)"
       }
     ],
     "responses": {
       "200": {
-        "description": "Berhasil mengambil data cuaca"
+        "description": "Berhasil mengambil data cuaca",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "creator": {
+                  "type": "string",
+                  "example": "Nayone API"
+                },
+                "source": {
+                  "type": "string",
+                  "example": "BMKG"
+                },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "lokasi": {
+                      "type": "object",
+                      "properties": {
+                        "provinsi": { "type": "string" },
+                        "kabupaten": { "type": "string" },
+                        "kecamatan": { "type": "string" },
+                        "desa": { "type": "string" }
+                      }
+                    },
+                    "cuaca": {
+                      "type": "object",
+                      "properties": {
+                        "waktu": { "type": "string" },
+                        "suhu": { "type": "string", "example": "30 °C" },
+                        "kelembapan": { "type": "string", "example": "70 %" },
+                        "kondisi": { "type": "string" },
+                        "kecepatan_angin": { "type": "string", "example": "10 km/jam" },
+                        "arah_angin": { "type": "string" },
+                        "jarak_pandang": { "type": "string", "example": "10000 m" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Parameter wilayah tidak diisi"
       },
       "500": {
-        "description": "Gagal memproses request"
+        "description": "Gagal memproses request atau wilayah tidak ditemukan"
       }
     }
   }
-},    
+                },
 "/news/gempa": {
   "get": {
     "summary": "Info Gempa Indonesia",
