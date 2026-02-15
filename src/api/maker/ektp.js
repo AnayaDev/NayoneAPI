@@ -3,15 +3,15 @@ const assets = require("@putuofc/assetsku");
 const FileType = require("file-type");
 const multer = require("multer");
 
-// ── multer (memory storage, for POST file upload) ───────────────────────────
+// ── multer memory storage
 const upload = multer({ storage: multer.memoryStorage() });
 
-// ── proxy helper (replace with your actual proxy URL getter if needed) ───────
+// ── proxy helper
 function proxy() {
   return process.env.PROXY_URL || null;
 }
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+// ── helpers
 function createImageResponse(res, buffer, filename = null) {
   res.set({
     "Content-Type": "image/png",
@@ -27,20 +27,27 @@ async function isValidImageBuffer(buffer) {
   return type && ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"].includes(type.mime);
 }
 
-// ── core canvas renderer ─────────────────────────────────────────────────────
-async function renderEktp({ provinsi, kota, nik, nama, ttl, jenis_kelamin, golongan_darah, alamat, rt_rw, kel_desa, kecamatan, agama, status, pekerjaan, kewarganegaraan, masa_berlaku, terbuat, pasPhotoSource }) {
-  registerFont(assets.font.get("ARRIAL"), { family: "Arial" });
-  registerFont(assets.font.get("OCR"),    { family: "Ocr"   });
-  registerFont(assets.font.get("SIGN"),   { family: "Sign"  });
+// ── register fonts once at startup
+registerFont(assets.font.get("ARRIAL"), { family: "Arial" });
+registerFont(assets.font.get("OCR"),    { family: "Ocr"   });
+registerFont(assets.font.get("SIGN"),   { family: "Sign"  });
 
+// ── core canvas renderer
+async function renderEktp({ provinsi, kota, nik, nama, ttl, jenis_kelamin, golongan_darah, alamat, rt_rw, kel_desa, kecamatan, agama, status, pekerjaan, kewarganegaraan, masa_berlaku, terbuat, pasPhotoSource }) {
   const template = await loadImage(assets.image.get("TEMPLATE"));
-  const pasPhoto  = await loadImage(pasPhotoSource); // string URL or Buffer
+  
+  let pasPhoto;
+  try {
+    pasPhoto = await loadImage(pasPhotoSource);
+  } catch (err) {
+    throw new Error("Failed to load passport photo. Ensure URL/file is valid.");
+  }
 
   const width = 850, height = 530, radius = 20;
   const canvas = createCanvas(width, height);
   const ctx    = canvas.getContext("2d");
 
-  // background
+  // background with rounded corners
   ctx.fillStyle = "#F0F0F0";
   ctx.beginPath();
   ctx.moveTo(radius, 0);
@@ -91,9 +98,6 @@ async function renderEktp({ provinsi, kota, nik, nama, ttl, jenis_kelamin, golon
   const photoCanvas = createCanvas(photoW, photoH);
   const photoCtx    = photoCanvas.getContext("2d");
 
-  photoCtx.fillStyle = "#FF0000";
-  photoCtx.fillRect(0, 0, photoW, photoH);
-
   const ar = pasPhoto.width / pasPhoto.height;
   let srcW, srcH, srcX, srcY;
   if (ar > photoW / photoH) {
@@ -119,28 +123,32 @@ async function renderEktp({ provinsi, kota, nik, nama, ttl, jenis_kelamin, golon
   return canvas.toBuffer("image/png", { quality: 0.95 });
 }
 
-// ── validation helper ────────────────────────────────────────────────────────
+// ── validation
 function validateFields({ provinsi, kota, nik, nama, ttl, jenis_kelamin, golongan_darah, alamat, rt_rw, kel_desa, kecamatan, agama, status, pekerjaan, kewarganegaraan, masa_berlaku, terbuat }) {
   if (!provinsi || !kota || !nik || !nama || !ttl || !jenis_kelamin || !golongan_darah || !alamat || !rt_rw || !kel_desa || !kecamatan || !agama || !status || !pekerjaan || !kewarganegaraan || !masa_berlaku || !terbuat)
     return "Missing required parameters";
-  if (typeof nik !== "string" || nik.trim().length !== 16)
-    return "Parameter 'nik' must be a 16-digit string";
+
+  if (!/^\d{16}$/.test(nik))
+    return "Parameter 'nik' must be exactly 16 digits";
+
   if (!["Laki-laki", "Perempuan"].includes(jenis_kelamin.trim()))
     return "Parameter 'jenis_kelamin' must be 'Laki-laki' or 'Perempuan'";
+
   if (!["A", "B", "AB", "O", "-"].includes(golongan_darah.trim()))
     return "Parameter 'golongan_darah' must be 'A', 'B', 'AB', 'O', or '-'";
+
   return null;
 }
 
-// ── route exports ────────────────────────────────────────────────────────────
+// ── routes
 module.exports = function (app) {
 
   // GET /api/m/ektp — pas_photo via URL
-  app.get("/maker/ektp", async (req, res) => {
+  app.get("/api/m/ektp", async (req, res) => {
     try {
       const q = req.query;
-      const rt_rw   = q["rt/rw"];
-      const kel_desa = q["kel/desa"];
+      const rt_rw   = (q["rt/rw"] || "").trim();
+      const kel_desa = (q["kel/desa"] || "").trim();
 
       const err = validateFields({ ...q, rt_rw, kel_desa });
       if (err) return res.status(400).json({ status: false, error: err, code: 400 });
@@ -160,8 +168,8 @@ module.exports = function (app) {
         jenis_kelamin:   q.jenis_kelamin.trim(),
         golongan_darah:  q.golongan_darah.trim(),
         alamat:          q.alamat.trim(),
-        rt_rw:           rt_rw.trim(),
-        kel_desa:        kel_desa.trim(),
+        rt_rw,
+        kel_desa,
         kecamatan:       q.kecamatan.trim(),
         agama:           q.agama.trim(),
         status:          q.status.trim(),
@@ -180,11 +188,11 @@ module.exports = function (app) {
   });
 
   // POST /api/m/ektp — pas_photo via file upload
-  app.post("/api/m/ektp", upload.single("pas_photo"), async (req, res) => {
+  app.post("/maker/ektp", upload.single("pas_photo"), async (req, res) => {
     try {
       const b = req.body;
-      const rt_rw    = b["rt/rw"];
-      const kel_desa = b["kel/desa"];
+      const rt_rw   = (b["rt/rw"] || "").trim();
+      const kel_desa = (b["kel/desa"] || "").trim();
 
       const err = validateFields({ ...b, rt_rw, kel_desa });
       if (err) return res.status(400).json({ status: false, error: err, code: 400 });
@@ -205,8 +213,8 @@ module.exports = function (app) {
         jenis_kelamin:   b.jenis_kelamin.trim(),
         golongan_darah:  b.golongan_darah.trim(),
         alamat:          b.alamat.trim(),
-        rt_rw:           rt_rw.trim(),
-        kel_desa:        kel_desa.trim(),
+        rt_rw,
+        kel_desa,
         kecamatan:       b.kecamatan.trim(),
         agama:           b.agama.trim(),
         status:          b.status.trim(),
@@ -223,5 +231,4 @@ module.exports = function (app) {
       return res.status(500).json({ status: false, error: error.message || "Internal Server Error", code: 500 });
     }
   });
-
 };
