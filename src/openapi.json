@@ -18,21 +18,22 @@
   { "name": "Stalk" }
   ],
   "paths": { 
-  "/anime/searchanime": {
+  "/anime/top": {
     "get": {
-      "summary": "Search Anime",
-      "description": "Mencari anime berdasarkan query dan mengembalikan daftar hasil pencarian",
+      "summary": "Top Anime",
+      "description": "Mengambil daftar anime rating tertinggi dari MyAnimeList",
       "tags": ["Anime"],
       "parameters": [
         {
-          "name": "q",
+          "name": "limit",
           "in": "query",
-          "required": true,
+          "required": false,
           "schema": {
-            "type": "string"
+            "type": "integer",
+            "default": 10
           },
-          "description": "Judul anime yang ingin dicari",
-          "example": "boruto"
+          "description": "Jumlah data anime yang ingin ditampilkan",
+          "example": 5
         }
       ],
       "responses": {
@@ -47,6 +48,10 @@
                     "type": "boolean",
                     "example": true
                   },
+                  "code": {
+                    "type": "integer",
+                    "example": 200
+                  },
                   "creator": {
                     "type": "string",
                     "example": "Nayone API"
@@ -56,42 +61,39 @@
                     "items": {
                       "type": "object",
                       "properties": {
+                        "rank": {
+                          "type": "string",
+                          "example": "1"
+                        },
                         "title": {
                           "type": "string",
-                          "example": "Boruto: Naruto Next Generations"
+                          "example": "Fullmetal Alchemist: Brotherhood"
+                        },
+                        "score": {
+                          "type": "string",
+                          "example": "9.10"
+                        },
+                        "cover": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://cdn.myanimelist.net/images/anime/1223/96541.jpg"
                         },
                         "url": {
                           "type": "string",
                           "format": "uri",
-                          "example": "https://s9.nontonanimeid.boats/boruto-naruto-next-generations"
-                        },
-                        "image": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://s9.nontonanimeid.boats/wp-content/uploads/2026/01/boruto.jpg"
-                        },
-                        "rating": {
-                          "type": "string",
-                          "example": "8.5"
+                          "example": "https://myanimelist.net/anime/5114/Fullmetal_Alchemist__Brotherhood"
                         },
                         "type": {
                           "type": "string",
-                          "example": "TV"
+                          "example": "TV (64 eps)"
                         },
-                        "season": {
+                        "aired": {
                           "type": "string",
-                          "example": "Spring 2024"
+                          "example": "Apr 2009 - Jul 2010"
                         },
-                        "synopsis": {
+                        "members": {
                           "type": "string",
-                          "example": "Boruto mengikuti petualangan anak Naruto..."
-                        },
-                        "genres": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "example": ["Action", "Adventure", "Shounen"]
+                          "example": "3,000,000 members"
                         }
                       }
                     }
@@ -101,15 +103,15 @@
             }
           }
         },
-        "400": {
-          "description": "Query parameter tidak ditemukan"
+        "404": {
+          "description": "Data tidak ditemukan"
         },
         "500": {
-          "description": "Gagal memproses request"
+          "description": "Terjadi kesalahan pada server"
         }
       }
     }
-  },  
+  },                          
   "/download/mediafire": {
   "get": {
     "summary": "MediaFire Downloader",
