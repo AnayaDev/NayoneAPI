@@ -1,47 +1,38 @@
 const axios = require("axios");
 
-class CuacaBMKG {
-  constructor() {
-    this.url = "https://api.bmkg.go.id/publik/prakiraan-cuaca";
-  }
+class CuacaGlobal {
+  async getCuaca(namaWilayah = "Jakarta") {
 
-  async getCuacaByNama(namaWilayah = "Jakarta") {
-    const { data } = await axios.get(this.url, {
-      timeout: 10000,
-      headers: {
-        "User-Agent": "Mozilla/5.0"
-      }
-    });
-
-    const wilayahMatch = data?.data?.find(w =>
-      w.lokasi?.kabupaten?.toLowerCase().includes(namaWilayah.toLowerCase()) ||
-      w.lokasi?.kecamatan?.toLowerCase().includes(namaWilayah.toLowerCase())
+    // 1️⃣ Cari koordinat kota dulu
+    const geo = await axios.get(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(namaWilayah)}&count=1`
     );
 
-    if (!wilayahMatch) {
+    if (!geo.data.results || geo.data.results.length === 0) {
       throw new Error("Wilayah tidak ditemukan");
     }
 
-    const prakiraan = wilayahMatch?.cuaca?.[0]?.[0];
-    if (!prakiraan) {
-      throw new Error("Data cuaca tidak tersedia");
-    }
+    const { latitude, longitude, name, country } = geo.data.results[0];
+
+    // 2️⃣ Ambil cuaca current
+    const weather = await axios.get(
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+    );
+
+    const current = weather.data.current_weather;
 
     return {
       lokasi: {
-        provinsi: wilayahMatch.lokasi.provinsi,
-        kabupaten: wilayahMatch.lokasi.kabupaten,
-        kecamatan: wilayahMatch.lokasi.kecamatan,
-        desa: wilayahMatch.lokasi.desa
+        nama: name,
+        negara: country,
+        latitude,
+        longitude
       },
       cuaca: {
-        waktu: prakiraan.local_datetime,
-        suhu: `${prakiraan.t} °C`,
-        kelembapan: `${prakiraan.hu} %`,
-        kondisi: prakiraan.weather_desc,
-        kecepatan_angin: `${prakiraan.ws} km/jam`,
-        arah_angin: prakiraan.wd,
-        jarak_pandang: `${prakiraan.vs} m`
+        waktu: current.time,
+        suhu: current.temperature + " °C",
+        kecepatan_angin: current.windspeed + " km/jam",
+        arah_angin: current.winddirection + "°"
       }
     };
   }
@@ -54,13 +45,13 @@ module.exports = function(app) {
 
       const wilayah = req.query.wilayah || "Jakarta";
 
-      const cuaca = new CuacaBMKG();
-      const result = await cuaca.getCuacaByNama(wilayah);
+      const cuaca = new CuacaGlobal();
+      const result = await cuaca.getCuaca(wilayah);
 
       res.status(200).json({
         status: true,
         creator: "Nayone API",
-        source: "BMKG",
+        source: "Open-Meteo",
         result
       });
 
