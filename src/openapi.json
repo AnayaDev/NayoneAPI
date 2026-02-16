@@ -21,9 +21,9 @@
   "paths": {
 "/tools/pakasir": {
   "get": {
+    "tags": ["Payment"],
     "summary": "Generate QRIS Pakasir",
-    "description": "Membuat transaksi QRIS melalui Pakasir dan mengembalikan detail transaksi termasuk URL QR.",
-    "tags": ["Tools"],
+    "description": "Membuat transaksi QRIS melalui Pakasir dan mengembalikan data transaksi beserta QR image (base64).",
     "parameters": [
       {
         "name": "project",
@@ -32,8 +32,8 @@
         "schema": {
           "type": "string"
         },
-        "description": "Slug project Pakasir",
-        "example": "slug_kamu"
+        "description": "Project ID dari dashboard Pakasir",
+        "example": "myproject"
       },
       {
         "name": "api_key",
@@ -42,8 +42,8 @@
         "schema": {
           "type": "string"
         },
-        "description": "API Key Pakasir",
-        "example": "apikey_kamu"
+        "description": "API Key Pakasir (Bearer token)",
+        "example": "sk_test_xxxxx"
       },
       {
         "name": "amount",
@@ -54,12 +54,12 @@
           "minimum": 1000
         },
         "description": "Nominal transaksi (minimum 1000)",
-        "example": 15000
+        "example": 10000
       }
     ],
     "responses": {
       "200": {
-        "description": "Berhasil membuat transaksi",
+        "description": "Berhasil membuat QR transaksi",
         "content": {
           "application/json": {
             "schema": {
@@ -78,19 +78,20 @@
                   "properties": {
                     "amount": {
                       "type": "integer",
-                      "example": 15000
-                    },
-                    "order_id": {
-                      "type": "string",
-                      "example": "17080728123"
+                      "example": 10000
                     },
                     "qr_image": {
                       "type": "string",
-                      "example": "https://app.pakasir.com/qris/XXXX.png"
+                      "description": "Base64 image QR",
+                      "example": "iVBORw0KGgoAAAANSUhEUgAA..."
                     },
-                    "status": {
+                    "transaction_id": {
                       "type": "string",
-                      "example": "pending"
+                      "example": "trx_123456"
+                    },
+                    "expired_at": {
+                      "type": "string",
+                      "example": "2025-02-16T12:00:00Z"
                     }
                   }
                 }
@@ -99,29 +100,15 @@
           }
         }
       },
+      "400": {
+        "description": "Parameter tidak lengkap atau nominal kurang dari 1000"
+      },
       "500": {
-        "description": "Terjadi kesalahan",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "error": {
-                  "type": "string",
-                  "example": "Minimum amount adalah 1000"
-                }
-              }
-            }
-          }
-        }
+        "description": "Error dari server atau API Pakasir"
       }
     }
   }
-              },    
+      },          
 "/news/liburnasional": {
   "get": {
     "summary": "Libur Nasional & Cuti Bersama Indonesia",
