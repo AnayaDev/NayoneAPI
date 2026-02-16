@@ -878,15 +878,6 @@ header h2 {
         <source src="https://api.deline.web.id/KIiauNolST.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- MUSIC BUTTON -->
-    <button id="music-btn" aria-label="Play music" style="position:fixed;bottom:1.2rem;right:1.2rem;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff6eb4,#c084fc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,110,180,0.55);color:#fff;font-size:1.2rem;">
-        <i class="fas fa-music" style="pointer-events:none;"></i>
-    </button>
-    <div id="music-tooltip" style="position:fixed;bottom:5rem;right:1.2rem;z-index:9998;background:rgba(13,8,24,0.96);border:1.5px solid rgba(255,110,180,0.22);border-radius:0.85rem;padding:0.55rem 0.85rem;font-size:0.68rem;font-family:'Nunito',sans-serif;font-weight:700;color:#c4b5fd;pointer-events:none;opacity:0;transform:translateY(5px);transition:all 0.22s;max-width:185px;text-align:center;line-height:1.45;">
-        <span style="color:#ff9fd6;font-size:0.65rem;display:block;margin-bottom:0.2rem;">♪ Musik Favorit Developer ♡</span>
-        Klik untuk putar musik kesukaan si developer~
-    </div>
-
     <!-- SIDEBAR -->
     <aside id="sidebar" class="fixed top-0 right-0 h-full w-64 transform translate-x-full duration-300 ease-in-out z-[100]">
         <div class="px-6 py-4 border-b flex items-center justify-between">
@@ -942,6 +933,68 @@ header h2 {
             <div id="notifications-list" class="space-y-2"></div>
         </div>
 
+        <!-- MUSIC PLAYER BAR -->
+        <div id="music-player" style="
+            background: linear-gradient(135deg, rgba(26,16,53,0.9), rgba(20,12,40,0.95));
+            border: 1.5px solid rgba(255,110,180,0.22);
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        ">
+            <!-- accent line top -->
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ff6eb4,#c084fc,#67e8f9);"></div>
+
+            <!-- label -->
+            <div style="font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;color:#7c6fa0;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.55rem;">
+                ♪ Musik Favorit Developer
+            </div>
+
+            <!-- player row -->
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+
+                <!-- play/pause button -->
+                <button id="music-play-btn" onclick="toggleMusic()" style="
+                    width:38px;height:38px;border-radius:50%;flex-shrink:0;
+                    background:linear-gradient(135deg,#ff6eb4,#c084fc);
+                    border:none;cursor:pointer;
+                    display:flex;align-items:center;justify-content:center;
+                    box-shadow:0 3px 12px rgba(255,110,180,0.45);
+                    color:#fff;font-size:0.95rem;
+                    transition:all 0.2s;
+                ">
+                    <i id="music-icon" class="fas fa-play" style="pointer-events:none;margin-left:2px;"></i>
+                </button>
+
+                <!-- info & progress -->
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:700;color:#f0e6ff;margin-bottom:0.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        🎵 Developer's Favorite Song
+                    </div>
+                    <!-- progress bar -->
+                    <div style="background:rgba(192,132,252,0.15);border-radius:99px;height:4px;position:relative;cursor:pointer;" id="music-progress-bar" onclick="seekMusic(event)">
+                        <div id="music-progress" style="background:linear-gradient(90deg,#ff6eb4,#c084fc);height:4px;border-radius:99px;width:0%;transition:width 0.5s linear;"></div>
+                    </div>
+                    <!-- time -->
+                    <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+                        <span id="music-current" style="font-size:0.58rem;color:#7c6fa0;font-weight:600;">0:00</span>
+                        <span id="music-duration" style="font-size:0.58rem;color:#7c6fa0;font-weight:600;">0:00</span>
+                    </div>
+                </div>
+
+                <!-- volume icon -->
+                <button onclick="toggleMute()" style="
+                    background:none;border:none;cursor:pointer;
+                    color:#7c6fa0;font-size:0.85rem;flex-shrink:0;
+                    transition:color 0.2s;padding:0.2rem;
+                " id="mute-btn">
+                    <i id="volume-icon" class="fas fa-volume-up" style="pointer-events:none;"></i>
+                </button>
+
+            </div>
+        </div>
+
         <!-- SEARCH -->
         <div class="flex items-center justify-between mb-4">
             <div class="flex-1 relative">
@@ -971,42 +1024,76 @@ header h2 {
 
 <!-- ── MUSIC PLAYER SCRIPT ── -->
 <script>
-const audio    = document.getElementById('bgMusic');
-const musicBtn = document.getElementById('music-btn');
-const tooltip  = document.getElementById('music-tooltip');
-let playing    = false;
-let ttTimeout;
+const audio = document.getElementById('bgMusic');
+let playing = false;
+let muted   = false;
 
-// Show tooltip on load
-setTimeout(() => {
-    tooltip.classList.add('show');
-    ttTimeout = setTimeout(() => tooltip.classList.remove('show'), 4000);
-}, 1200);
+function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
 
-musicBtn.addEventListener('mouseenter', () => { clearTimeout(ttTimeout); tooltip.classList.add('show'); });
-musicBtn.addEventListener('mouseleave', () => { ttTimeout = setTimeout(() => tooltip.classList.remove('show'), 1200); });
-
-musicBtn.addEventListener('click', async () => {
+async function toggleMusic() {
+    const btn  = document.getElementById('music-play-btn');
+    const icon = document.getElementById('music-icon');
     try {
         if (playing) {
             audio.pause();
             playing = false;
-            musicBtn.classList.remove('playing');
-            musicBtn.querySelector('i').className = 'fas fa-music';
+            icon.className = 'fas fa-play';
+            icon.style.marginLeft = '2px';
+            btn.style.boxShadow = '0 3px 12px rgba(255,110,180,0.45)';
         } else {
             await audio.play();
             playing = true;
-            musicBtn.classList.add('playing');
-            musicBtn.querySelector('i').className = 'fas fa-pause';
+            icon.className = 'fas fa-pause';
+            icon.style.marginLeft = '0px';
+            btn.style.boxShadow = '0 3px 18px rgba(255,110,180,0.7), 0 0 0 4px rgba(255,110,180,0.15)';
         }
-        tooltip.classList.remove('show');
-    } catch(e) { console.error('Audio error:',e); }
+    } catch(e) { console.error('Audio error:', e); }
+}
+
+function toggleMute() {
+    muted = !muted;
+    audio.muted = muted;
+    const icon = document.getElementById('volume-icon');
+    const btn  = document.getElementById('mute-btn');
+    if (muted) {
+        icon.className = 'fas fa-volume-mute';
+        btn.style.color = '#ff6eb4';
+    } else {
+        icon.className = 'fas fa-volume-up';
+        btn.style.color = '#7c6fa0';
+    }
+}
+
+function seekMusic(e) {
+    if (!audio.duration) return;
+    const bar  = document.getElementById('music-progress-bar');
+    const rect = bar.getBoundingClientRect();
+    const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    audio.currentTime = pct * audio.duration;
+}
+
+audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    const pct = (audio.currentTime / audio.duration) * 100;
+    document.getElementById('music-progress').style.width = pct + '%';
+    document.getElementById('music-current').textContent  = formatTime(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', () => {
+    document.getElementById('music-duration').textContent = formatTime(audio.duration);
 });
 
 audio.addEventListener('ended', () => {
     playing = false;
-    musicBtn.classList.remove('playing');
-    musicBtn.querySelector('i').className = 'fas fa-music';
+    document.getElementById('music-icon').className = 'fas fa-play';
+    document.getElementById('music-icon').style.marginLeft = '2px';
+    document.getElementById('music-play-btn').style.boxShadow = '0 3px 12px rgba(255,110,180,0.45)';
+    document.getElementById('music-progress').style.width = '0%';
+    document.getElementById('music-current').textContent = '0:00';
 });
 </script>
 
