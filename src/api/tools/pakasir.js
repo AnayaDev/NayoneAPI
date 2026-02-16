@@ -1,65 +1,67 @@
-const express = require("express");
-const axios = require("axios");
+const axios = require('axios')
 
-const router = express.Router();
+class PakasirQR {
+  async create(project, api_key, amount) {
 
-router.post("/tools/pakasir", async (req, res) => {
-  try {
-    const { project, api_key, amount } = req.body;
-
-    // Validasi basic
     if (!project || !api_key || !amount) {
-      return res.status(400).json({
-        status: false,
-        message: "project, api_key, dan amount wajib diisi",
-      });
+      throw new Error("project, api_key, dan amount wajib diisi")
     }
 
-    if (amount < 1000) {
-      return res.status(400).json({
-        status: false,
-        message: "Minimum amount adalah 1000",
-      });
+    const nominal = Number(amount)
+
+    if (isNaN(nominal) || nominal < 1000) {
+      throw new Error("Minimum amount adalah 1000")
     }
 
-    // Request ke API Pakasir
     const create = await axios.post(
       `https://app.pakasir.com/api/${project}/create-transaction`,
-      { amount },
+      { amount: nominal },
       {
         headers: {
           Authorization: `Bearer ${api_key}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
+        timeout: 15000
       }
-    );
+    )
 
-    if (!create.data?.qr_image) {
-      return res.status(500).json({
-        status: false,
-        message: "QR tidak ditemukan dari response Pakasir",
-      });
+    if (!create?.data?.qr_image) {
+      throw new Error("QR tidak ditemukan dari response Pakasir")
     }
 
-    // Ambil gambar QR sebagai buffer
-    const qr = await axios.get(create.data.qr_image, {
-      responseType: "arraybuffer",
-    });
-
-    // Kirim langsung sebagai PNG
-    res.set({
-      "Content-Type": "image/png",
-      "Content-Disposition": `inline; filename="qris-${Date.now()}.png"`,
-    });
-
-    return res.send(qr.data);
-
-  } catch (err) {
-    return res.status(500).json({
-      status: false,
-      message: err.response?.data?.message || err.message,
-    });
+    return {
+      amount: nominal,
+      ...create.data
+    }
   }
-});
+}
 
-module.exports = router;
+module.exports = function(app) {
+
+  app.get("/tools/pakasir", async (req, res) => {
+
+    try {
+
+      const { project, api_key, amount } = req.query
+
+      const pakasir = new PakasirQR()
+      const result = await pakasir.create(project, api_key, amount)
+
+      res.status(200).json({
+        status: true,
+        creator: "Nayone API",
+        result
+      })
+
+    } catch (err) {
+
+      res.status(500).json({
+        status: false,
+        error: err.message
+      })
+
+    }
+
+  })
+
+      }
