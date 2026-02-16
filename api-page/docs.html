@@ -879,11 +879,11 @@ header h2 {
     </audio>
 
     <!-- MUSIC BUTTON -->
-    <button id="music-btn" aria-label="Play music">
-        <i class="fas fa-music"></i>
+    <button id="music-btn" aria-label="Play music" style="position:fixed;bottom:1.2rem;right:1.2rem;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff6eb4,#c084fc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,110,180,0.55);color:#fff;font-size:1.2rem;">
+        <i class="fas fa-music" style="pointer-events:none;"></i>
     </button>
-    <div id="music-tooltip">
-        <span class="tip-title">♪ Musik Favorit Developer ♡</span>
+    <div id="music-tooltip" style="position:fixed;bottom:5rem;right:1.2rem;z-index:9998;background:rgba(13,8,24,0.96);border:1.5px solid rgba(255,110,180,0.22);border-radius:0.85rem;padding:0.55rem 0.85rem;font-size:0.68rem;font-family:'Nunito',sans-serif;font-weight:700;color:#c4b5fd;pointer-events:none;opacity:0;transform:translateY(5px);transition:all 0.22s;max-width:185px;text-align:center;line-height:1.45;">
+        <span style="color:#ff9fd6;font-size:0.65rem;display:block;margin-bottom:0.2rem;">♪ Musik Favorit Developer ♡</span>
         Klik untuk putar musik kesukaan si developer~
     </div>
 
