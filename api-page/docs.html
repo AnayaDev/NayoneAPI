@@ -964,7 +964,7 @@ header h2 {
                     color:#fff;font-size:0.95rem;
                     transition:all 0.2s;
                 ">
-                    <i id="music-icon" class="fas fa-play" style="pointer-events:none;margin-left:2px;"></i>
+                    <span id="music-icon" style="pointer-events:none;font-size:1rem;line-height:1;">▶</span>
                 </button>
 
                 <!-- info & progress -->
@@ -989,7 +989,7 @@ header h2 {
                     color:#7c6fa0;font-size:0.85rem;flex-shrink:0;
                     transition:color 0.2s;padding:0.2rem;
                 " id="mute-btn">
-                    <i id="volume-icon" class="fas fa-volume-up" style="pointer-events:none;"></i>
+                    <span id="volume-icon" style="pointer-events:none;font-size:0.85rem;">🔊</span>
                 </button>
 
             </div>
@@ -1041,13 +1041,13 @@ async function toggleMusic() {
         if (playing) {
             audio.pause();
             playing = false;
-            icon.className = 'fas fa-play';
+            icon.textContent = '▶';
             icon.style.marginLeft = '2px';
             btn.style.boxShadow = '0 3px 12px rgba(255,110,180,0.45)';
         } else {
             await audio.play();
             playing = true;
-            icon.className = 'fas fa-pause';
+            icon.textContent = '⏸';
             icon.style.marginLeft = '0px';
             btn.style.boxShadow = '0 3px 18px rgba(255,110,180,0.7), 0 0 0 4px rgba(255,110,180,0.15)';
         }
@@ -1060,10 +1060,10 @@ function toggleMute() {
     const icon = document.getElementById('volume-icon');
     const btn  = document.getElementById('mute-btn');
     if (muted) {
-        icon.className = 'fas fa-volume-mute';
+        icon.textContent = '🔇';
         btn.style.color = '#ff6eb4';
     } else {
-        icon.className = 'fas fa-volume-up';
+        icon.textContent = '🔊';
         btn.style.color = '#7c6fa0';
     }
 }
@@ -1089,7 +1089,7 @@ audio.addEventListener('loadedmetadata', () => {
 
 audio.addEventListener('ended', () => {
     playing = false;
-    document.getElementById('music-icon').className = 'fas fa-play';
+    document.getElementById('music-icon').textContent = '▶';
     document.getElementById('music-icon').style.marginLeft = '2px';
     document.getElementById('music-play-btn').style.boxShadow = '0 3px 12px rgba(255,110,180,0.45)';
     document.getElementById('music-progress').style.width = '0%';
