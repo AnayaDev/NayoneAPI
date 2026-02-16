@@ -44,10 +44,17 @@ module.exports = function(app) {
 
       const { project, api_key, amount } = req.query
 
+      if (!project || !api_key || !amount) {
+        return res.status(400).json({
+          status: false,
+          message: "project, api_key, dan amount wajib diisi"
+        })
+      }
+
       const pakasir = new PakasirQR()
       const result = await pakasir.create(project, api_key, amount)
 
-      res.status(200).json({
+      return res.status(200).json({
         status: true,
         creator: "Nayone API",
         result
@@ -55,13 +62,13 @@ module.exports = function(app) {
 
     } catch (err) {
 
-      res.status(500).json({
+      return res.status(500).json({
         status: false,
-        error: err.message
+        message: err.response?.data?.message || err.message
       })
 
     }
 
   })
 
-      }
+        }
