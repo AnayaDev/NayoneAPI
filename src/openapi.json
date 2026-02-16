@@ -19,105 +19,94 @@
    { "name": "Tools" }
   ],
   "paths": {
-  "/tools/pakasir": {
-      "get": {
-        "tags": [
-          "Tools"
-        ],
-        "summary": "Generate QRIS Pakasir",
-        "description": "Membuat transaksi QRIS melalui Pakasir dan mengembalikan data transaksi, QR string, serta link pembayaran langsung.",
-        "parameters": [
-          {
-            "name": "project",
-            "in": "query",
-            "required": true,
+"/tools/pakasir": {
+  "get": {
+    "tags": ["Tools"],
+    "summary": "Generate QRIS / Payment Pakasir",
+    "description": "Membuat transaksi melalui Pakasir dan mengembalikan data transaksi, QR string, metode pembayaran, serta link pembayaran langsung.",
+    "parameters": [
+      {
+        "name": "project",
+        "in": "query",
+        "required": true,
+        "schema": { "type": "string" },
+        "description": "Project ID dari dashboard Pakasir",
+        "example": "myproject"
+      },
+      {
+        "name": "api_key",
+        "in": "query",
+        "required": true,
+        "schema": { "type": "string" },
+        "description": "API Key dari dashboard Pakasir",
+        "example": "sk_test_xxxxx"
+      },
+      {
+        "name": "amount",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1000
+        },
+        "description": "Nominal transaksi (minimum Rp 1.000)",
+        "example": 10000
+      },
+      {
+        "name": "method",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": ["qris", "gopay", "shopeepay", "linkaja", "ovo"]
+        },
+        "description": "Metode pembayaran (default: qris)",
+        "example": "gopay"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Berhasil membuat transaksi Pakasir",
+        "content": {
+          "application/json": {
             "schema": {
-              "type": "string"
-            },
-            "description": "Project ID dari dashboard Pakasir",
-            "example": "myproject"
-          },
-          {
-            "name": "api_key",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "API Key dari dashboard Pakasir",
-            "example": "sk_test_xxxxx"
-          },
-          {
-            "name": "amount",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "minimum": 1000
-            },
-            "description": "Nominal transaksi (minimum Rp 1.000)",
-            "example": 10000
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Berhasil membuat QR transaksi",
-            "content": {
-              "application/json": {
-                "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "boolean", "example": true },
+                "creator": { "type": "string", "example": "Nayone API" },
+                "result": {
                   "type": "object",
                   "properties": {
-                    "status": {
-                      "type": "boolean",
-                      "example": true
-                    },
-                    "creator": {
+                    "amount": { "type": "integer", "example": 10000 },
+                    "qr_string": {
                       "type": "string",
-                      "example": "Nayone API"
+                      "description": "QRIS string atau payment code untuk di-scan",
+                      "example": "00020101021..."
                     },
-                    "result": {
-                      "type": "object",
-                      "properties": {
-                        "amount": {
-                          "type": "integer",
-                          "example": 10000
-                        },
-                        "qr_string": {
-                          "type": "string",
-                          "description": "QRIS string untuk di-scan",
-                          "example": "00020101021..."
-                        },
-                        "transaction_id": {
-                          "type": "string",
-                          "example": "INV-1676467789000"
-                        },
-                        "expired_at": {
-                          "type": "string",
-                          "example": "2025-02-16T12:00:00Z"
-                        },
-                        "payment_url": {
-                          "type": "string",
-                          "example": "https://app.pakasir.com/pay/myproject/10000?order_id=INV-xxx"
-                        }
-                      }
+                    "transaction_id": { "type": "string", "example": "INV-1676467789000-123" },
+                    "expired_at": { "type": "string", "example": "2025-02-16T12:00:00Z" },
+                    "payment_url": {
+                      "type": "string",
+                      "example": "https://app.pakasir.com/pay/myproject/10000?order_id=INV-xxx"
+                    },
+                    "payment_method": {
+                      "type": "string",
+                      "example": "gopay",
+                      "description": "Metode pembayaran yang dipilih"
                     }
                   }
                 }
               }
             }
-          },
-          "400": {
-            "description": "Parameter tidak lengkap atau nominal kurang dari 1000"
-          },
-          "502": {
-            "description": "Response tidak valid dari Pakasir"
-          },
-          "500": {
-            "description": "Internal server error"
           }
         }
-      }
-          },                          
+      },
+      "400": { "description": "Parameter tidak lengkap atau nominal kurang dari 1000" },
+      "502": { "description": "Response tidak valid dari Pakasir" },
+      "500": { "description": "Internal server error" }
+    }
+  }
+},                                                
 "/news/liburnasional": {
   "get": {
     "summary": "Libur Nasional & Cuti Bersama Indonesia",
