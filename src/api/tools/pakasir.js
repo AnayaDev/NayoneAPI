@@ -15,18 +15,11 @@ class PakasirQR {
     const paymentUrl = `https://app.pakasir.com/pay/${project}/${nominal}?order_id=${order_id}`;
 
     try {
+      // Endpoint sesuai dokumentasi Pakasir
       const response = await axios.post(
-        `https://app.pakasir.com/api/transactioncreate/qris`,
-        {
-          project,
-          order_id,
-          amount: nominal,
-          api_key
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          timeout: 15000
-        }
+        'https://app.pakasir.com/api/transactioncreate/qris',
+        { project, order_id, amount: nominal, api_key },
+        { headers: { "Content-Type": "application/json" }, timeout: 15000 }
       );
 
       if (!response?.data?.payment?.payment_number) {
@@ -35,10 +28,10 @@ class PakasirQR {
 
       return {
         amount: nominal,
-        qr_image: response.data.payment.payment_number, // QR string/base64
+        qr_image: response.data.payment.payment_number,
         transaction_id: response.data.payment.order_id,
         expired_at: response.data.payment.expired_at,
-        payment_url: paymentUrl // link langsung ke halaman pembayaran Pakasir
+        payment_url: paymentUrl
       };
 
     } catch (err) {
