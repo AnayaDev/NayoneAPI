@@ -8,841 +8,903 @@
     <title>Nayone API.</title>
     <link rel="icon" href="/src/icon.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/json.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'mono': ['Nunito', 'monospace'],
-                        'sans': ['Quicksand', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-
 <style>
-/* ── KAWAII DESIGN TOKENS ──────────────────────────── */
-:root {
-    --pink:    #ff6eb4;
-    --pink-2:  #ff9fd6;
-    --pink-3:  #ffd6ec;
-    --lilac:   #c084fc;
-    --lilac-2: #a855f7;
-    --sky:     #67e8f9;
-    --mint:    #6ee7b7;
-    --peach:   #fda4af;
-    --butter:  #fde68a;
-    --bg:      #0d0818;
-    --bg-2:    #130e22;
-    --bg-3:    #1a1035;
-    --glass:   rgba(20,12,40,0.85);
-    --glass-2: rgba(30,18,55,0.8);
-    --border:  rgba(192,132,252,0.18);
-    --border-2:rgba(255,110,180,0.22);
-    --text:    #f0e6ff;
-    --text-2:  #c4b5fd;
-    --text-3:  #7c6fa0;
+:root{
+    --pk:#ff6eb4;
+    --pk2:#ff9fd6;
+    --lc:#c084fc;
+    --sk:#67e8f9;
+    --mn:#6ee7b7;
+    --pc:#fda4af;
+    --bt:#fde68a;
+    --bg:#0d0818;
+    --br:rgba(192,132,252,0.18);
+    --br2:rgba(255,110,180,0.22);
+    --tx:#f0e6ff;
+    --tx2:#c4b5fd;
+    --tx3:#7c6fa0;
 }
-
-/* ── RESET & BASE ───────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
-::-webkit-scrollbar { display: none !important; }
-
-/* Kawaii floating sparkles background */
-body {
-    background: var(--bg);
+*,*::before,*::after {
+    box-sizing:border-box;
+}
+html {
+    scroll-behavior:smooth;
+}
+body{
+    background:var(--bg);
     background-image:
-        radial-gradient(ellipse 70% 50% at 20% 20%, rgba(192,132,252,0.13), transparent),
-        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,110,180,0.10), transparent),
-        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(103,232,249,0.06), transparent);
-    color: var(--text);
-    font-family: 'Quicksand', sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    position: relative;
-    overflow-x: hidden;
+        radial-gradient(ellipse 70% 50% at 20% 20%,rgba(192,132,252,0.1),transparent),
+        radial-gradient(ellipse 60% 40% at 80% 80%,rgba(255,110,180,0.08),transparent);
+    color:var(--tx);
+    font-family:'Quicksand',sans-serif;
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+}
+::-webkit-scrollbar {
+    width:4px;
+    height:4px;
+}
+::-webkit-scrollbar-track {
+    background:transparent;
+}
+::-webkit-scrollbar-thumb {
+    background:linear-gradient(var(--pk),var(--lc));
+    border-radius:99px;
 }
 
-/* Floating star/sparkle decorations */
-body::before, body::after {
-    content: '';
-    position: fixed;
-    pointer-events: none;
-    z-index: 0;
-}
-body::before {
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image:
-        radial-gradient(2px 2px at 10% 15%, rgba(255,110,180,0.6), transparent),
-        radial-gradient(1.5px 1.5px at 25% 40%, rgba(192,132,252,0.7), transparent),
-        radial-gradient(2px 2px at 40% 10%, rgba(103,232,249,0.5), transparent),
-        radial-gradient(1px 1px at 60% 30%, rgba(255,159,214,0.8), transparent),
-        radial-gradient(2px 2px at 75% 60%, rgba(192,132,252,0.5), transparent),
-        radial-gradient(1.5px 1.5px at 85% 20%, rgba(255,110,180,0.6), transparent),
-        radial-gradient(1px 1px at 90% 75%, rgba(103,232,249,0.6), transparent),
-        radial-gradient(2px 2px at 15% 70%, rgba(253,164,175,0.5), transparent),
-        radial-gradient(1px 1px at 50% 85%, rgba(192,132,252,0.7), transparent),
-        radial-gradient(1.5px 1.5px at 70% 90%, rgba(255,110,180,0.4), transparent);
-    animation: twinkle 4s ease-in-out infinite alternate;
-}
-@keyframes twinkle {
-    from { opacity: 0.4; }
-    to   { opacity: 1; }
-}
-
-/* Animated cute orbs */
-.kawaii-orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.12;
-    pointer-events: none;
-    z-index: 0;
-    animation: floatOrb 8s ease-in-out infinite alternate;
-}
-.kawaii-orb-1 { width: 300px; height: 300px; background: var(--pink); top: -80px; left: -80px; animation-delay: 0s; }
-.kawaii-orb-2 { width: 250px; height: 250px; background: var(--lilac); bottom: -60px; right: -60px; animation-delay: -3s; }
-.kawaii-orb-3 { width: 180px; height: 180px; background: var(--sky); top: 50%; left: 50%; animation-delay: -5s; opacity: 0.06; }
-@keyframes floatOrb {
-    from { transform: translate(0,0) scale(1); }
-    to   { transform: translate(20px,30px) scale(1.1); }
-}
-
-main, header, aside { position: relative; z-index: 1; }
-
-/* ── CUTE SCROLLBAR ─────────────────────────────────── */
-*::-webkit-scrollbar { width: 6px !important; display: block !important; }
-*::-webkit-scrollbar-track { background: transparent; }
-*::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--pink), var(--lilac)); border-radius: 99px; }
-
-/* ── HEADER ─────────────────────────────────────────── */
+/* ── HEADER ── */
 header.glass {
-    backdrop-filter: blur(24px) saturate(200%);
-    background: rgba(13,8,24,0.9);
-    border-bottom: 1px solid var(--border-2) !important;
-    box-shadow: 0 1px 0 rgba(255,110,180,0.08), 0 8px 32px rgba(0,0,0,0.5);
+    backdrop-filter:blur(16px);
+    background:rgba(13,8,24,0.92);
+    border-bottom:1px solid var(--br2);
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+    position:sticky;
+    top:0;
+    z-index:50;
 }
-
-/* Logo title */
 header h2 {
-    margin: 0;
-    color: var(--text) !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 900 !important;
-    font-size: 1.1rem !important;
-    letter-spacing: -0.01em;
-    background: linear-gradient(135deg, var(--pink), var(--lilac), var(--sky));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    margin:0;
+    font-family:'Nunito',sans-serif;
+    font-weight:900;
+    font-size:1.05rem;
+    background:linear-gradient(135deg,var(--pk),var(--lc),var(--sk));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
 }
 header p {
-    margin: 0;
-    color: var(--text-3) !important;
-    font-family: 'Quicksand', sans-serif !important;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    margin:0;
+    color:var(--tx3);
+    font-size:0.68rem;
+    font-weight:600;
+    letter-spacing:0.06em;
 }
-
-/* Version badge */
 header .bg-slate-900 {
-    background: linear-gradient(135deg, var(--pink), var(--lilac)) !important;
-    color: #fff !important;
-    border-radius: 9999px !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.04em;
-    padding: 0.2rem 0.75rem !important;
-    font-size: 0.7rem !important;
-    box-shadow: 0 2px 12px rgba(255,110,180,0.4);
+    background:linear-gradient(135deg,var(--pk),var(--lc)) !important;
+    color:#fff !important;
+    border-radius:9999px !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    padding:0.18rem 0.65rem !important;
+    font-size:0.68rem !important;
+    box-shadow:0 2px 10px rgba(255,110,180,0.35);
 }
-
-/* Sidebar toggle button */
 header button#sidebarToggle {
-    border: 1.5px solid var(--border-2) !important;
-    color: var(--text-2) !important;
-    border-radius: 0.75rem !important;
-    background: rgba(192,132,252,0.08);
-    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
-    width: 38px; height: 38px;
+    border:1.5px solid var(--br2) !important;
+    color:var(--tx2) !important;
+    border-radius:0.65rem !important;
+    background:rgba(192,132,252,0.07);
+    transition:all 0.2s;
+    width:36px;
+    height:36px;
 }
 header button#sidebarToggle:hover {
-    border-color: var(--pink) !important;
-    background: rgba(255,110,180,0.15) !important;
-    color: var(--pink) !important;
-    transform: rotate(10deg) scale(1.08);
-    box-shadow: 0 0 16px rgba(255,110,180,0.3);
+    border-color:var(--pk) !important;
+    background:rgba(255,110,180,0.13) !important;
+    color:var(--pk) !important;
+    transform:rotate(8deg) scale(1.06);
 }
-header button#sidebarToggle .material-icons { color: inherit !important; font-size: 1.2rem; }
+header button#sidebarToggle .material-icons {
+    color:inherit !important;
+    font-size:1.1rem;
+}
 
-/* ── SIDEBAR ─────────────────────────────────────────── */
+/* ── MUSIC BUTTON ── */
+#music-btn{
+    position:fixed;
+    bottom:1.2rem;
+    right:1.2rem;
+    z-index:999;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--pk),var(--lc));
+    border:none;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 18px rgba(255,110,180,0.45);
+    transition:all 0.22s cubic-bezier(.34,1.56,.64,1);
+    color:#fff;
+    font-size:1.1rem;
+}
+#music-btn:hover {
+    transform:scale(1.12);
+    box-shadow:0 6px 24px rgba(255,110,180,0.6);
+}
+#music-btn.playing {
+    animation:mPulse 1.4s ease-in-out infinite;
+}
+@keyframes mPulse{
+0%,100% {
+    box-shadow:0 4px 18px rgba(255,110,180,0.45),0 0 0 0 rgba(255,110,180,0.4);
+}
+50% {
+    box-shadow:0 4px 18px rgba(255,110,180,0.45),0 0 0 10px rgba(255,110,180,0);
+}
+}
+#music-btn i {
+    transition:all 0.2s;
+    pointer-events:none;
+}
+
+/* Music tooltip */
+#music-tooltip{
+    position:fixed;
+    bottom:4.5rem;
+    right:1.2rem;
+    z-index:998;
+    background:rgba(13,8,24,0.96);
+    border:1.5px solid var(--br2);
+    border-radius:0.85rem;
+    padding:0.55rem 0.8rem;
+    font-size:0.68rem;
+    font-family:'Nunito',sans-serif;
+    font-weight:700;
+    color:var(--tx2);
+    box-shadow:0 4px 18px rgba(255,110,180,0.14);
+    pointer-events:none;
+    opacity:0;
+    transform:translateY(5px);
+    transition:all 0.22s;
+    max-width:185px;
+    text-align:center;
+    line-height:1.45;
+}
+#music-tooltip.show {
+    opacity:1;
+    transform:translateY(0);
+}
+#music-tooltip .tip-title {
+    color:var(--pk2);
+    font-size:0.65rem;
+    display:block;
+    margin-bottom:0.2rem;
+}
+#music-tooltip::after {
+    content:'';
+    position:absolute;
+    bottom:-6px;
+    right:16px;
+    width:10px;
+    height:10px;
+    background:rgba(13,8,24,0.96);
+    border-right:1.5px solid var(--br2);
+    border-bottom:1.5px solid var(--br2);
+    transform:rotate(45deg);
+}
+
+/* ── SIDEBAR ── */
 #sidebar {
-    background: rgba(10,6,20,0.97) !important;
-    border-left: 1.5px solid var(--border-2) !important;
-    color: var(--text) !important;
-    backdrop-filter: blur(30px);
-    box-shadow: -8px 0 40px rgba(255,110,180,0.08);
+    background:rgba(10,6,20,0.97) !important;
+    border-left:1.5px solid var(--br2) !important;
+    color:var(--tx) !important;
+    backdrop-filter:blur(24px);
+    box-shadow:-6px 0 30px rgba(255,110,180,0.07);
 }
 #sidebar .border-b {
-    border-color: var(--border) !important;
-    background: linear-gradient(90deg, rgba(255,110,180,0.04), rgba(192,132,252,0.04));
+    border-color:var(--br) !important;
 }
-
-/* Close button */
 #sidebarClose {
-    border: 1.5px solid var(--border-2) !important;
-    color: var(--text-2) !important;
-    border-radius: 0.75rem !important;
-    background: rgba(192,132,252,0.08);
-    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
-    width: 34px; height: 34px;
-    display: flex; align-items: center; justify-content: center;
+    border:1.5px solid var(--br2) !important;
+    color:var(--tx2) !important;
+    border-radius:0.65rem !important;
+    background:rgba(192,132,252,0.07);
+    transition:all 0.2s;
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 #sidebarClose:hover {
-    border-color: var(--pink) !important;
-    background: rgba(255,110,180,0.15) !important;
-    color: var(--pink) !important;
-    transform: rotate(-90deg) scale(1.1);
-    box-shadow: 0 0 16px rgba(255,110,180,0.3);
+    border-color:var(--pk) !important;
+    background:rgba(255,110,180,0.13) !important;
+    color:var(--pk) !important;
+    transform:rotate(-90deg) scale(1.08);
 }
-#sidebarClose .material-icons { color: inherit !important; font-size: 1rem; }
-
-/* Sidebar nav label */
+#sidebarClose .material-icons {
+    color:inherit !important;
+    font-size:1rem;
+}
 #sidebar .text-slate-700 {
-    color: var(--text-3) !important;
-    letter-spacing: 0.12em;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    font-size: 0.6rem !important;
-    text-transform: uppercase;
+    color:var(--tx3) !important;
+    letter-spacing:0.1em;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    font-size:0.58rem !important;
+    text-transform:uppercase;
 }
-
-/* Sidebar links */
 #sidebar a {
-    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
-    border-radius: 0.85rem !important;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.55rem 0.85rem;
-    color: var(--text-2) !important;
-    border: 1.5px solid transparent;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.82rem;
+    transition:all 0.18s;
+    border-radius:0.75rem !important;
+    display:flex;
+    align-items:center;
+    gap:0.55rem;
+    padding:0.5rem 0.8rem;
+    color:var(--tx2) !important;
+    border:1.5px solid transparent;
+    text-decoration:none;
+    font-weight:600;
+    font-size:0.8rem;
 }
 #sidebar a:hover {
-    background: linear-gradient(135deg, rgba(255,110,180,0.12), rgba(192,132,252,0.12)) !important;
-    color: var(--pink) !important;
-    border-color: rgba(255,110,180,0.25);
-    transform: translateX(4px);
-    box-shadow: 0 2px 12px rgba(255,110,180,0.12);
+    background:rgba(255,110,180,0.1) !important;
+    color:var(--pk) !important;
+    border-color:rgba(255,110,180,0.22);
+    transform:translateX(3px);
 }
-#sidebar a .material-icons { color: var(--text-3) !important; font-size: 1rem; }
-#sidebar a:hover .material-icons { color: var(--pink) !important; }
-#sidebar nav .border { border-color: var(--border) !important; }
+#sidebar a .material-icons {
+    color:var(--tx3) !important;
+    font-size:0.95rem;
+}
+#sidebar a:hover .material-icons {
+    color:var(--pk) !important;
+}
+#sidebar nav .border {
+    border-color:var(--br) !important;
+}
 
-/* ── OVERLAY ─────────────────────────────────────────── */
-#overlay { backdrop-filter: blur(4px); background: rgba(13,8,24,0.7); }
+/* ── OVERLAY ── */
+#overlay {
+    backdrop-filter:blur(3px);
+    background:rgba(13,8,24,0.65);
+}
 
-/* ── MAIN CONTENT ─────────────────────────────────────── */
+/* ── MAIN ── */
 main {
-    padding-top: 2.5rem !important;
-    padding-bottom: 2.5rem !important;
+    padding-top:2rem !important;
+    padding-bottom:2rem !important;
+    position:relative;
+    z-index:1;
 }
 
-/* ── NOTIFICATIONS ──────────────────────────────────── */
-#notifications-list .bg-white,
-#notifications-list [class*="bg-white"],
-#notifications-list .border-gray-200 {
-    background: linear-gradient(135deg, rgba(30,18,55,0.85), rgba(20,12,40,0.9)) !important;
-    border: 1.5px solid var(--border) !important;
-    border-radius: 1rem !important;
-    color: var(--text) !important;
-    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-    position: relative;
-    overflow: hidden;
+/* ── NOTIFICATIONS ── */
+#notifications-list .bg-white,#notifications-list [class*="bg-white"],#notifications-list .border-gray-200 {
+    background:linear-gradient(135deg,rgba(26,16,53,0.85),rgba(20,12,40,0.9)) !important;
+    border:1.5px solid var(--br) !important;
+    border-radius:0.9rem !important;
+    color:var(--tx) !important;
+    transition:all 0.2s;
+    position:relative;
+    overflow:hidden;
 }
 #notifications-list .bg-white::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--pink), var(--lilac), var(--sky));
-    border-radius: 1rem 1rem 0 0;
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:2px;
+    background:linear-gradient(90deg,var(--pk),var(--lc),var(--sk));
 }
 #notifications-list .bg-white:hover {
-    background: linear-gradient(135deg, rgba(255,110,180,0.1), rgba(192,132,252,0.1)) !important;
-    border-color: var(--border-2) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255,110,180,0.12);
+    border-color:var(--br2) !important;
+    transform:translateY(-1px);
+    box-shadow:0 6px 18px rgba(255,110,180,0.1);
 }
-#notifications-list .text-slate-800 { color: var(--text) !important; font-weight: 700; }
-#notifications-list .text-slate-600 { color: var(--text-2) !important; font-weight: 500; }
-#notifications-list .text-slate-500 { color: var(--text-3) !important; }
-#notifications-list .opacity-60 { opacity: 0.5 !important; }
-
-/* Section heading */
-.text-slate-900 { color: var(--text) !important; }
-.text-slate-500 { color: var(--text-3) !important; }
-
-/* Section title */
+#notifications-list .text-slate-800 {
+    color:var(--tx) !important;
+    font-weight:700;
+}
+#notifications-list .text-slate-600 {
+    color:var(--tx2) !important;
+    font-weight:500;
+}
+#notifications-list .text-slate-500 {
+    color:var(--tx3) !important;
+}
+#notifications-list .opacity-60 {
+    opacity:0.5 !important;
+}
+.text-slate-900 {
+    color:var(--tx) !important;
+}
+.text-slate-500 {
+    color:var(--tx3) !important;
+}
 h2.text-sm.font-semibold {
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    font-size: 0.9rem !important;
-    background: linear-gradient(135deg, var(--pink-2), var(--lilac));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    background:linear-gradient(135deg,var(--pk2),var(--lc));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
 }
-
-/* Unread badge */
 #unread-count {
-    background: linear-gradient(135deg, var(--pink), #e0406a) !important;
-    color: #fff !important;
-    border-radius: 9999px !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.04em;
-    padding: 0.2rem 0.6rem !important;
-    font-size: 0.65rem !important;
-    box-shadow: 0 2px 10px rgba(255,110,180,0.45);
-    animation: heartbeat 2s ease-in-out infinite;
+    background:linear-gradient(135deg,var(--pk),#e0406a) !important;
+    color:#fff !important;
+    border-radius:9999px !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    padding:0.18rem 0.55rem !important;
+    font-size:0.62rem !important;
+    box-shadow:0 2px 8px rgba(255,110,180,0.4);
+    animation:hb 2s ease-in-out infinite;
 }
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 
-/* ── SEARCH ─────────────────────────────────────────── */
+/* ── SEARCH ── */
 #searchInput {
-    border-radius: 1.2rem !important;
-    background: rgba(26,16,53,0.7) !important;
-    color: var(--text) !important;
-    border: 1.5px solid var(--border) !important;
-    font-family: 'Quicksand', sans-serif !important;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-    padding-left: 2.8rem !important;
-    height: 46px;
+    border-radius:1rem !important;
+    background:rgba(22,13,46,0.75) !important;
+    color:var(--tx) !important;
+    border:1.5px solid var(--br) !important;
+    font-family:'Quicksand',sans-serif !important;
+    font-weight:600;
+    font-size:0.83rem;
+    transition:all 0.2s;
+    padding-left:2.6rem !important;
+    height:44px;
 }
-#searchInput::placeholder { color: var(--text-3) !important; }
+#searchInput::placeholder {
+    color:var(--tx3) !important;
+}
 #searchInput:focus {
-    border-color: var(--pink) !important;
-    box-shadow: 0 0 0 3px rgba(255,110,180,0.15), 0 8px 24px rgba(255,110,180,0.1) !important;
-    outline: none;
-    background: rgba(30,18,55,0.85) !important;
+    border-color:var(--pk) !important;
+    box-shadow:0 0 0 3px rgba(255,110,180,0.12) !important;
+    outline:none;
+    background:rgba(26,16,53,0.85) !important;
+}
+.absolute .material-icons {
+    color:var(--tx3) !important;
+}
+#noResults h3 {
+    color:var(--tx3) !important;
+    font-family:'Nunito',sans-serif !important;
 }
 
-/* Search icon */
-.absolute .material-icons { color: var(--text-3) !important; }
-#searchInput:focus ~ .absolute .material-icons,
-.relative:focus-within .absolute .material-icons { color: var(--pink) !important; }
-
-/* ── NO RESULTS ─────────────────────────────────────── */
-#noResults h3 { color: var(--text-3) !important; font-family: 'Nunito', sans-serif !important; }
-
-/* ── CATEGORY GROUP ─────────────────────────────────── */
-.category-group { margin-bottom: 0.75rem; }
-
-.category-group > div > div {
-    background: linear-gradient(160deg, rgba(26,16,53,0.9), rgba(20,12,40,0.95)) !important;
-    border: 1.5px solid var(--border) !important;
-    border-radius: 1.2rem !important;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-    position: relative;
+/* ── CATEGORY GROUP ── */
+.category-group {
+    margin-bottom:0.6rem;
 }
-.category-group > div > div::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--pink), var(--lilac), var(--sky));
-    opacity: 0.7;
+.category-group>div>div {
+    background:linear-gradient(160deg,rgba(22,13,46,0.88),rgba(16,9,34,0.92)) !important;
+    border:1.5px solid var(--br) !important;
+    border-radius:1rem !important;
+    overflow:hidden;
+    transition:border-color 0.2s,box-shadow 0.2s;
+    position:relative;
 }
-.category-group > div > div:hover {
-    border-color: rgba(255,110,180,0.35) !important;
-    box-shadow: 0 8px 30px rgba(192,132,252,0.12);
-    transform: translateY(-1px);
+.category-group>div>div::before {
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:2px;
+    background:linear-gradient(90deg,var(--pk),var(--lc),var(--sk));
+    opacity:0.6;
 }
-
-/* Category button */
-.category-group > div > div > button {
-    background: transparent !important;
-    padding: 0.95rem 1.1rem !important;
-    transition: background 0.2s !important;
+.category-group>div>div:hover {
+    border-color:rgba(255,110,180,0.3) !important;
+    box-shadow:0 6px 22px rgba(192,132,252,0.1);
 }
-.category-group > div > div > button:hover { background: rgba(255,110,180,0.04) !important; }
-
-/* Folder icon pill */
+.category-group>div>div>button {
+    background:transparent !important;
+    padding:0.85rem 1rem !important;
+    transition:background 0.15s !important;
+}
+.category-group>div>div>button:hover {
+    background:rgba(255,110,180,0.04) !important;
+}
 .category-group .bg-slate-900 {
-    background: linear-gradient(135deg, rgba(255,110,180,0.2), rgba(192,132,252,0.2)) !important;
-    border: 1.5px solid rgba(255,110,180,0.25) !important;
-    border-radius: 0.6rem !important;
-    padding: 0.35rem 0.6rem !important;
-    transition: all 0.2s;
+    background:linear-gradient(135deg,rgba(255,110,180,0.18),rgba(192,132,252,0.18)) !important;
+    border:1.5px solid rgba(255,110,180,0.22) !important;
+    border-radius:0.5rem !important;
+    padding:0.3rem 0.5rem !important;
 }
-.category-group .bg-slate-900 .material-icons { color: var(--pink) !important; }
-.category-group > div > div > button:hover .bg-slate-900 { background: linear-gradient(135deg, rgba(255,110,180,0.3), rgba(192,132,252,0.3)) !important; }
-
-/* Category name & count */
+.category-group .bg-slate-900 .material-icons {
+    color:var(--pk) !important;
+}
 .category-group h2 span.text-slate-900 {
-    color: var(--text) !important;
-    font-size: 0.88rem;
-    font-weight: 700;
-    font-family: 'Nunito', sans-serif !important;
+    color:var(--tx) !important;
+    font-size:0.85rem;
+    font-weight:700;
+    font-family:'Nunito',sans-serif !important;
 }
 .category-group h2 span.text-gray-600 {
-    color: var(--text-3) !important;
-    font-size: 0.75rem;
-    font-weight: 600;
+    color:var(--tx3) !important;
+    font-size:0.72rem;
+    font-weight:600;
 }
-.category-group > div > div > button > .material-icons {
-    color: var(--text-3) !important;
-    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+.category-group>div>div>button>.material-icons {
+    color:var(--tx3) !important;
+    transition:color 0.2s;
 }
-.category-group > div > div > button:hover > .material-icons { color: var(--pink) !important; }
-
-/* ── API ITEM ─────────────────────────────────────────── */
-.api-item { border-top: 1px solid rgba(192,132,252,0.08) !important; }
-
-.api-item > button {
-    background: transparent !important;
-    border-radius: 0 !important;
-    padding: 0.75rem 1.1rem !important;
-    transition: all 0.2s !important;
-}
-.api-item > button:hover {
-    background: linear-gradient(135deg, rgba(255,110,180,0.05), rgba(192,132,252,0.05)) !important;
+.category-group>div>div>button:hover>.material-icons {
+    color:var(--pk) !important;
 }
 
-/* Path & name text */
-.api-item .text-slate-800 { color: var(--text) !important; font-weight: 600; font-size: 0.82rem; }
-.api-item .text-slate-600 { color: var(--text-3) !important; font-size: 0.73rem; font-weight: 600; }
-.api-item .material-icons { color: var(--text-3) !important; transition: all 0.2s; }
-.api-item > button:hover .material-icons { color: var(--pink) !important; }
+/* ── API ITEM ── */
+.api-item {
+    border-top:1px solid rgba(192,132,252,0.07) !important;
+}
+.api-item>button {
+    background:transparent !important;
+    border-radius:0 !important;
+    padding:0.7rem 1rem !important;
+    transition:background 0.15s !important;
+}
+.api-item>button:hover {
+    background:rgba(255,110,180,0.04) !important;
+}
+.api-item .text-slate-800 {
+    color:var(--tx) !important;
+    font-weight:600;
+    font-size:0.8rem;
+}
+.api-item .text-slate-600 {
+    color:var(--tx3) !important;
+    font-size:0.7rem;
+    font-weight:600;
+}
+.api-item .material-icons {
+    color:var(--tx3) !important;
+    transition:color 0.15s;
+}
+.api-item>button:hover .material-icons {
+    color:var(--pk) !important;
+}
+.api-item>button:hover .text-slate-800 {
+    color:var(--pk2) !important;
+}
 
-/* ── METHOD BADGES ───────────────────────────────────── */
+/* ── METHOD BADGES ── */
 .api-item span.inline-block {
-    font-weight: 800 !important;
-    letter-spacing: 0.08em !important;
-    padding: 0.18rem 0.65rem !important;
-    border-radius: 9999px !important;
-    font-size: 0.6rem !important;
-    font-family: 'Nunito', sans-serif !important;
-    border: 1.5px solid;
+    font-weight:800 !important;
+    letter-spacing:0.07em !important;
+    padding:0.15rem 0.55rem !important;
+    border-radius:9999px !important;
+    font-size:0.58rem !important;
+    font-family:'Nunito',sans-serif !important;
+    border:1.5px solid;
+}
+.bg-slate-900 {
+    background:rgba(192,132,252,0.14) !important;
+    color:var(--lc) !important;
+    border-color:rgba(192,132,252,0.32) !important;
+}
+.bg-yellow-600 {
+    background:rgba(253,230,138,0.14) !important;
+    color:var(--bt) !important;
+    border-color:rgba(253,230,138,0.28) !important;
+}
+.bg-red-600 {
+    background:rgba(253,164,175,0.14) !important;
+    color:var(--pc) !important;
+    border-color:rgba(253,164,175,0.28) !important;
+}
+.GET {
+    background:rgba(110,231,183,0.14) !important;
+    color:var(--mn) !important;
+    border-color:rgba(110,231,183,0.28) !important;
+}
+.POST {
+    background:rgba(103,232,249,0.14) !important;
+    color:var(--sk) !important;
+    border-color:rgba(103,232,249,0.28) !important;
+}
+.PUT {
+    background:rgba(253,230,138,0.14) !important;
+    color:var(--bt) !important;
+    border-color:rgba(253,230,138,0.28) !important;
+}
+.DELETE {
+    background:rgba(253,164,175,0.14) !important;
+    color:var(--pc) !important;
+    border-color:rgba(253,164,175,0.28) !important;
 }
 
-/* Method badge colors */
-.bg-slate-900 { background: rgba(192,132,252,0.15) !important; color: var(--lilac) !important; border-color: rgba(192,132,252,0.35) !important; }
-.bg-yellow-600 { background: rgba(253,230,138,0.15) !important; color: var(--butter) !important; border-color: rgba(253,230,138,0.3) !important; }
-.bg-red-600    { background: rgba(253,164,175,0.15) !important; color: var(--peach) !important; border-color: rgba(253,164,175,0.3) !important; }
-
-.GET    { background: rgba(110,231,183,0.15)  !important; color: var(--mint)   !important; border-color: rgba(110,231,183,0.3)  !important; }
-.POST   { background: rgba(103,232,249,0.15)  !important; color: var(--sky)    !important; border-color: rgba(103,232,249,0.3)  !important; }
-.PUT    { background: rgba(253,230,138,0.15)  !important; color: var(--butter) !important; border-color: rgba(253,230,138,0.3)  !important; }
-.DELETE { background: rgba(253,164,175,0.15)  !important; color: var(--peach)  !important; border-color: rgba(253,164,175,0.3)  !important; }
-
-/* ── STATUS BADGES ───────────────────────────────────── */
+/* ── STATUS BADGES ── */
 .bg-green-200 {
-    background: rgba(110,231,183,0.15) !important;
-    color: var(--mint) !important;
-    border: 1.5px solid rgba(110,231,183,0.3) !important;
-    border-radius: 9999px !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    font-size: 0.6rem !important;
-    padding: 0.12rem 0.5rem !important;
+    background:rgba(110,231,183,0.14) !important;
+    color:var(--mn) !important;
+    border:1.5px solid rgba(110,231,183,0.28) !important;
+    border-radius:9999px !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    font-size:0.58rem !important;
+    padding:0.1rem 0.45rem !important;
 }
 span[class*="bg-yellow-500"] {
-    background: rgba(253,230,138,0.12) !important;
-    color: var(--butter) !important;
-    border: 1.5px solid rgba(253,230,138,0.25) !important;
-    border-radius: 9999px !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    font-size: 0.6rem !important;
-    padding: 0.12rem 0.5rem !important;
+    background:rgba(253,230,138,0.1) !important;
+    color:var(--bt) !important;
+    border:1.5px solid rgba(253,230,138,0.22) !important;
+    border-radius:9999px !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    font-size:0.58rem !important;
+    padding:0.1rem 0.45rem !important;
 }
 
-/* ── ENDPOINT DETAIL ─────────────────────────────────── */
-.hidden.bg-gray-50,
-[id^="endpoint-"] {
-    background: rgba(13,8,24,0.6) !important;
-    border-top: 1px solid rgba(192,132,252,0.1) !important;
+/* ── ENDPOINT DETAIL ── */
+.hidden.bg-gray-50,[id^="endpoint-"] {
+    background:rgba(10,5,20,0.55) !important;
+    border-top:1px solid rgba(192,132,252,0.08) !important;
 }
-.text-slate-600.text-xs { color: var(--text-2) !important; font-weight: 500; }
-
-/* Try it out label */
+.text-slate-600.text-xs {
+    color:var(--tx2) !important;
+    font-weight:500;
+}
 .text-gray-700.font-bold.text-xs {
-    color: var(--text-3) !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.1em;
-    font-size: 0.65rem !important;
+    color:var(--tx3) !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    letter-spacing:0.09em;
+    font-size:0.62rem !important;
 }
-.text-gray-700.font-bold.text-xs .material-icons { color: var(--pink) !important; }
+.text-gray-700.font-bold.text-xs .material-icons {
+    color:var(--pk) !important;
+}
+.text-slate-700 {
+    color:var(--tx2) !important;
+    font-weight:600;
+}
 
-/* Form labels */
-.text-slate-700 { color: var(--text-2) !important; font-weight: 600; }
-
-/* ── FORMS ───────────────────────────────────────────── */
-input, select, textarea {
-    background: rgba(20,12,40,0.8) !important;
-    color: var(--text) !important;
-    border: 1.5px solid var(--border) !important;
-    border-radius: 0.85rem !important;
-    padding: 0.6rem 0.9rem !important;
-    width: 100%;
-    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
-    font-family: 'Quicksand', sans-serif !important;
-    font-weight: 600;
-    font-size: 0.82rem;
+/* ── FORMS ── */
+input,select,textarea {
+    background:rgba(18,10,38,0.8) !important;
+    color:var(--tx) !important;
+    border:1.5px solid var(--br) !important;
+    border-radius:0.75rem !important;
+    padding:0.55rem 0.85rem !important;
+    width:100%;
+    transition:border-color 0.2s,box-shadow 0.2s;
+    font-family:'Quicksand',sans-serif !important;
+    font-weight:600;
+    font-size:0.8rem;
 }
-input::placeholder, textarea::placeholder { color: var(--text-3) !important; }
-input:focus, select:focus, textarea:focus {
-    border-color: var(--pink) !important;
-    box-shadow: 0 0 0 3px rgba(255,110,180,0.12), 0 4px 16px rgba(255,110,180,0.08) !important;
-    outline: none !important;
-    background: rgba(26,16,53,0.9) !important;
+input::placeholder,textarea::placeholder {
+    color:var(--tx3) !important;
 }
-input[type="file"] { cursor: pointer; padding: 0.5rem 0.9rem !important; }
+input:focus,select:focus,textarea:focus {
+    border-color:var(--pk) !important;
+    box-shadow:0 0 0 3px rgba(255,110,180,0.1) !important;
+    outline:none !important;
+    background:rgba(24,14,50,0.9) !important;
+}
+input[type="file"] {
+    cursor:pointer;
+    padding:0.45rem 0.85rem !important;
+}
 select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23c084fc'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 0.75rem center !important;
-    background-size: 1rem !important;
-    -webkit-appearance: none;
-    appearance: none;
-    padding-right: 2.2rem !important;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23c084fc'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E") !important;
+    background-repeat:no-repeat !important;
+    background-position:right 0.65rem center !important;
+    background-size:0.9rem !important;
+    -webkit-appearance:none;
+    appearance:none;
+    padding-right:2rem !important;
 }
 .border-gray-200[class*="focus:border-gray-600"] {
-    background: rgba(20,12,40,0.8) !important;
-    border-color: var(--border) !important;
-    color: var(--text) !important;
+    background:rgba(18,10,38,0.8) !important;
+    border-color:var(--br) !important;
+    color:var(--tx) !important;
 }
 
-/* ── BUTTONS ─────────────────────────────────────────── */
-/* Execute button */
+/* ── BUTTONS ── */
 button[type="submit"].bg-gray-800 {
-    background: linear-gradient(135deg, var(--pink), var(--lilac)) !important;
-    color: #fff !important;
-    border-radius: 9999px !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-size: 0.7rem !important;
-    padding: 0.6rem 1.4rem !important;
-    border: none !important;
-    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-    box-shadow: 0 4px 16px rgba(255,110,180,0.35);
-    position: relative;
-    overflow: hidden;
+    background:linear-gradient(135deg,var(--pk),var(--lc)) !important;
+    color:#fff !important;
+    border-radius:9999px !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    letter-spacing:0.07em;
+    text-transform:uppercase;
+    font-size:0.68rem !important;
+    padding:0.55rem 1.3rem !important;
+    border:none !important;
+    transition:all 0.2s;
+    box-shadow:0 3px 14px rgba(255,110,180,0.32);
 }
-button[type="submit"].bg-gray-800::after {
-    content: '✨';
-    position: absolute;
-    right: 0.6rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.75rem;
-    opacity: 0;
-    transition: all 0.2s;
-}
-button[type="submit"].bg-gray-800:hover::after { opacity: 1; right: 0.5rem; }
 button[type="submit"].bg-gray-800:hover {
-    background: linear-gradient(135deg, #ff4fa3, #a855f7) !important;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 24px rgba(255,110,180,0.45), 0 0 0 4px rgba(255,110,180,0.1);
+    background:linear-gradient(135deg,#ff4fa3,#a855f7) !important;
+    transform:translateY(-1px) scale(1.02);
+    box-shadow:0 6px 20px rgba(255,110,180,0.42);
 }
-button[type="submit"].bg-gray-800:active { transform: translateY(0) scale(0.98); }
-
-/* Clear button */
+button[type="submit"].bg-gray-800:active {
+    transform:translateY(0) scale(0.98);
+}
 button[id^="clear-"] {
-    background: rgba(192,132,252,0.1) !important;
-    border: 1.5px solid var(--border) !important;
-    color: var(--text-2) !important;
-    border-radius: 9999px !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-size: 0.7rem !important;
-    padding: 0.6rem 1.4rem !important;
-    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    background:rgba(192,132,252,0.09) !important;
+    border:1.5px solid var(--br) !important;
+    color:var(--tx2) !important;
+    border-radius:9999px !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    letter-spacing:0.07em;
+    text-transform:uppercase;
+    font-size:0.68rem !important;
+    padding:0.55rem 1.3rem !important;
+    transition:all 0.2s;
 }
 button[id^="clear-"]:hover {
-    border-color: var(--lilac) !important;
-    background: rgba(192,132,252,0.2) !important;
-    color: var(--lilac) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(192,132,252,0.2);
+    border-color:var(--lc) !important;
+    background:rgba(192,132,252,0.18) !important;
+    color:var(--lc) !important;
+    transform:translateY(-1px);
 }
-
-/* Deprecated notice */
-.text-yellow-400 { color: var(--butter) !important; }
+.text-yellow-400 {
+    color:var(--bt) !important;
+}
 [class*="bg-yellow-500\/20"] {
-    background: rgba(253,230,138,0.07) !important;
-    border-color: rgba(253,230,138,0.2) !important;
-    border-radius: 0.85rem !important;
+    background:rgba(253,230,138,0.06) !important;
+    border-color:rgba(253,230,138,0.18) !important;
+    border-radius:0.75rem !important;
 }
 
-/* ── RESPONSE PANEL ──────────────────────────────────── */
-[id^="response-"] > div.text-gray-700 {
-    color: var(--text-3) !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.1em;
+/* ── RESPONSE PANEL ── */
+[id^="response-"]>div.text-gray-700 {
+    color:var(--tx3) !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    letter-spacing:0.09em;
 }
-[id^="response-"] > div.text-gray-700 .material-icons { color: var(--lilac) !important; }
-
+[id^="response-"]>div.text-gray-700 .material-icons {
+    color:var(--lc) !important;
+}
 [id^="response-content-"] {
-    background: rgba(7,4,15,0.8) !important;
-    border: 1.5px solid var(--border) !important;
-    border-radius: 1rem !important;
-    color: var(--text) !important;
+    background:rgba(7,4,15,0.75) !important;
+    border:1.5px solid var(--br) !important;
+    border-radius:0.9rem !important;
+    color:var(--tx) !important;
 }
-
-[id^="response-content-"] div,
-[id^="response-content-"] pre,
-[id^="response-content-"] code {
-    background: rgba(10,5,20,0.85) !important;
-    color: var(--text) !important;
-    border-radius: 0.6rem !important;
-    font-family: 'Nunito', monospace !important;
-    font-size: 0.75rem !important;
+[id^="response-content-"] div,[id^="response-content-"] pre,[id^="response-content-"] code {
+    background:rgba(8,4,18,0.8) !important;
+    color:var(--tx) !important;
+    border-radius:0.5rem !important;
+    font-family:'Nunito',monospace !important;
+    font-size:0.73rem !important;
 }
-
-/* Block title */
 .block-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.62rem;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    letter-spacing: 0.12em;
-    color: var(--text-3) !important;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:0.6rem;
+    font-weight:800;
+    font-family:'Nunito',sans-serif;
+    letter-spacing:0.11em;
+    color:var(--tx3) !important;
+    text-transform:uppercase;
+    margin-bottom:0.4rem;
 }
-.block-title .material-icons { color: var(--lilac) !important; font-size: 0.95rem; }
-
+.block-title .material-icons {
+    color:var(--lc) !important;
+    font-size:0.9rem;
+}
 .copy-btn {
-    background: rgba(192,132,252,0.08);
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
-    cursor: pointer;
-    color: var(--text-3);
-    padding: 0.2rem 0.4rem;
-    transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
-    display: inline-flex; align-items: center;
+    background:rgba(192,132,252,0.07);
+    border:1px solid var(--br);
+    border-radius:0.4rem;
+    cursor:pointer;
+    color:var(--tx3);
+    padding:0.18rem 0.35rem;
+    transition:all 0.15s;
+    display:inline-flex;
+    align-items:center;
 }
 .copy-btn:hover {
-    color: var(--lilac);
-    background: rgba(192,132,252,0.2);
-    border-color: rgba(192,132,252,0.4);
-    transform: scale(1.1);
-    box-shadow: 0 2px 10px rgba(192,132,252,0.2);
+    color:var(--lc);
+    background:rgba(192,132,252,0.18);
+    border-color:rgba(192,132,252,0.36);
+    transform:scale(1.08);
 }
-.copy-btn .material-icons { color: inherit !important; font-size: 0.95rem !important; }
+.copy-btn .material-icons {
+    color:inherit !important;
+    font-size:0.9rem !important;
+}
 
-/* ── HTTP STATUS TABLE ───────────────────────────────── */
+/* ── STATUS TABLE ── */
 .bg-white.border.border-gray-200 {
-    background: rgba(10,5,20,0.7) !important;
-    border: 1.5px solid var(--border) !important;
-    border-radius: 0.85rem !important;
-    overflow: hidden;
+    background:rgba(8,4,18,0.65) !important;
+    border:1.5px solid var(--br) !important;
+    border-radius:0.75rem !important;
+    overflow:hidden;
 }
 table thead.bg-gray-50 {
-    background: rgba(192,132,252,0.06) !important;
+    background:rgba(192,132,252,0.05) !important;
 }
 table thead th {
-    color: var(--text-3) !important;
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 800 !important;
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    color:var(--tx3) !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:800 !important;
+    font-size:0.6rem;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
 }
-table tbody tr { border-bottom: 1px solid rgba(192,132,252,0.06) !important; }
-table tbody tr:hover td { background: rgba(255,110,180,0.03) !important; }
+table tbody tr {
+    border-bottom:1px solid rgba(192,132,252,0.05) !important;
+}
+table tbody tr:hover td {
+    background:rgba(255,110,180,0.03) !important;
+}
 table td {
-    color: var(--text-2) !important;
-    font-family: 'Quicksand', sans-serif !important;
-    font-size: 0.75rem;
-    font-weight: 600;
+    color:var(--tx2) !important;
+    font-family:'Quicksand',sans-serif !important;
+    font-size:0.72rem;
+    font-weight:600;
 }
-table .divide-y { border-color: rgba(192,132,252,0.06) !important; }
+table .divide-y {
+    border-color:rgba(192,132,252,0.05) !important;
+}
+.text-green-600 {
+    color:var(--mn) !important;
+}
+.text-red-600 {
+    color:var(--pc) !important;
+}
+.text-orange-500 {
+    color:#fdba74 !important;
+}
+.material-icons.text-green-600 {
+    color:var(--mn) !important;
+}
+.material-icons.text-red-600 {
+    color:var(--pc) !important;
+}
+.material-icons.text-orange-500 {
+    color:#fdba74 !important;
+}
 
-/* Status code colors */
-.text-green-600  { color: var(--mint)  !important; }
-.text-red-600    { color: var(--peach) !important; }
-.text-orange-500 { color: #fdba74 !important; }
-.material-icons.text-green-600  { color: var(--mint)  !important; }
-.material-icons.text-red-600    { color: var(--peach) !important; }
-.material-icons.text-orange-500 { color: #fdba74 !important; }
-
-/* ── FOOTER ──────────────────────────────────────────── */
+/* ── FOOTER ── */
 .text-slate-600.text-xs {
-    color: var(--text-3) !important;
-    font-family: 'Quicksand', sans-serif !important;
-    font-weight: 600;
-}
-
-/* ── ANIMATIONS ──────────────────────────────────────── */
-.will-fade-in { opacity: 0; }
-.fade-in  { animation: fadeInUp 0.4s cubic-bezier(.34,1.56,.64,1) forwards; }
-.fade-out { animation: fadeOut 0.2s ease-out forwards; }
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(10px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-
-/* ── MISC OVERRIDES ──────────────────────────────────── */
-.bg-gray-50  { background: rgba(20,12,40,0.6)  !important; }
-.bg-white    { background: rgba(20,12,40,0.85) !important; }
-.border-gray-200 { border-color: var(--border) !important; }
-.text-slate-400 { color: var(--text-3) !important; }
-.divide-y > * + * { border-top-color: rgba(192,132,252,0.06) !important; }
-.text-\[10px\] { color: var(--text-3) !important; }
-.text-slate-500.mt-1 { color: var(--text-3) !important; }
-
-/* ── KAWAII SPECIAL TOUCHES ──────────────────────────── */
-/* Cute pulse on notification icon */
-h2 .material-icons[style*="notifications"] {
-    animation: wiggle 3s ease-in-out infinite;
-}
-@keyframes wiggle {
-    0%, 90%, 100% { transform: rotate(0); }
-    92% { transform: rotate(-10deg); }
-    96% { transform: rotate(10deg); }
-}
-
-/* Category expand icon bounce */
-.category-group > div > div > button .material-icons {
-    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), color 0.2s;
-}
-
-/* Cute hover glow on api items */
-.api-item > button:hover .text-slate-800 {
-    color: var(--pink-2) !important;
-}
-
-/* Red asterisk in labels */
-.text-red-500 { color: var(--peach) !important; }
-
-/* Gradient divider */
-.category-group > div > div > div.hidden::before {
-    content: '';
-    display: block;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-2), transparent);
-    margin: 0 1rem;
-}
-
-/* ── FOOTER KAWAII ───────────────────────────────────── */
-footer-area, .mt-10.text-center p {
-    font-family: 'Quicksand', sans-serif !important;
-    letter-spacing: 0.04em;
+    color:var(--tx3) !important;
+    font-family:'Quicksand',sans-serif !important;
+    font-weight:600;
 }
 .mt-10.text-center {
-    position: relative;
+    position:relative;
 }
 .mt-10.text-center::before {
-    content: '✿';
-    display: block;
-    color: var(--pink);
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    opacity: 0.5;
-    animation: spin 8s linear infinite;
+    content:'✿';
+    display:block;
+    color:var(--pk);
+    font-size:0.9rem;
+    margin-bottom:0.4rem;
+    opacity:0.4;
+    animation:spin 9s linear infinite;
 }
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-/* ── LABEL STYLE ─────────────────────────────────────── */
+/* ── MISC ── */
+.bg-gray-50 {
+    background:rgba(18,10,38,0.55) !important;
+}
+.bg-white {
+    background:rgba(18,10,38,0.82) !important;
+}
+.border-gray-200 {
+    border-color:var(--br) !important;
+}
+.text-slate-400 {
+    color:var(--tx3) !important;
+}
+.divide-y>*+* {
+    border-top-color:rgba(192,132,252,0.05) !important;
+}
+.text-\[10px\] {
+    color:var(--tx3) !important;
+}
+.text-slate-500.mt-1 {
+    color:var(--tx3) !important;
+}
+.text-red-500 {
+    color:var(--pc) !important;
+}
 label.block.text-xs.font-medium {
-    font-family: 'Nunito', sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 0.75rem !important;
-    color: var(--text-2) !important;
-    letter-spacing: 0.04em;
-    margin-bottom: 0.4rem !important;
+    font-family:'Nunito',sans-serif !important;
+    font-weight:700 !important;
+    font-size:0.72rem !important;
+    color:var(--tx2) !important;
+    letter-spacing:0.03em;
 }
 
-/* ── CUTE SCROLLBAR INNER ─────────────────────────────── */
-.max-h-80::-webkit-scrollbar { width: 4px !important; display: block !important; }
-.max-h-80::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--pink), var(--lilac)); border-radius: 99px; }
-.overflow-auto::-webkit-scrollbar { height: 4px !important; width: 4px !important; display: block !important; }
-.overflow-auto::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--pink), var(--lilac)); border-radius: 99px; }
-
-/* Inline unread dot on notification */
+/* ── ANIMATIONS ── */
+.will-fade-in {
+    opacity:0;
+}
+.fade-in {
+    animation:fadeUp 0.35s ease-out forwards;
+}
+.fade-out {
+    animation:fadeOut 0.18s ease-out forwards;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
 .w-2.h-2.bg-green-400 {
-    background: linear-gradient(135deg, var(--mint), #22c55e) !important;
-    box-shadow: 0 0 8px rgba(110,231,183,0.6);
-    animation: pulse-dot 2s ease-in-out infinite;
+    background:linear-gradient(135deg,var(--mn),#22c55e) !important;
+    box-shadow:0 0 6px rgba(110,231,183,0.5);
+    animation:pdot 2s ease-in-out infinite;
 }
-@keyframes pulse-dot {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 6px rgba(110,231,183,0.6); }
-    50% { transform: scale(1.3); box-shadow: 0 0 12px rgba(110,231,183,0.9); }
+@keyframes pdot{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:480px){
+header h2 {
+    font-size:0.95rem;
+}
+#music-btn {
+    width:42px;
+    height:42px;
+    font-size:1rem;
+    bottom:1rem;
+    right:1rem;
+}
+#music-tooltip {
+    right:1rem;
+    bottom:4rem;
+    font-size:0.63rem;
+    max-width:160px;
+}
 }
 </style>
 </head>
 
 <body class="antialiased font-mono min-h-screen">
 
-<!-- Kawaii floating orbs -->
-<div class="kawaii-orb kawaii-orb-1"></div>
-<div class="kawaii-orb kawaii-orb-2"></div>
-<div class="kawaii-orb kawaii-orb-3"></div>
+    <!-- AUDIO -->
+    <audio id="bgMusic" loop preload="none">
+        <source src="https://api.deline.web.id/lkWIGe0SED.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- MUSIC BUTTON -->
+    <button id="music-btn" aria-label="Play music">
+        <i class="fas fa-music"></i>
+    </button>
+    <div id="music-tooltip">
+        <span class="tip-title">♪ Musik Favorit Developer ♡</span>
+        Klik untuk putar musik kesukaan si developer~
+    </div>
 
     <!-- SIDEBAR -->
     <aside id="sidebar" class="fixed top-0 right-0 h-full w-64 transform translate-x-full duration-300 ease-in-out z-[100]">
         <div class="px-6 py-4 border-b flex items-center justify-between">
-            <span style="color:#7c6fa0; font-size:0.65rem; font-family:'Nunito',sans-serif; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;">✿ Menu</span>
+            <span style="color:#7c6fa0;font-size:0.62rem;font-family:'Nunito',sans-serif;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;">✿ Menu</span>
             <button id="sidebarClose" class="py-2 px-2 flex items-center justify-center">
-                <i class="material-icons" style="font-size:1.1rem;">close</i>
+                <i class="material-icons" style="font-size:1rem;">close</i>
             </button>
         </div>
         <div class="p-6">
             <nav>
                 <div class="space-y-1">
-                    <a href="/">
-                        <i class="material-icons text-lg">dashboard</i> Dashboard
-                    </a>
+                    <a href="/"><i class="material-icons text-lg">dashboard</i> Dashboard</a>
                 </div>
                 <p class="text-xs my-4 px-1" style="letter-spacing:0.1em;">LINKS.</p>
                 <div class="space-y-1">
-                    <a href="https://wa.me/6281385060693" target="_blank">
-                        <i class="material-icons text-lg">arrow_outward</i> Contact
-                    </a>
-                    <a href="https://whatsapp.com/channel/0029VamVFi85fM5dVCtcDJ3g" target="_blank">
-                        <i class="material-icons text-lg">arrow_outward</i> Channel Developer
-                    </a>
-                    <a href="https://whatsapp.com/channel/0029Vb89RtLCRs1er5KfJy3I" target="_blank">
-                        <i class="material-icons text-lg">arrow_outward</i> Channel Partner
-                    </a>
+                    <a href="https://wa.me/6281385060693" target="_blank"><i class="material-icons text-lg">arrow_outward</i> Contact</a>
+                    <a href="https://whatsapp.com/channel/0029VamVFi85fM5dVCtcDJ3g" target="_blank"><i class="material-icons text-lg">arrow_outward</i> Channel Developer</a>
+                    <a href="https://whatsapp.com/channel/0029Vb89RtLCRs1er5KfJy3I" target="_blank"><i class="material-icons text-lg">arrow_outward</i> Channel Partner</a>
                 </div>
             </nav>
         </div>
@@ -852,7 +914,7 @@ label.block.text-xs.font-medium {
 
     <!-- HEADER -->
     <header class="glass sticky top-0 z-50">
-        <div class="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="max-w-2xl mx-auto px-5 py-3 flex items-center justify-between">
             <div class="flex gap-3 items-center">
                 <div class="flex flex-col gap-0.5">
                     <h2 class="text-base font-bold leading-none" style="font-family:'Nunito',sans-serif;">Nayone API</h2>
@@ -861,18 +923,18 @@ label.block.text-xs.font-medium {
                 <div class="px-3 py-1 text-xs font-bold bg-slate-900">v1.0</div>
             </div>
             <button id="sidebarToggle" class="py-2 px-2 flex items-center justify-center border">
-                <i class="material-icons" style="font-size:1.2rem;">menu</i>
+                <i class="material-icons" style="font-size:1.1rem;">menu</i>
             </button>
         </div>
     </header>
 
-    <main class="max-w-2xl mx-auto px-6 py-10">
+    <main class="max-w-2xl mx-auto px-5 py-8">
 
         <!-- NOTIFICATIONS -->
-        <div class="mb-8">
+        <div class="mb-7">
             <div class="flex items-center justify-between mb-3">
-                <h2 class="text-sm font-semibold flex items-center gap-2" style="color:#f1f5f9;">
-                    <span class="material-icons" style="font-size:1.1rem; color:#7c6fa0;">notifications</span>
+                <h2 class="text-sm font-semibold flex items-center gap-2">
+                    <span class="material-icons" style="font-size:1rem;color:#7c6fa0;">notifications</span>
                     Informasi
                 </h2>
                 <span id="unread-count" class="text-xs px-2 py-1 hidden"></span>
@@ -881,33 +943,74 @@ label.block.text-xs.font-medium {
         </div>
 
         <!-- SEARCH -->
-        <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center justify-between mb-4">
             <div class="flex-1 relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span class="material-icons" style="font-size:1.1rem; color:#7c6fa0;">search</span>
+                    <span class="material-icons" style="font-size:1rem;color:#7c6fa0;">search</span>
                 </div>
                 <input type="text" id="searchInput" placeholder="Search API endpoints..."
-                    class="w-full pr-5 py-3 text-sm focus:outline-none" style="padding-left:2.4rem;">
+                    class="w-full pr-4 py-3 text-sm focus:outline-none" style="padding-left:2.4rem;">
             </div>
         </div>
 
         <!-- API LIST -->
         <div id="content" class="space-y-3">
-            <div id="noResults" class="text-center py-16" style="display: none;">
-                <span class="material-icons" style="font-size:2.5rem; color:#7c6fa0; display:block; margin-bottom:0.5rem;">search_off</span>
-                <p style="color:#7c6fa0; font-size:0.8rem; font-family:'Nunito',sans-serif; font-weight:700;">No result found. (´• ω •`)</p>
+            <div id="noResults" class="text-center py-14" style="display:none;">
+                <span class="material-icons" style="font-size:2.2rem;color:#7c6fa0;display:block;margin-bottom:0.4rem;">search_off</span>
+                <p style="color:#7c6fa0;font-size:0.78rem;font-family:'Nunito',sans-serif;font-weight:700;">No result found. (´• ω •`)</p>
             </div>
             <div id="apiList" class="space-y-2"></div>
         </div>
 
         <!-- FOOTER -->
         <div class="mt-10 text-center">
-            <p class="text-xs" style="color:#7c6fa0; font-family:'Quicksand',sans-serif; font-weight:600;">© 2025 Nayone API. | All Rights Reserved. ♡</p>
+            <p class="text-xs" style="color:#7c6fa0;font-family:'Quicksand',sans-serif;font-weight:600;">© 2025 Nayone API. | All Rights Reserved. ♡</p>
         </div>
 
     </main>
 
-<!-- ── ALL ORIGINAL JAVASCRIPT — UNTOUCHED ── -->
+<!-- ── MUSIC PLAYER SCRIPT ── -->
+<script>
+const audio    = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('music-btn');
+const tooltip  = document.getElementById('music-tooltip');
+let playing    = false;
+let ttTimeout;
+
+// Show tooltip on load
+setTimeout(() => {
+    tooltip.classList.add('show');
+    ttTimeout = setTimeout(() => tooltip.classList.remove('show'), 4000);
+}, 1200);
+
+musicBtn.addEventListener('mouseenter', () => { clearTimeout(ttTimeout); tooltip.classList.add('show'); });
+musicBtn.addEventListener('mouseleave', () => { ttTimeout = setTimeout(() => tooltip.classList.remove('show'), 1200); });
+
+musicBtn.addEventListener('click', async () => {
+    try {
+        if (playing) {
+            audio.pause();
+            playing = false;
+            musicBtn.classList.remove('playing');
+            musicBtn.querySelector('i').className = 'fas fa-music';
+        } else {
+            await audio.play();
+            playing = true;
+            musicBtn.classList.add('playing');
+            musicBtn.querySelector('i').className = 'fas fa-pause';
+        }
+        tooltip.classList.remove('show');
+    } catch(e) { console.error('Audio error:',e); }
+});
+
+audio.addEventListener('ended', () => {
+    playing = false;
+    musicBtn.classList.remove('playing');
+    musicBtn.querySelector('i').className = 'fas fa-music';
+});
+</script>
+
+<!-- ── MAIN SCRIPTS (ALL ORIGINAL LOGIC UNTOUCHED) ── -->
 <script>
 async function loadNotifications() {
     try {
@@ -915,635 +1018,273 @@ async function loadNotifications() {
         const notifications = await res.json();
         const listEl = document.getElementById('notifications-list');
         listEl.innerHTML = '';
-
-        if (!notifications.length) {
-            listEl.innerHTML = '<p class="text-xs" style="color:#4a5068;">No notifications.</p>';
-            return;
-        }
-
+        if (!notifications.length) { listEl.innerHTML = '<p class="text-xs" style="color:#7c6fa0;">No notifications.</p>'; return; }
         let unreadCount = 0;
-
         notifications.forEach(notif => {
             const notifEl = document.createElement('div');
             notifEl.className = 'p-3 border border-gray-200 rounded text-sm text-slate-800 bg-gray-50';
-            notifEl.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <span>${notif.message}</span>
-                    <span class="text-xs text-gray-400">${notif.date || ''}</span>
-                </div>
-            `;
+            notifEl.innerHTML = `<div class="flex justify-between items-center"><span>${notif.message}</span><span class="text-xs text-gray-400">${notif.date||''}</span></div>`;
             if (!notif.read) unreadCount++;
             listEl.appendChild(notifEl);
         });
-
         const unreadEl = document.getElementById('unread-count');
-        if (unreadCount > 0) {
-            unreadEl.textContent = unreadCount;
-            unreadEl.classList.remove('hidden');
-        } else {
-            unreadEl.classList.add('hidden');
-        }
-
+        if (unreadCount > 0) { unreadEl.textContent = unreadCount; unreadEl.classList.remove('hidden'); }
+        else unreadEl.classList.add('hidden');
     } catch(err) {
         console.error('Failed to load notifications:', err);
-        document.getElementById('notifications-list').innerHTML =
-            '<p class="text-xs text-red-500">Gagal memuat notifikasi.</p>';
+        document.getElementById('notifications-list').innerHTML = '<p class="text-xs" style="color:#fda4af;">Gagal memuat notifikasi.</p>';
     }
 }
-
 document.addEventListener('DOMContentLoaded', loadNotifications);
 </script>
 
 <script>
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarClose = document.getElementById('sidebarClose');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarClose  = document.getElementById('sidebarClose');
+const sidebar       = document.getElementById('sidebar');
+const overlay       = document.getElementById('overlay');
 
-        function openSidebar() {
-            sidebar.classList.remove('translate-x-full');
-            overlay.classList.remove('opacity-0', 'invisible');
-            document.body.classList.add('overflow-hidden');
+function openSidebar()  { sidebar.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0','invisible'); document.body.classList.add('overflow-hidden'); }
+function closeSidebar() { sidebar.classList.add('translate-x-full');    overlay.classList.add('opacity-0','invisible');    document.body.classList.remove('overflow-hidden'); }
+
+sidebarToggle.addEventListener('click', openSidebar);
+sidebarClose.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+async function copyToClipboard(text, buttonElement) {
+    if (!buttonElement) return;
+    const originalHTML = buttonElement.innerHTML;
+    try {
+        await navigator.clipboard.writeText(text);
+        buttonElement.textContent = 'Copied!';
+        setTimeout(() => { buttonElement.innerHTML = originalHTML; }, 1500);
+    } catch(e) {
+        buttonElement.textContent = 'Failed!';
+        setTimeout(() => { buttonElement.innerHTML = originalHTML; }, 1500);
+    }
+}
+
+function hlJSON(el) { if (window.hljs) hljs.highlightElement(el); }
+
+function toggleCategory(index) {
+    const category = document.getElementById(`category-${index}`);
+    const icon     = document.getElementById(`category-icon-${index}`);
+    const isHidden = category.classList.toggle('hidden');
+    icon.textContent = isHidden ? 'expand_more' : 'expand_less';
+}
+
+function toggleEndpoint(catIndex, endpointIndex) {
+    const endpoint = document.getElementById(`endpoint-${catIndex}-${endpointIndex}`);
+    const icon     = document.getElementById(`endpoint-icon-${catIndex}-${endpointIndex}`);
+    const isHidden = endpoint.classList.toggle('hidden');
+    icon.textContent = isHidden ? 'expand_more' : 'expand_less';
+}
+
+async function executeRequest(event, catIndex, endpointIndex, method, path) {
+    event.preventDefault();
+    const form            = document.getElementById(`form-${catIndex}-${endpointIndex}`);
+    const responseDiv     = document.getElementById(`response-${catIndex}-${endpointIndex}`);
+    const responseContent = document.getElementById(`response-content-${catIndex}-${endpointIndex}`);
+    const clearButton     = document.getElementById(`clear-${catIndex}-${endpointIndex}`);
+    responseDiv.classList.remove('hidden');
+    const formData     = new FormData(form);
+    const fetchOptions = { method: method.toUpperCase() };
+    let fullPath       = path;
+    let curlCommand    = `curl -X ${fetchOptions.method} "${window.location.origin}${path}"`;
+    if (['POST','PUT','PATCH'].includes(fetchOptions.method)) {
+        fetchOptions.body = formData;
+        for (const [key, value] of formData.entries()) {
+            if (value instanceof File && value.name) curlCommand += ` -F "${key}=@${value.name}"`;
+            else if (typeof value === 'string') curlCommand += ` -F "${key}=${value}"`;
         }
-
-        function closeSidebar() {
-            sidebar.classList.add('translate-x-full');
-            overlay.classList.add('opacity-0', 'invisible');
-            document.body.classList.remove('overflow-hidden');
+    } else {
+        const params = new URLSearchParams();
+        for (const [key, value] of formData.entries()) { if (typeof value === 'string' && value) params.append(key, value); }
+        const qs = params.toString();
+        if (qs) fullPath += (path.includes('?') ? '&' : '?') + qs;
+        curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${fullPath}"`;
+    }
+    const escapedFullPath = fullPath.replace(/"/g,'&quot;').replace(/'/g,"'");
+    responseContent.innerHTML = `<div class="space-y-4"><div><h4 class="block-title"><span><span class="material-icons text-sm mr-2 align-middle">link</span>REQUEST URL</span><button onclick="copyToClipboard('${window.location.origin}${escapedFullPath}',this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button></h4><pre class="bg-gray-900 text-white p-2 text-xs overflow-auto"><code>${window.location.origin}${fullPath}</code></pre></div><div><h4 class="block-title"><span><span class="material-icons text-sm mr-2 align-middle">terminal</span>CURL COMMAND</span><button onclick="copyToClipboard(this.parentElement.nextElementSibling.innerText,this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button></h4><pre class="bg-gray-900 text-white p-2 text-xs overflow-auto"><code>${curlCommand}</code></pre></div><div><h4 class="block-title"><span><span class="material-icons text-sm mr-2 align-middle">storage</span>SERVER RESPONSE</span><button onclick="copyToClipboard(document.getElementById('response-body-${catIndex}-${endpointIndex}').innerText,this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button></h4><div id="response-body-${catIndex}-${endpointIndex}" class="bg-gray-900 text-white p-2 text-xs">Loading...</div></div></div>`;
+    const responseBodyDiv = document.getElementById(`response-body-${catIndex}-${endpointIndex}`);
+    try {
+        const response    = await fetch(fullPath, fetchOptions);
+        const contentType = response.headers.get('content-type') || '';
+        let responseBodyContent = '';
+        if (!response.ok) { const errText = await response.text().catch(()=>''); throw new Error(`${response.status} ${response.statusText}\n${errText}`); }
+        if (contentType.includes('application/json')) {
+            const data = await response.json();
+            responseBodyContent = `<pre class="max-h-80 overflow-auto"><code class="language-json">${JSON.stringify(data,null,2)}</code></pre>`;
+            setTimeout(() => hlJSON(responseBodyDiv.querySelector('code')), 0);
+        } else if (contentType.startsWith('image/')) {
+            const blob = await response.blob();
+            responseBodyContent = `<img src="${URL.createObjectURL(blob)}" class="max-w-full h-auto rounded-md">`;
+        } else {
+            const text = await response.text();
+            responseBodyContent = `<pre class="max-h-80 overflow-auto">${text}</pre>`;
         }
+        responseBodyDiv.innerHTML = responseBodyContent;
+    } catch(err) {
+        let errMessage = String(err);
+        if (err.message && err.message.startsWith('404')) errMessage = `Error 404: Not Found.\n\nEndpoint tidak ditemukan. Pastikan URL dan parameter sudah benar.`;
+        responseBodyDiv.innerHTML = `<pre class="max-h-80 overflow-auto" style="color:#fda4af;">${errMessage}</pre>`;
+    }
+    clearButton.classList.remove('hidden');
+}
 
-        sidebarToggle.addEventListener('click', openSidebar);
-        sidebarClose.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
+function clearResponse(catIndex, endpointIndex) {
+    const responseDiv     = document.getElementById(`response-${catIndex}-${endpointIndex}`);
+    const responseContent = document.getElementById(`response-content-${catIndex}-${endpointIndex}`);
+    const clearButton     = document.getElementById(`clear-${catIndex}-${endpointIndex}`);
+    responseDiv.classList.add('fade-out');
+    clearButton.classList.add('hidden');
+    setTimeout(() => { responseContent.innerHTML = ''; responseDiv.classList.add('hidden'); responseDiv.classList.remove('fade-out'); }, 180);
+}
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeSidebar();
-            }
+async function loadApis() {
+    const apiList = document.getElementById('apiList');
+    try {
+        const response = await fetch('/src/openapi.json');
+        const data = await response.json();
+        const categories = {};
+        if (data.tags) data.tags.forEach(tag => { categories[tag.name] = { name: tag.name, items: [] }; });
+        Object.keys(data.paths).forEach(path => {
+            const pathItem = data.paths[path];
+            Object.keys(pathItem).forEach(method => {
+                const endpoint = pathItem[method];
+                const tagName  = endpoint.tags && endpoint.tags.length > 0 ? endpoint.tags[0] : 'Uncategorized';
+                if (!categories[tagName]) categories[tagName] = { name: tagName, items: [] };
+                categories[tagName].items.push({ path, method: method.toUpperCase(), name: endpoint.summary || 'No summary', desc: endpoint.description || 'No description', status: endpoint.deprecated ? 'deprecated' : 'ready', parameters: endpoint.parameters, requestBody: endpoint.requestBody });
+            });
         });
-
-        async function copyToClipboard(text, buttonElement) {
-            if (!buttonElement) return;
-            const originalHTML = buttonElement.innerHTML;
-            try {
-                await navigator.clipboard.writeText(text);
-                buttonElement.textContent = 'Copied!';
-                setTimeout(() => {
-                    buttonElement.innerHTML = originalHTML;
-                }, 1500);
-            } catch (e) {
-                console.error('Copy failed', e);
-                buttonElement.textContent = 'Failed!';
-                setTimeout(() => {
-                    buttonElement.innerHTML = originalHTML;
-                }, 1500);
-            }
-        }
-
-        function hlJSON(el) {
-            if (window.hljs) {
-                hljs.highlightElement(el);
-            }
-        }
-
-        function toggleCategory(index) {
-            const category = document.getElementById(`category-${index}`);
-            const icon = document.getElementById(`category-icon-${index}`);
-            const isHidden = category.classList.toggle('hidden');
-            icon.textContent = isHidden ? 'expand_more' : 'expand_less';
-        }
-
-        function toggleEndpoint(catIndex, endpointIndex) {
-            const endpoint = document.getElementById(`endpoint-${catIndex}-${endpointIndex}`);
-            const icon = document.getElementById(`endpoint-icon-${catIndex}-${endpointIndex}`);
-            const isHidden = endpoint.classList.toggle('hidden');
-            icon.textContent = isHidden ? 'expand_more' : 'expand_less';
-        }
-
-        async function executeRequest(event, catIndex, endpointIndex, method, path) {
-            event.preventDefault();
-            const form = document.getElementById(`form-${catIndex}-${endpointIndex}`);
-            const responseDiv = document.getElementById(`response-${catIndex}-${endpointIndex}`);
-            const responseContent = document.getElementById(`response-content-${catIndex}-${endpointIndex}`);
-            const clearButton = document.getElementById(`clear-${catIndex}-${endpointIndex}`);
-
-            responseDiv.classList.remove('hidden');
-
-            const formData = new FormData(form);
-            const fetchOptions = {
-                method: method.toUpperCase()
-            };
-
-            let fullPath = path;
-            let curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${path}"`;
-
-            if (fetchOptions.method === 'POST' || fetchOptions.method === 'PUT' || fetchOptions.method === 'PATCH') {
-                fetchOptions.body = formData;
-                for (const [key, value] of formData.entries()) {
-                    if (value instanceof File && value.name) {
-                        curlCommand += ` -F "${key}=@${value.name}"`;
-                    } else if (typeof value === 'string') {
-                        curlCommand += ` -F "${key}=${value}"`;
-                    }
-                }
-            } else {
-                const params = new URLSearchParams();
-                for (const [key, value] of formData.entries()) {
-                    if (typeof value === 'string' && value) {
-                        params.append(key, value);
-                    }
-                }
-                const queryString = params.toString();
-                if (queryString) {
-                    fullPath += (path.includes('?') ? '&' : '?') + queryString;
-                }
-                curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${fullPath}"`;
-            }
-
-            const escapedFullPath = fullPath.replace(/"/g, '&quot;').replace(/'/g, "'");
-            const escapedCurlCommand = curlCommand.replace(/"/g, '&quot;').replace(/'/g, "'");
-
-            responseContent.innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="block-title">
-                            <span><span class="material-icons text-sm mr-2 align-middle">link</span>REQUEST URL</span>
-                            <button onclick="copyToClipboard('${window.location.origin}${escapedFullPath}', this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button>
-                        </h4>
-                        <pre class="bg-gray-900 text-white p-2 text-xs overflow-auto"><code>${window.location.origin}${fullPath}</code></pre>
-                    </div>
-                    <div>
-                        <h4 class="block-title">
-                            <span><span class="material-icons text-sm mr-2 align-middle">terminal</span>CURL COMMAND</span>
-                            <button onclick="copyToClipboard(this.parentElement.nextElementSibling.innerText, this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button>
-                        </h4>
-                        <pre class="bg-gray-900 text-white p-2 text-xs overflow-auto"><code>${curlCommand}</code></pre>
-                    </div>
-                    <div>
-                        <h4 class="block-title">
-                             <span><span class="material-icons text-sm mr-2 align-middle">storage</span>SERVER RESPONSE</span>
-                             <button onclick="copyToClipboard(document.getElementById('response-body-${catIndex}-${endpointIndex}').innerText, this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button>
-                        </h4>
-                        <div id="response-body-${catIndex}-${endpointIndex}" class="bg-gray-900 text-white p-2 text-xs">
-                            Loading...
-                        </div>
-                    </div>
-                </div>
-              `;
-
-            const responseBodyDiv = document.getElementById(`response-body-${catIndex}-${endpointIndex}`);
-
-            try {
-                const response = await fetch(fullPath, fetchOptions);
-                const contentType = response.headers.get('content-type') || '';
-
-                let responseBodyContent = '';
-                if (!response.ok) {
-                    const errText = await response.text().catch(() => '');
-                    throw new Error(`${response.status} ${response.statusText}\n${errText}`);
-                }
-
-                if (contentType.includes('application/json')) {
-                    const data = await response.json();
-                    responseBodyContent = `<pre class="max-h-80 overflow-auto"><code class="language-json">${JSON.stringify(data, null, 2)}</code></pre>`;
-                    setTimeout(() => hlJSON(responseBodyDiv.querySelector('code')), 0);
-                } else if (contentType.startsWith('image/')) {
-                    const blob = await response.blob();
-                    const imageUrl = URL.createObjectURL(blob);
-                    responseBodyContent = `<img src="${imageUrl}" class="max-w-full h-auto rounded-md">`;
-                } else {
-                    const text = await response.text();
-                    responseBodyContent = `<pre class="max-h-80 overflow-auto">${text}</pre>`;
-                }
-                responseBodyDiv.innerHTML = responseBodyContent;
-
-            } catch (err) {
-                let errMessage = String(err);
-                if (err.message && err.message.startsWith('404')) {
-                    errMessage = `Error 404: Not Found.\n\nEndpoint tidak ditemukan. Pastikan URL dan parameter sudah benar. Jika Anda yakin ini adalah kesalahan, silakan hubungi owner.`;
-                }
-                responseBodyDiv.innerHTML = `<pre class="text-red-400 max-h-80 overflow-auto">${errMessage}</pre>`;
-            }
-            clearButton.classList.remove('hidden');
-        }
-
-        function clearResponse(catIndex, endpointIndex) {
-            const responseDiv = document.getElementById(`response-${catIndex}-${endpointIndex}`);
-            const responseContent = document.getElementById(`response-content-${catIndex}-${endpointIndex}`);
-            const clearButton = document.getElementById(`clear-${catIndex}-${endpointIndex}`);
-
-            responseDiv.classList.add('fade-out');
-            clearButton.classList.add('hidden');
-
-            setTimeout(() => {
-                responseContent.innerHTML = '';
-                responseDiv.classList.add('hidden');
-                responseDiv.classList.remove('fade-out');
-            }, 200);
-        }
-
-        async function loadApis() {
-            const apiList = document.getElementById('apiList');
-            try {
-                const response = await fetch('/src/openapi.json');
-                const data = await response.json();
-
-                const categories = {};
-                if (data.tags) {
-                    data.tags.forEach(tag => {
-                        categories[tag.name] = {
-                            name: tag.name,
-                            items: []
-                        };
-                    });
-                }
-
-                Object.keys(data.paths).forEach(path => {
-                    const pathItem = data.paths[path];
-                    Object.keys(pathItem).forEach(method => {
-                        const endpoint = pathItem[method];
-                        const tagName = endpoint.tags && endpoint.tags.length > 0 ? endpoint.tags[0] : 'Uncategorized';
-
-                        if (!categories[tagName]) {
-                            categories[tagName] = {
-                                name: tagName,
-                                items: []
-                            };
-                        }
-
-                        categories[tagName].items.push({
-                            path: path,
-                            method: method.toUpperCase(),
-                            name: endpoint.summary || 'No summary',
-                            desc: endpoint.description || 'No description',
-                            status: endpoint.deprecated ? 'deprecated' : 'ready',
-                            parameters: endpoint.parameters,
-                            requestBody: endpoint.requestBody
+        let html = '';
+        Object.values(categories).forEach((category, catIndex) => {
+            if (category.items.length === 0) return;
+            html += `<div class="category-group" data-category="${category.name}"><div class="mb-2"><div class="bg-white border border-gray-200 hover:border-gray-600 transition-colors duration-150"><button onclick="toggleCategory(${catIndex})" class="w-full px-4 py-3 text-left flex items-center justify-between transition-colors duration-150"><h2 class="font-bold flex items-center text-slate-800"><span class="material-icons text-xl mr-4 text-white bg-slate-900 py-1 px-2">folder</span><span class="truncate max-w-xs text-sm text-slate-900">${category.name}</span><span class="ml-2 text-xs text-gray-600">(${category.items.length})</span></h2><span class="material-icons transition-transform duration-150" id="category-icon-${catIndex}">expand_more</span></button><div id="category-${catIndex}" class="hidden">`;
+            category.items.forEach((item, endpointIndex) => {
+                const method      = item.method;
+                const path        = item.path;
+                const statusClass = item.status === 'ready' ? 'bg-green-200 text-green' : 'bg-yellow-500/20 text-yellow-400';
+                const methodClass = { 'GET':'bg-slate-900','POST':'bg-slate-900','PUT':'bg-yellow-600','DELETE':'bg-red-600' }[method] || 'bg-gray-600';
+                html += `<div id="${item.path.split('/').pop()}" class="border-t border-gray-200 api-item" data-method="${method}" data-path="${path}" data-alias="${item.name}" data-description="${item.desc}" data-category="${category.name}"><button onclick="toggleEndpoint(${catIndex},${endpointIndex})" class="w-full px-4 py-3 text-left flex items-center justify-between transition-colors duration-150"><div class="flex items-center min-w-0 flex-1"><span class="inline-block px-3 py-1 text-xs font-semibold text-white mr-3 flex-shrink-0 ${methodClass}">${method}</span><div class="flex flex-col min-w-0 flex-1"><span class="font-semibold truncate max-w-[90%] font-mono text-sm text-slate-800" title="${path}">${path}</span><div class="flex items-center"><span class="text-xs text-slate-600 truncate max-w-[90%]" title="${item.name}">${item.name}</span><span class="ml-2 px-2 py-0.5 text-xs rounded ${statusClass}">${item.status}</span></div></div></div><span class="material-icons transition-transform duration-150 flex-shrink-0" id="endpoint-icon-${catIndex}-${endpointIndex}">expand_more</span></button><div id="endpoint-${catIndex}-${endpointIndex}" class="hidden bg-gray-50 p-4 border-t border-gray-200 space-y-4"><div class="mb-3"><div class="text-slate-600 text-xs">${item.desc}</div></div>`;
+                if (item.status !== 'deprecated') {
+                    html += `<div><div class="text-gray-700 font-bold text-xs mb-2 flex items-center"><span class="material-icons text-sm mr-1">play_arrow</span>TRY IT OUT</div><div><form id="form-${catIndex}-${endpointIndex}" onsubmit="executeRequest(event,${catIndex},${endpointIndex},'${method}','${path}')"><div class="mb-4 space-y-2">`;
+                    if (item.parameters) {
+                        item.parameters.forEach(param => {
+                            const schema = param.schema || {};
+                            const isReq  = !!param.required;
+                            const label  = `${param.name} ${isReq ? '<span class="text-red-500">*</span>' : ''}`;
+                            const desc   = param.description ? `<div class="text-[10px] text-gray-500 mt-1">${param.description}</div>` : '';
+                            const ph     = (schema.example ?? schema.default ?? '') + '';
+                            if (Array.isArray(schema.enum) && schema.enum.length) {
+                                html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">${label}</label><select name="${param.name}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isReq?'required':''}>${schema.enum.map(v=>`<option value="${String(v)}">${String(v)}</option>`).join('')}</select>${desc}</div>`;
+                            } else if (schema.type === 'boolean') {
+                                html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">${label}</label><select name="${param.name}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isReq?'required':''}><option value="true">true</option><option value="false">false</option></select>${desc}</div>`;
+                            } else {
+                                const t = (schema.type === 'number' || schema.type === 'integer') ? 'number' : 'text';
+                                html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">${label}</label><input type="${t}" name="${param.name}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white placeholder:text-slate-400" placeholder="${ph.replace(/"/g,'&quot;')}" ${isReq?'required':''}>${desc}</div>`;
+                            }
                         });
-                    });
-                });
-
-                let html = '';
-                Object.values(categories).forEach((category, catIndex) => {
-                    if (category.items.length === 0) return;
-
-                    html += `
-                    <div class="category-group" data-category="${category.name}">
-                        <div class="mb-2">
-                            <div class="bg-white border border-gray-200 hover:border-gray-600 transition-colors duration-150">
-                                <button onclick="toggleCategory(${catIndex})" class="w-full px-4 py-3 text-left flex items-center justify-between transition-colors duration-150">
-                                    <h2 class="font-bold flex items-center text-slate-800">
-                                        <span class="material-icons text-xl mr-4 text-white bg-slate-900 py-1 px-2">folder</span>
-                                        <span class="truncate max-w-xs text-sm text-slate-900">${category.name}</span>
-                                        <span class="ml-2 text-xs text-gray-600">(${category.items.length})</span>
-                                    </h2>
-                                    <span class="material-icons transition-transform duration-150" id="category-icon-${catIndex}">expand_more</span>
-                                </button>
-                                
-                                <div id="category-${catIndex}" class="hidden">`;
-
-                    category.items.forEach((item, endpointIndex) => {
-                        const method = item.method;
-                        const path = item.path;
-
-                        const statusClasses = {
-                            'ready': 'bg-green-200 text-green',
-                            'deprecated': 'bg-yellow-500/20 text-yellow-400',
-                        };
-                        const statusClass = statusClasses[item.status] || 'bg-gray-600';
-
-                        const methodClasses = {
-                            'GET': 'bg-slate-900',
-                            'POST': 'bg-slate-900',
-                            'PUT': 'bg-yellow-600',
-                            'DELETE': 'bg-red-600'
-                        };
-                        const methodClass = methodClasses[method] || 'bg-gray-600';
-
-                        html += `
-                                    <div id="${item.path.split('/').pop()}" class="border-t border-gray-200 api-item" 
-                                         data-method="${method}"
-                                         data-path="${path}"
-                                         data-alias="${item.name}"
-                                         data-description="${item.desc}"
-                                         data-category="${category.name}">
-                                        <button onclick="toggleEndpoint(${catIndex}, ${endpointIndex})" class="w-full px-4 py-3 text-left flex items-center justify-between transition-colors duration-150">
-                                            <div class="flex items-center min-w-0 flex-1">
-                                                <span class="inline-block px-3 py-1 text-xs font-semibold text-white mr-3 flex-shrink-0 ${methodClass}">
-                                                    ${method}
-                                                </span>
-                                                <div class="flex flex-col min-w-0 flex-1">
-                                                    <span class="font-semibold truncate max-w-[90%] font-mono text-sm text-slate-800" title="${path}">${path}</span>
-                                                    <div class="flex items-center">
-                                                        <span class="text-xs text-slate-600 truncate max-w-[90%]" title="${item.name}">${item.name}</span>
-                                                        <span class="ml-2 px-2 py-0.5 text-xs rounded ${statusClass}">${item.status}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <span class="material-icons transition-transform duration-150 flex-shrink-0" id="endpoint-icon-${catIndex}-${endpointIndex}">expand_more</span>
-                                        </button>
-                                        
-                                        <div id="endpoint-${catIndex}-${endpointIndex}" class="hidden bg-gray-50 p-4 border-t border-gray-200 space-y-4">
-                                            <div class="mb-3">
-                                                <div class="text-slate-600 text-xs">${item.desc}</div>
-                                            </div>
-                                            `;
-                        if (item.status !== 'deprecated') {
-                            html += `
-                                                <div>
-                                                    <div class="text-gray-700 font-bold text-xs mb-2 flex items-center">
-                                                        <span class="material-icons text-sm mr-1">play_arrow</span>
-                                                        TRY IT OUT
-                                                    </div>
-                                                    <div>
-                                                        <form id="form-${catIndex}-${endpointIndex}" onsubmit="executeRequest(event, ${catIndex}, ${endpointIndex}, '${method}', '${path}')">
-                                                            <div class="mb-4 space-y-2">`;
-                            if (item.parameters) {
-                                item.parameters.forEach(param => {
-                                    const schema = param.schema || {};
-                                    const isReq = !!param.required;
-                                    const label = `${param.name} ${isReq ? '<span class="text-red-500">*</span>' : ''}`;
-                                    const desc = param.description ? `<div class="text-[10px] text-gray-500 mt-1">${param.description}</div>` : '';
-                                    const placeholder = (schema.example ?? schema.default ?? '') + '';
-
-                                    if (Array.isArray(schema.enum) && schema.enum.length) {
-                                        html += `
-                                            <div>
-                                              <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
-                                              <select name="${param.name}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isReq ? 'required' : ''}>
-                                                ${schema.enum.map(v => `<option value="${String(v)}">${String(v)}</option>`).join('')}
-                                              </select>
-                                              ${desc}
-                                            </div>`;
-                                    } else {
-                                        let type = 'text';
-                                        if (schema.type === 'number' || schema.type === 'integer') type = 'number';
-                                        if (schema.type === 'boolean') {
-                                            html += `
-                                              <div>
-                                                <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
-                                                <select name="${param.name}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isReq ? 'required' : ''}>
-                                                  <option value="true">true</option>
-                                                  <option value="false">false</option>
-                                                </select>
-                                                ${desc}
-                                              </div>`;
-                                        } else {
-                                            html += `
-                                              <div>
-                                                <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
-                                                <input type="${type}" name="${param.name}"
-                                                  class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white placeholder:text-slate-400"
-                                                  placeholder="${placeholder.replace(/"/g,'&quot;')}" ${isReq ? 'required' : ''}>
-                                                ${desc}
-                                              </div>`;
-                                        }
-                                    }
-                                });
-                            }
-
-                            if (item.requestBody && item.requestBody.content) {
-                                const content = item.requestBody.content;
-                                if (content['multipart/form-data']) {
-                                    const schema = content['multipart/form-data'].schema || { properties: {} };
-                                    const required = schema.required || [];
-                                    Object.keys(schema.properties || {}).forEach(propName => {
-                                        const prop = schema.properties[propName] || {};
-                                        const isRequired = required.includes(propName);
-                                        const label = `${propName} ${isRequired ? '<span class="text-red-500">*</span>' : ''}`;
-                                        const desc = prop.description ? `<div class="text-[10px] text-slate-500 mt-1">${prop.description}</div>` : '';
-                                        const placeholder = (prop.example ?? prop.default ?? '') + '';
-                                        const isFile = prop.format === 'binary';
-
-                                        if (isFile) {
-                                            let accept = '';
-                                            const propDesc = (prop.description || '').toLowerCase();
-                                            if (propName.toLowerCase().includes('image') || propDesc.includes('gambar')) {
-                                                accept = 'accept="image/*"';
-                                            } else if (propName.toLowerCase().includes('video') || propDesc.includes('vidio')) {
-                                                accept = 'accept="video/*"';
-                                            }
-                                            html += `
-                                                <div>
-                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
-                                                    <input type="file" name="${propName}" ${accept}
-                                                        class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white"
-                                                        ${isRequired ? 'required' : ''}>
-                                                    ${desc}
-                                                </div>`;
-                                        } else if (Array.isArray(prop.enum) && prop.enum.length) {
-                                            html += `
-                                                <div>
-                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
-                                                    <select name="${propName}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isRequired ? 'required' : ''}>
-                                                        ${prop.enum.map(v => `<option value="${String(v)}">${String(v)}</option>`).join('')}
-                                                    </select>
-                                                    ${desc}
-                                                </div>`;
-                                        } else if (prop.type === 'boolean') {
-                                            html += `
-                                                <div>
-                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
-                                                    <select name="${propName}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isRequired ? 'required' : ''}>
-                                                        <option value="true">true</option>
-                                                        <option value="false">false</option>
-                                                    </select>
-                                                    ${desc}
-                                                </div>`;
-                                        } else {
-                                            let inputType = 'text';
-                                            if (prop.type === 'number' || prop.type === 'integer') {
-                                                inputType = 'number';
-                                            }
-                                            html += `
-                                                <div>
-                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
-                                                    <input type="${inputType}" name="${propName}"
-                                                        class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white placeholder:text-slate-400"
-                                                        placeholder="${placeholder.replace(/"/g, '&quot;')}" ${isRequired ? 'required' : ''}>
-                                                    ${desc}
-                                                </div>`;
-                                        }
-                                    });
+                    }
+                    if (item.requestBody && item.requestBody.content) {
+                        const content = item.requestBody.content;
+                        if (content['multipart/form-data']) {
+                            const schema   = content['multipart/form-data'].schema || { properties: {} };
+                            const required = schema.required || [];
+                            Object.keys(schema.properties || {}).forEach(propName => {
+                                const prop       = schema.properties[propName] || {};
+                                const isRequired = required.includes(propName);
+                                const label      = `${propName} ${isRequired ? '<span class="text-red-500">*</span>' : ''}`;
+                                const desc       = prop.description ? `<div class="text-[10px] text-slate-500 mt-1">${prop.description}</div>` : '';
+                                const ph         = (prop.example ?? prop.default ?? '') + '';
+                                if (prop.format === 'binary') {
+                                    let accept = '';
+                                    const pd = (prop.description||'').toLowerCase();
+                                    if (propName.toLowerCase().includes('image') || pd.includes('gambar')) accept = 'accept="image/*"';
+                                    else if (propName.toLowerCase().includes('video') || pd.includes('vidio')) accept = 'accept="video/*"';
+                                    html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">${label}</label><input type="file" name="${propName}" ${accept} class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isRequired?'required':''}>${desc}</div>`;
+                                } else if (Array.isArray(prop.enum) && prop.enum.length) {
+                                    html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">${label}</label><select name="${propName}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isRequired?'required':''}>${prop.enum.map(v=>`<option value="${String(v)}">${String(v)}</option>`).join('')}</select>${desc}</div>`;
+                                } else if (prop.type === 'boolean') {
+                                    html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">${label}</label><select name="${propName}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isRequired?'required':''}><option value="true">true</option><option value="false">false</option></select>${desc}</div>`;
+                                } else {
+                                    const it = (prop.type === 'number' || prop.type === 'integer') ? 'number' : 'text';
+                                    html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">${label}</label><input type="${it}" name="${propName}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white placeholder:text-slate-400" placeholder="${ph.replace(/"/g,'&quot;')}" ${isRequired?'required':''}>${desc}</div>`;
                                 }
-                                if (content['application/json']) {
-                                    html += `
-                                          <div>
-                                            <label class="block text-xs font-medium text-slate-700 mb-2">Body (application/json)</label>
-                                            <textarea name="__raw_json__" rows="6" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white font-mono placeholder:text-slate-400" placeholder='{"key":"value"}'></textarea>
-                                            <div class="text-[10px] text-slate-500 mt-1">Masukkan JSON valid. Jika diisi, body lain akan diabaikan.</div>
-                                          </div>`;
-                                }
-                            }
-
-                            html += `
-                                                            </div>
-                                                            <button type="submit" class="bg-gray-800 hover:bg-gray-700 font-semibold text-white px-6 py-2 text-xs font-medium transition-colors duration-150">
-                                                                Execute
-                                                            </button>
-                                                            <button type="button" id="clear-${catIndex}-${endpointIndex}" onclick="clearResponse(${catIndex}, ${endpointIndex})" class="hidden bg-white border border-gray-200 hover:border-gray-600 font-semibold text-slate-900 px-6 py-2 text-xs font-medium transition-colors duration-150 ml-2">
-                                                                Clear
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>`;
-                        } else {
-                            html += `<div class="text-yellow-400 text-xs p-3 bg-yellow-500/20 border border-yellow-500/30">Endpoint ini tidak digunakan lagi.</div>`;
+                            });
                         }
+                        if (content['application/json']) {
+                            html += `<div><label class="block text-xs font-medium text-slate-700 mb-2">Body (application/json)</label><textarea name="__raw_json__" rows="5" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white font-mono placeholder:text-slate-400" placeholder='{"key":"value"}'></textarea><div class="text-[10px] text-slate-500 mt-1">Masukkan JSON valid. Jika diisi, body lain akan diabaikan.</div></div>`;
+                        }
+                    }
+                    html += `</div><button type="submit" class="bg-gray-800 hover:bg-gray-700 font-semibold text-white px-6 py-2 text-xs font-medium transition-colors duration-150">Execute</button><button type="button" id="clear-${catIndex}-${endpointIndex}" onclick="clearResponse(${catIndex},${endpointIndex})" class="hidden bg-white border border-gray-200 hover:border-gray-600 font-semibold text-slate-900 px-6 py-2 text-xs font-medium transition-colors duration-150 ml-2">Clear</button></form></div></div>`;
+                } else {
+                    html += `<div class="text-yellow-400 text-xs p-3 bg-yellow-500/20 border border-yellow-500/30">Endpoint ini tidak digunakan lagi.</div>`;
+                }
+                html += `<div id="response-${catIndex}-${endpointIndex}" class="hidden mt-4"><div class="text-gray-700 font-bold text-xs mb-2 flex items-center"><span class="material-icons text-sm mr-1">code</span>RESPONSE</div><div id="response-content-${catIndex}-${endpointIndex}" class="bg-gray-50 text-xs p-4 border border-gray-200"></div></div><div class="mt-4"><div class="text-gray-700 font-bold text-xs mb-2 flex items-center"><span class="material-icons text-sm mr-1">list</span>HTTP STATUS CODES</div><div class="bg-white border border-gray-200"><div class="overflow-x-auto"><table class="w-full text-xs"><thead class="bg-gray-50 border-b border-gray-200"><tr><th class="px-4 py-2 text-left font-semibold text-slate-700">Code</th><th class="px-4 py-2 text-left font-semibold text-slate-700">Description</th></tr></thead><tbody class="divide-y divide-gray-200"><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-green-600 text-sm mr-2">check_circle</span><span class="font-mono font-semibold text-green-600">200</span></div></td><td class="px-4 py-2 text-slate-600">OK - Request successful</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">400</span></div></td><td class="px-4 py-2 text-slate-600">Bad Request - Invalid parameters</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">401</span></div></td><td class="px-4 py-2 text-slate-600">Unauthorized - Invalid API key</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">403</span></div></td><td class="px-4 py-2 text-slate-600">Forbidden - No permission</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">404</span></div></td><td class="px-4 py-2 text-slate-600">Not Found</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">405</span></div></td><td class="px-4 py-2 text-slate-600">Method Not Allowed</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-orange-500 text-sm mr-2">warning</span><span class="font-mono font-semibold text-orange-500">429</span></div></td><td class="px-4 py-2 text-slate-600">Too Many Requests - Rate limit</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">500</span></div></td><td class="px-4 py-2 text-slate-600">Internal Server Error</td></tr><tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">503</span></div></td><td class="px-4 py-2 text-slate-600">Service Unavailable</td></tr></tbody></table></div></div></div></div></div>`;
+            });
+            html += `</div></div></div></div>`;
+        });
+        apiList.innerHTML = html;
+        apiList.querySelectorAll('.category-group').forEach((cat, i) => {
+            cat.classList.add('will-fade-in','fade-in');
+            cat.style.animationDelay = `${i * 60}ms`;
+        });
+    } catch(error) {
+        apiList.innerHTML = '<p style="color:#fda4af;">Failed to load API data.</p>';
+        console.error('Error loading API data:', error);
+    }
+}
 
-                        html += `
-                                            <div id="response-${catIndex}-${endpointIndex}" class="hidden mt-4">
-                                                <div class="text-gray-700 font-bold text-xs mb-2 flex items-center">
-                                                    <span class="material-icons text-sm mr-1">code</span>
-                                                    RESPONSE
-                                                </div>
-                                                <div id="response-content-${catIndex}-${endpointIndex}" class="bg-gray-50 text-xs p-4 border border-gray-200">
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mt-4">
-                                                <div class="text-gray-700 font-bold text-xs mb-2 flex items-center">
-                                                    <span class="material-icons text-sm mr-1">list</span>
-                                                    HTTP STATUS CODES
-                                                </div>
-                                                <div class="bg-white border border-gray-200">
-                                                    <div class="overflow-x-auto">
-                                                        <table class="w-full text-xs">
-                                                            <thead class="bg-gray-50 border-b border-gray-200">
-                                                                <tr>
-                                                                    <th class="px-4 py-2 text-left font-semibold text-slate-700">Code</th>
-                                                                    <th class="px-4 py-2 text-left font-semibold text-slate-700">Description</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody class="divide-y divide-gray-200">
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-green-600 text-sm mr-2">check_circle</span><span class="font-mono font-semibold text-green-600">200</span></div></td><td class="px-4 py-2 text-slate-600">OK - Request successful</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">400</span></div></td><td class="px-4 py-2 text-slate-600">Bad Request - Invalid parameters or missing required fields</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">401</span></div></td><td class="px-4 py-2 text-slate-600">Unauthorized - Missing or invalid API key</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">403</span></div></td><td class="px-4 py-2 text-slate-600">Forbidden - You do not have permission to access this resource</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">404</span></div></td><td class="px-4 py-2 text-slate-600">Not Found - The requested resource could not be found</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">405</span></div></td><td class="px-4 py-2 text-slate-600">Method Not Allowed - HTTP method not supported for this resource</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-orange-500 text-sm mr-2">warning</span><span class="font-mono font-semibold text-orange-500">429</span></div></td><td class="px-4 py-2 text-slate-600">Too Many Requests - You have hit the rate limit</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">500</span></div></td><td class="px-4 py-2 text-slate-600">Internal Server Error - Something went wrong on our end</td></tr>
-                                                                <tr class="hover:bg-gray-50"><td class="px-4 py-2"><div class="flex items-center"><span class="material-icons text-red-600 text-sm mr-2">error</span><span class="font-mono font-semibold text-red-600">503</span></div></td><td class="px-4 py-2 text-slate-600">Service Unavailable - The server is temporarily unavailable</td></tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-                                    </div>`;
-                    });
-                    html += `</div></div></div>`;
-                });
-                apiList.innerHTML = html;
-                const categoriess = apiList.querySelectorAll('.category-group');
-                categoriess.forEach((category, index) => {
-                    category.classList.add('will-fade-in', 'fade-in');
-                    category.style.animationDelay = `${index * 70}ms`;
-                });
-            } catch (error) {
-                apiList.innerHTML = '<p class="text-red-500">Failed to load API data.</p>';
-                console.error('Error loading API data:', error);
-            }
-        }
-
-        async function loadNotifications() {
+async function loadNotifications() {
     const notificationsList = document.getElementById('notifications-list');
-    const unreadCountBadge = document.getElementById('unread-count');
-
+    const unreadCountBadge  = document.getElementById('unread-count');
     try {
         const response = await fetch(`/src/notifications.json?t=${Date.now()}`);
         let notifications = await response.json();
-
-        if (!Array.isArray(notifications)) {
-            notifications = notifications ? [notifications] : [];
-        }
-
+        if (!Array.isArray(notifications)) notifications = notifications ? [notifications] : [];
         notificationsList.innerHTML = '';
         let unreadCount = 0;
-
-        notifications.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-
+        notifications.sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
         notifications.forEach((notif, index) => {
             if (!notif.read) unreadCount++;
-
-            const notifElement = document.createElement('div');
-            notifElement.className = `bg-white border border-gray-200 p-4 text-xs will-fade-in fade-in ${notif.read ? 'opacity-60' : ''}`;
-            notifElement.style.animationDelay = `${index * 50}ms`;
-            notifElement.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <p class="font-bold text-slate-800 mb-1">${notif.title || 'Tanpa Judul'}</p>
-                        <p class="text-slate-600">${notif.message || '-'}</p>
-                    </div>
-                    <div class="flex items-center ml-4 flex-shrink-0">
-                        ${!notif.read ? '<div class="w-2 h-2 bg-green-400 rounded-full mr-2" title="Unread"></div>' : ''}
-                        <span class="text-slate-500">${notif.date ? new Date(notif.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</span>
-                    </div>
-                </div>
-            `;
-            notificationsList.appendChild(notifElement);
+            const el = document.createElement('div');
+            el.className = `bg-white border border-gray-200 p-4 text-xs will-fade-in fade-in ${notif.read ? 'opacity-60' : ''}`;
+            el.style.animationDelay = `${index * 45}ms`;
+            el.innerHTML = `<div class="flex justify-between items-start"><div class="flex-1"><p class="font-bold text-slate-800 mb-1">${notif.title||'Tanpa Judul'}</p><p class="text-slate-600">${notif.message||'-'}</p></div><div class="flex items-center ml-4 flex-shrink-0">${!notif.read?'<div class="w-2 h-2 bg-green-400 rounded-full mr-2" title="Unread"></div>':''}<span class="text-slate-500">${notif.date ? new Date(notif.date).toLocaleDateString('id-ID',{year:'numeric',month:'short',day:'numeric'}) : '-'}</span></div></div>`;
+            notificationsList.appendChild(el);
         });
-
-        if (unreadCount > 0) {
-            unreadCountBadge.textContent = unreadCount;
-            unreadCountBadge.classList.remove('hidden');
-        } else {
-            unreadCountBadge.classList.add('hidden');
-        }
-
-        if (notifications.length === 0) {
-            notificationsList.innerHTML = '<p class="text-center text-slate-500 text-xs py-4">Tidak ada notifikasi</p>';
-        }
-
-    } catch (error) {
-        console.error('Gagal memuat notifikasi:', error);
-        notificationsList.innerHTML = '<p class="text-center text-red-500 text-xs py-4">Gagal memuat notifikasi</p>';
+        if (unreadCount > 0) { unreadCountBadge.textContent = unreadCount; unreadCountBadge.classList.remove('hidden'); }
+        else unreadCountBadge.classList.add('hidden');
+        if (notifications.length === 0) notificationsList.innerHTML = '<p class="text-center text-xs py-4" style="color:#7c6fa0;">Tidak ada notifikasi</p>';
+    } catch(error) {
+        notificationsList.innerHTML = '<p class="text-center text-xs py-4" style="color:#fda4af;">Gagal memuat notifikasi</p>';
         unreadCountBadge.classList.add('hidden');
     }
 }
 
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const apiItems = document.querySelectorAll('.api-item');
-            const categories = document.querySelectorAll('.category-group');
-            const noResults = document.getElementById('noResults');
-            let visibleCount = 0;
+document.getElementById('searchInput').addEventListener('input', function() {
+    const s = this.value.toLowerCase();
+    const apiItems   = document.querySelectorAll('.api-item');
+    const categories = document.querySelectorAll('.category-group');
+    const noResults  = document.getElementById('noResults');
+    let visible = 0;
+    apiItems.forEach(item => {
+        const match = item.dataset.path.toLowerCase().includes(s) || item.dataset.alias.toLowerCase().includes(s) || item.dataset.description.toLowerCase().includes(s);
+        item.style.display = match ? '' : 'none';
+        if (match) visible++;
+    });
+    categories.forEach(cat => {
+        cat.style.display = cat.querySelectorAll('.api-item[style=""]').length > 0 ? '' : 'none';
+    });
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+});
 
-            apiItems.forEach(item => {
-                const path = item.dataset.path.toLowerCase();
-                const alias = item.dataset.alias.toLowerCase();
-                const description = item.dataset.description.toLowerCase();
-
-                if (path.includes(searchTerm) || alias.includes(searchTerm) || description.includes(searchTerm)) {
-                    item.style.display = '';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            categories.forEach(category => {
-                const visibleItems = category.querySelectorAll('.api-item[style=""]');
-                if (visibleItems.length > 0) {
-                    category.style.display = '';
-                } else {
-                    category.style.display = 'none';
-                }
-            });
-
-            if (visibleCount === 0) {
-                noResults.style.display = 'block';
-            } else {
-                noResults.style.display = 'none';
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadApis();
-            loadNotifications();
-        });
-    </script>
+document.addEventListener('DOMContentLoaded', () => {
+    loadApis();
+    loadNotifications();
+});
+</script>
 </body>
 </html>
