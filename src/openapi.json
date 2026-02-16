@@ -21,7 +21,7 @@
   "paths": {
   "/tools/pakasir": {
     "get": {
-      "tags": ["Payment"],
+      "tags": ["Tools"],
       "summary": "Generate QRIS Pakasir",
       "description": "Membuat transaksi QRIS melalui Pakasir dan mengembalikan data transaksi, QR image (base64), serta link pembayaran langsung.",
       "parameters": [
