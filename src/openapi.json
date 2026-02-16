@@ -20,53 +20,46 @@
   ],
   "paths": {
 "/tools/pakasir": {
-  "post": {
+  "get": {
     "summary": "Generate QRIS Pakasir",
-    "description": "Membuat transaksi QRIS dan langsung mengembalikan gambar QR dalam format PNG.",
+    "description": "Membuat transaksi QRIS melalui Pakasir dan mengembalikan detail transaksi termasuk URL QR.",
     "tags": ["Tools"],
-    "requestBody": {
-      "required": true,
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "required": ["project", "api_key", "amount"],
-            "properties": {
-              "project": {
-                "type": "string",
-                "description": "Slug project Pakasir",
-                "example": "slug_kamu"
-              },
-              "api_key": {
-                "type": "string",
-                "description": "API key Pakasir",
-                "example": "apikey_kamu"
-              },
-              "amount": {
-                "type": "integer",
-                "description": "Nominal transaksi (minimum 1000)",
-                "minimum": 1000,
-                "example": 15000
-              }
-            }
-          }
-        }
+    "parameters": [
+      {
+        "name": "project",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Slug project Pakasir",
+        "example": "slug_kamu"
+      },
+      {
+        "name": "api_key",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "API Key Pakasir",
+        "example": "apikey_kamu"
+      },
+      {
+        "name": "amount",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1000
+        },
+        "description": "Nominal transaksi (minimum 1000)",
+        "example": 15000
       }
-    },
+    ],
     "responses": {
       "200": {
-        "description": "Berhasil generate QRIS (PNG Image)",
-        "content": {
-          "image/png": {
-            "schema": {
-              "type": "string",
-              "format": "binary"
-            }
-          }
-        }
-      },
-      "400": {
-        "description": "Request tidak valid (field kosong atau amount < 1000)",
+        "description": "Berhasil membuat transaksi",
         "content": {
           "application/json": {
             "schema": {
@@ -74,11 +67,32 @@
               "properties": {
                 "status": {
                   "type": "boolean",
-                  "example": false
+                  "example": true
                 },
-                "message": {
+                "creator": {
                   "type": "string",
-                  "example": "project, api_key, dan amount wajib diisi"
+                  "example": "Nayone API"
+                },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "amount": {
+                      "type": "integer",
+                      "example": 15000
+                    },
+                    "order_id": {
+                      "type": "string",
+                      "example": "17080728123"
+                    },
+                    "qr_image": {
+                      "type": "string",
+                      "example": "https://app.pakasir.com/qris/XXXX.png"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    }
+                  }
                 }
               }
             }
@@ -86,7 +100,7 @@
         }
       },
       "500": {
-        "description": "Terjadi kesalahan pada server",
+        "description": "Terjadi kesalahan",
         "content": {
           "application/json": {
             "schema": {
@@ -96,9 +110,9 @@
                   "type": "boolean",
                   "example": false
                 },
-                "message": {
+                "error": {
                   "type": "string",
-                  "example": "QR tidak ditemukan dari response Pakasir"
+                  "example": "Minimum amount adalah 1000"
                 }
               }
             }
