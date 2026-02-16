@@ -15,9 +15,99 @@
     { "name": "Downloader" },
     { "name": "Image" },
    { "name": "News" },
-  { "name": "Stalk" }
+  { "name": "Stalk" },
+   { "name": "Tools" }
   ],
   "paths": {
+"/tools/pakasir": {
+  "post": {
+    "summary": "Generate QRIS Pakasir",
+    "description": "Membuat transaksi QRIS dan langsung mengembalikan gambar QR dalam format PNG.",
+    "tags": ["Tools"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["project", "api_key", "amount"],
+            "properties": {
+              "project": {
+                "type": "string",
+                "description": "Slug project Pakasir",
+                "example": "slug_kamu"
+              },
+              "api_key": {
+                "type": "string",
+                "description": "API key Pakasir",
+                "example": "apikey_kamu"
+              },
+              "amount": {
+                "type": "integer",
+                "description": "Nominal transaksi (minimum 1000)",
+                "minimum": 1000,
+                "example": 15000
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Berhasil generate QRIS (PNG Image)",
+        "content": {
+          "image/png": {
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Request tidak valid (field kosong atau amount < 1000)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "project, api_key, dan amount wajib diisi"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Terjadi kesalahan pada server",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "QR tidak ditemukan dari response Pakasir"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+              },    
 "/news/liburnasional": {
   "get": {
     "summary": "Libur Nasional & Cuti Bersama Indonesia",
