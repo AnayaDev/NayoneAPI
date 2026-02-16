@@ -29,7 +29,7 @@ async function getYoutubeInfo(query) {
 }
 
 // Endpoint /download/play dengan dual-mode dan support search
-app.get("/downloader/play", async (req, res) => {
+app.get("/download/play", async (req, res) => {
   try {
     const query = req.query.q;
     const mode = (req.query.mode || "audio").toLowerCase();
