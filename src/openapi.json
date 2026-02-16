@@ -15,8 +15,7 @@
     { "name": "Downloader" },
     { "name": "Image" },
    { "name": "News" },
-  { "name": "Stalk" },
-   { "name": "Tools" }
+  { "name": "Stalk" }
   ],
   "paths": {                                                  
 "/news/liburnasional": {
